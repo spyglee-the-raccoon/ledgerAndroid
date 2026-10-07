@@ -3,7 +3,9 @@ package work.spyglee.ladger.ui
 import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,6 +16,7 @@ import work.spyglee.ladger.data.TransactionKind
 import work.spyglee.ladger.ui.collections.CollectionDetailScreen
 import work.spyglee.ladger.ui.collections.CollectionEditorScreen
 import work.spyglee.ladger.ui.collections.CollectionsScreen
+import work.spyglee.ladger.ui.components.ReadableWidth
 import work.spyglee.ladger.ui.main.MainScreen
 import work.spyglee.ladger.ui.settings.CategoriesScreen
 import work.spyglee.ladger.ui.settings.CategoryEditorScreen
@@ -61,6 +64,16 @@ private object Routes {
 
 private const val NO_ID = -1L
 
+/**
+ * A destination whose content stays a readable width on tablets and in landscape. The main screen
+ * uses the full width for its side-by-side layout, and the transaction editor keeps the camera full-screen.
+ */
+private fun NavGraphBuilder.readableComposable(
+    route: String,
+    arguments: List<NamedNavArgument> = emptyList(),
+    content: @Composable (NavBackStackEntry) -> Unit,
+) = composable(route, arguments) { entry -> ReadableWidth { content(entry) } }
+
 private val optionalId = navArgument("id") {
     type = NavType.LongType
     defaultValue = NO_ID
@@ -104,7 +117,7 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
                 sharedReceipt = entry.arguments?.getString("receipt")?.let(Uri::parse),
             )
         }
-        composable(
+        readableComposable(
             Routes.TRANSACTION_LIST,
             arguments = listOf(
                 navArgument("filter") { type = NavType.StringType },
@@ -125,7 +138,7 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
                 onOpenCollection = openCollection,
             )
         }
-        composable(Routes.SOURCES_OVERVIEW) {
+        readableComposable(Routes.SOURCES_OVERVIEW) {
             SourcesOverviewScreen(
                 onBack = back,
                 onOpenSource = { navController.navigate(Routes.transactionList(TransactionFilter.Source(it))) },
@@ -134,7 +147,7 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
                 onOpenCollection = openCollection,
             )
         }
-        composable(Routes.SETTINGS) {
+        readableComposable(Routes.SETTINGS) {
             SettingsScreen(
                 onBack = back,
                 onOpenCategories = { navController.navigate(Routes.CATEGORIES) },
@@ -144,40 +157,40 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
                 onOpenSavings = { navController.navigate(Routes.SAVINGS) },
             )
         }
-        composable(Routes.INCOME_EXPENSE) {
+        readableComposable(Routes.INCOME_EXPENSE) {
             IncomeExpenseScreen(onBack = back)
         }
-        composable(Routes.SAVINGS) {
+        readableComposable(Routes.SAVINGS) {
             SavingsScreen(onBack = back, onOpenTransaction = openTransaction, onOpenCollection = openCollection)
         }
-        composable(Routes.CATEGORIES) {
+        readableComposable(Routes.CATEGORIES) {
             CategoriesScreen(
                 onBack = back,
                 onAdd = { navController.navigate(Routes.categoryEditor()) },
                 onEdit = { navController.navigate(Routes.categoryEditor(it)) },
             )
         }
-        composable(Routes.CATEGORY_EDITOR, arguments = listOf(optionalId)) { entry ->
+        readableComposable(Routes.CATEGORY_EDITOR, arguments = listOf(optionalId)) { entry ->
             CategoryEditorScreen(categoryId = entry.optionalId(), onDone = back)
         }
-        composable(Routes.SOURCES) {
+        readableComposable(Routes.SOURCES) {
             SourcesScreen(
                 onBack = back,
                 onAdd = { navController.navigate(Routes.sourceEditor()) },
                 onEdit = { navController.navigate(Routes.sourceEditor(it)) },
             )
         }
-        composable(Routes.SOURCE_EDITOR, arguments = listOf(optionalId)) { entry ->
+        readableComposable(Routes.SOURCE_EDITOR, arguments = listOf(optionalId)) { entry ->
             SourceEditorScreen(sourceId = entry.optionalId(), onDone = back)
         }
-        composable(Routes.COLLECTIONS) {
+        readableComposable(Routes.COLLECTIONS) {
             CollectionsScreen(
                 onBack = back,
                 onAdd = { navController.navigate(Routes.collectionEditor()) },
                 onOpen = openCollection,
             )
         }
-        composable(Routes.COLLECTION, arguments = listOf(navArgument("id") { type = NavType.LongType })) { entry ->
+        readableComposable(Routes.COLLECTION, arguments = listOf(navArgument("id") { type = NavType.LongType })) { entry ->
             val id = entry.arguments?.getLong("id") ?: NO_ID
             CollectionDetailScreen(
                 collectionId = id,
@@ -187,7 +200,7 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
                 onOpenCollection = openCollection,
             )
         }
-        composable(Routes.COLLECTION_EDITOR, arguments = listOf(optionalId)) { entry ->
+        readableComposable(Routes.COLLECTION_EDITOR, arguments = listOf(optionalId)) { entry ->
             CollectionEditorScreen(collectionId = entry.optionalId(), onDone = back)
         }
     }

@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -211,5 +214,16 @@ fun ListRow(
         Text(title, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
         if (trailing != null) Text(trailing, style = MaterialTheme.typography.bodyLarge)
         trailingContent?.invoke()
+    }
+}
+
+/** Widest a list or form gets: on tablets and in landscape the content is centered at this width. */
+val READABLE_WIDTH = 720.dp
+
+/** Centers [content] at most [READABLE_WIDTH] wide, filling the sides with the screen background. */
+@Composable
+fun ReadableWidth(content: @Composable () -> Unit) {
+    Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background), contentAlignment = Alignment.TopCenter) {
+        Box(Modifier.widthIn(max = READABLE_WIDTH).fillMaxHeight()) { content() }
     }
 }

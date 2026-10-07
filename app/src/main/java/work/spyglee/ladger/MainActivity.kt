@@ -1,5 +1,6 @@
 package work.spyglee.ladger
 
+import android.app.KeyguardManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -127,9 +128,12 @@ class MainActivity : FragmentActivity() {
                 true
             }
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
-                // The screen lock was removed after app lock was turned on. iOS would stay locked
-                // for good; here the app opens, since anyone holding the device can already use it.
-                if (purpose == AuthPurpose.Unlock) lock.unlockWithoutCredential()
+                // The screen lock was removed after app lock was turned on (which itself needs the
+                // old PIN). iOS would stay locked for good; here the app opens, but only once the
+                // keyguard confirms there is no secure lock screen at all, since then anyone holding
+                // the device can already use it. Any other failure keeps the app locked.
+                val deviceSecure = getSystemService(KeyguardManager::class.java)?.isDeviceSecure ?: true
+                if (purpose == AuthPurpose.Unlock && !deviceSecure) lock.unlockWithoutCredential()
                 false
             }
             else -> false

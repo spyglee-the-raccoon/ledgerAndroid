@@ -74,6 +74,7 @@ import work.spyglee.ladger.scan.ReceiptCameraScreen
 import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.CategoryIcon
 import work.spyglee.ladger.ui.components.LadgerTopBar
+import work.spyglee.ladger.ui.components.ReadableWidth
 import work.spyglee.ladger.ui.components.SegmentedSelector
 import work.spyglee.ladger.ui.formatDateTime
 import work.spyglee.ladger.ui.localDecimalSeparator
@@ -138,92 +139,94 @@ fun TransactionEditorScreen(transactionId: Long?, initialKind: TransactionKind, 
         return
     }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackbar) },
-        topBar = {
-            LadgerTopBar(
-                title = stringResource(if (viewModel.isEditing) R.string.edit_transaction else R.string.add_transaction),
-                onBack = onDone,
-            ) {
-                IconButton(onClick = { viewModel.save(onDone) }, enabled = draft.isValid) {
-                    Icon(Icons.Filled.Check, contentDescription = stringResource(R.string.save))
-                }
-            }
-        },
-    ) { padding ->
-        Column(
-            Modifier.fillMaxSize().padding(padding).imePadding().verticalScroll(rememberScrollState()).padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            // As on iOS, the date can only be changed when editing; new transactions are dated now.
-            if (viewModel.isEditing) {
-                DateTimeField(draft.date, viewModel::setDate)
-            }
-            if (isParsing) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                    Text(stringResource(R.string.parsing), modifier = Modifier.padding(start = 12.dp))
-                }
-            } else if (!viewModel.isEditing) {
-                FilledTonalButton(
-                    onClick = {
-                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                            openCamera()
-                        } else {
-                            cameraPermission.launch(Manifest.permission.CAMERA)
-                        }
-                    },
-                    enabled = hasCamera,
-                    modifier = Modifier.fillMaxWidth(),
+    ReadableWidth {
+        Scaffold(
+            snackbarHost = { SnackbarHost(snackbar) },
+            topBar = {
+                LadgerTopBar(
+                    title = stringResource(if (viewModel.isEditing) R.string.edit_transaction else R.string.add_transaction),
+                    onBack = onDone,
                 ) {
-                    Icon(Icons.Outlined.PhotoCamera, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
-                    Text(stringResource(R.string.scan_your_receipt))
+                    IconButton(onClick = { viewModel.save(onDone) }, enabled = draft.isValid) {
+                        Icon(Icons.Filled.Check, contentDescription = stringResource(R.string.save))
+                    }
                 }
-            }
-            SegmentedSelector(
-                options = TransactionKind.entries,
-                selected = draft.kind,
-                label = { kindLabel(it) },
-                onSelect = viewModel::setKind,
-            )
-            OutlinedTextField(
-                value = amountText,
-                onValueChange = viewModel::setAmountText,
-                label = { Text(stringResource(R.string.amount)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            if (draft.kind != TransactionKind.INCOME) {
-                PickerField(
-                    label = stringResource(R.string.source),
-                    options = sources.map { PickerOption(it.id, it.name, iconFor(it.systemImage), it.color.toColor()) },
-                    selectedId = draft.sourceId,
-                    onSelect = viewModel::setSource,
+            },
+        ) { padding ->
+            Column(
+                Modifier.fillMaxSize().padding(padding).imePadding().verticalScroll(rememberScrollState()).padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                // As on iOS, the date can only be changed when editing; new transactions are dated now.
+                if (viewModel.isEditing) {
+                    DateTimeField(draft.date, viewModel::setDate)
+                }
+                if (isParsing) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                        CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                        Text(stringResource(R.string.parsing), modifier = Modifier.padding(start = 12.dp))
+                    }
+                } else if (!viewModel.isEditing) {
+                    FilledTonalButton(
+                        onClick = {
+                            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                                openCamera()
+                            } else {
+                                cameraPermission.launch(Manifest.permission.CAMERA)
+                            }
+                        },
+                        enabled = hasCamera,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Icon(Icons.Outlined.PhotoCamera, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
+                        Text(stringResource(R.string.scan_your_receipt))
+                    }
+                }
+                SegmentedSelector(
+                    options = TransactionKind.entries,
+                    selected = draft.kind,
+                    label = { kindLabel(it) },
+                    onSelect = viewModel::setKind,
+                )
+                OutlinedTextField(
+                    value = amountText,
+                    onValueChange = viewModel::setAmountText,
+                    label = { Text(stringResource(R.string.amount)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                if (draft.kind != TransactionKind.INCOME) {
+                    PickerField(
+                        label = stringResource(R.string.source),
+                        options = sources.map { PickerOption(it.id, it.name, iconFor(it.systemImage), it.color.toColor()) },
+                        selectedId = draft.sourceId,
+                        onSelect = viewModel::setSource,
+                    )
+                }
+                if (draft.kind != TransactionKind.EXPENSE) {
+                    PickerField(
+                        label = stringResource(R.string.destination),
+                        options = sources.map { PickerOption(it.id, it.name, iconFor(it.systemImage), it.color.toColor()) },
+                        selectedId = draft.destinationId,
+                        onSelect = viewModel::setDestination,
+                    )
+                }
+                if (draft.kind != TransactionKind.TRANSFER) {
+                    PickerField(
+                        label = stringResource(R.string.category),
+                        options = available.map { PickerOption(it.id, it.name, iconFor(it.systemImage), it.color.toColor()) },
+                        selectedId = draft.categoryId,
+                        onSelect = viewModel::setCategory,
+                    )
+                }
+                OutlinedTextField(
+                    value = draft.note,
+                    onValueChange = viewModel::setNote,
+                    label = { Text(stringResource(R.string.note)) },
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
-            if (draft.kind != TransactionKind.EXPENSE) {
-                PickerField(
-                    label = stringResource(R.string.destination),
-                    options = sources.map { PickerOption(it.id, it.name, iconFor(it.systemImage), it.color.toColor()) },
-                    selectedId = draft.destinationId,
-                    onSelect = viewModel::setDestination,
-                )
-            }
-            if (draft.kind != TransactionKind.TRANSFER) {
-                PickerField(
-                    label = stringResource(R.string.category),
-                    options = available.map { PickerOption(it.id, it.name, iconFor(it.systemImage), it.color.toColor()) },
-                    selectedId = draft.categoryId,
-                    onSelect = viewModel::setCategory,
-                )
-            }
-            OutlinedTextField(
-                value = draft.note,
-                onValueChange = viewModel::setNote,
-                label = { Text(stringResource(R.string.note)) },
-                modifier = Modifier.fillMaxWidth(),
-            )
         }
     }
 }

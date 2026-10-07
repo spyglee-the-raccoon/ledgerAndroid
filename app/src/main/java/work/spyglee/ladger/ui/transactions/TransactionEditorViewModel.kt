@@ -129,6 +129,7 @@ class TransactionEditorViewModel(
                 transactionDao.update(draft.toTransaction(transactionId))
             } else {
                 transactionDao.insert(draft.toTransaction())
+                container.saveSound.play()
             }
             learnMerchantCategory(draft)
             onSaved()

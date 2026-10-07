@@ -29,4 +29,5 @@ class AppContainer(context: Context, val database: LadgerDatabase = LadgerDataba
     val reminder = DailyReminder(context)
     val appLock = AppLock()
     val receipts = ReceiptScanner(context)
+    val saveSound = SaveSound(context)
 }

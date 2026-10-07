@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android-only strings (iOS gets these from the system). iOS-shared strings are in strings.xml. -->
+<resources>
+    <string name="back">Natrag</string>
+    <string name="cancel">Odustani</string>
+    <string name="delete">Izbriši</string>
+    <string name="remove_from_collection">Ukloni iz kolekcije</string>
+    <string name="change_sign">Promijeni predznak</string>
+    <string name="change_date">Promijeni datum</string>
+    <string name="selected">Odabrano</string>
+    <string name="reminder_channel">Dnevni podsjetnik</string>
+    <string name="lock_unavailable">Za zaključavanje aplikacije postavite zaključavanje zaslona na uređaju.</string>
+    <string name="notifications_denied">Obavijesti su isključene za ovu aplikaciju. Uključite ih u postavkama sustava.</string>
+    <string name="open_settings">Postavke</string>
+    <string name="take_photo">Snimi fotografiju</string>
+    <string name="retake_photo">Ponovi</string>
+    <string name="use_photo">Koristi fotografiju</string>
+    <string name="flash">Bljeskalica</string>
+    <string name="close">Zatvori</string>
+    <string name="camera_denied">Pristup kameri isključen je za ovu aplikaciju. Uključite ga u postavkama sustava da biste skenirali račune.</string>
+    <string name="zoom_level">Povećanje %1$s</string>
+</resources>

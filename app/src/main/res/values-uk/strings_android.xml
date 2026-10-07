@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android-only strings (iOS gets these from the system). iOS-shared strings are in strings.xml. -->
+<resources>
+    <string name="back">Назад</string>
+    <string name="cancel">Скасувати</string>
+    <string name="delete">Видалити</string>
+    <string name="remove_from_collection">Вилучити з колекції</string>
+    <string name="change_sign">Змінити знак</string>
+    <string name="change_date">Змінити дату</string>
+    <string name="selected">Вибрано</string>
+    <string name="reminder_channel">Щоденне нагадування</string>
+    <string name="lock_unavailable">Щоб блокувати застосунок, налаштуйте блокування екрана на пристрої.</string>
+    <string name="notifications_denied">Сповіщення для цього застосунку вимкнено. Увімкніть їх у налаштуваннях системи.</string>
+    <string name="open_settings">Налаштування</string>
+    <string name="take_photo">Зробити фото</string>
+    <string name="retake_photo">Перезняти</string>
+    <string name="use_photo">Використати фото</string>
+    <string name="flash">Спалах</string>
+    <string name="close">Закрити</string>
+    <string name="camera_denied">Доступ до камери для цього застосунку вимкнено. Увімкніть його в налаштуваннях системи, щоб сканувати чеки.</string>
+    <string name="zoom_level">Масштаб %1$s</string>
+</resources>

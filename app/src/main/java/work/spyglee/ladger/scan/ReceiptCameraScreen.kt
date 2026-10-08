@@ -2,6 +2,8 @@ package work.spyglee.ladger.scan
 
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.Rect
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.camera.core.FocusMeteringAction
 import androidx.camera.core.ImageCapture
@@ -79,6 +81,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import work.spyglee.ladger.BuildConfig
 import work.spyglee.ladger.R
 
 /** Longest side of the photo handed to OCR; plenty for receipt text, and keeps the bitmap around 30 MB. */
@@ -271,7 +274,14 @@ private fun ShutterButton(enabled: Boolean, onClick: () -> Unit) {
     )
 }
 
-/** Takes a photo and returns it upright, scaled down to at most [MAX_PHOTO_SIDE] pixels on its longest side. */
+/**
+ * Takes a photo of exactly what the preview showed, upright, scaled down to at most [MAX_PHOTO_SIDE]
+ * pixels on its longest side.
+ *
+ * The preview fills the screen by cropping the camera's 4:3 frame, and CameraX marks that visible
+ * part as the image's crop rect, but `toBitmap()` ignores it. Without applying it the photo would show
+ * far more than the user framed, as if taken from further away.
+ */
 private suspend fun LifecycleCameraController.capturePhoto(executor: java.util.concurrent.Executor): Bitmap {
     val image = suspendCancellableCoroutine<ImageProxy> { continuation ->
         takePicture(executor, object : ImageCapture.OnImageCapturedCallback() {
@@ -287,12 +297,16 @@ private suspend fun LifecycleCameraController.capturePhoto(executor: java.util.c
     return withContext(Dispatchers.Default) {
         image.use { proxy ->
             val bitmap = proxy.toBitmap()
-            val scale = minOf(1f, MAX_PHOTO_SIDE.toFloat() / max(bitmap.width, bitmap.height))
+            val crop = Rect(proxy.cropRect).apply { if (!intersect(0, 0, bitmap.width, bitmap.height)) set(0, 0, bitmap.width, bitmap.height) }
+            if (BuildConfig.DEBUG) {
+                Log.d("ReceiptCamera", "Captured ${bitmap.width}x${bitmap.height}, crop $crop, rotation ${proxy.imageInfo.rotationDegrees}")
+            }
+            val scale = minOf(1f, MAX_PHOTO_SIDE.toFloat() / max(crop.width(), crop.height()))
             val matrix = Matrix().apply {
                 postScale(scale, scale)
                 postRotate(proxy.imageInfo.rotationDegrees.toFloat())
             }
-            Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true).also {
+            Bitmap.createBitmap(bitmap, crop.left, crop.top, crop.width(), crop.height(), matrix, true).also {
                 if (it !== bitmap) bitmap.recycle()
             }
         }

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
@@ -208,13 +209,15 @@ private fun BalancePanel(
             color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.clip(MaterialTheme.shapes.small).clickable(onClick = onOpenSourcesOverview).padding(horizontal = 8.dp),
         )
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+        // Wider than on iOS, where the buttons only fit their text: here they share the row.
+        Row(Modifier.widthIn(max = 480.dp).fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             SummaryButton(
                 label = stringResource(R.string.expense),
                 amount = state.monthExpenses,
                 icon = Icons.Filled.ArrowUpward,
                 color = ExpenseColor,
                 onClick = onOpenExpenses,
+                modifier = Modifier.weight(1f),
             )
             SummaryButton(
                 label = stringResource(R.string.income),
@@ -222,6 +225,7 @@ private fun BalancePanel(
                 icon = Icons.Filled.ArrowDownward,
                 color = IncomeColor,
                 onClick = onOpenIncomes,
+                modifier = Modifier.weight(1f),
             )
         }
     }
@@ -229,15 +233,22 @@ private fun BalancePanel(
 
 /** The shown month's expense or income total; opens the full list. */
 @Composable
-private fun SummaryButton(label: String, amount: BigDecimal, icon: ImageVector, color: Color, onClick: () -> Unit) {
-    OutlinedCard(onClick = onClick, shape = MaterialTheme.shapes.extraLarge) {
-        Row(Modifier.padding(horizontal = 16.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-            Box(Modifier.size(25.dp).clip(CircleShape).background(color.copy(alpha = 0.2f)), contentAlignment = Alignment.Center) {
-                Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(16.dp))
+private fun SummaryButton(
+    label: String,
+    amount: BigDecimal,
+    icon: ImageVector,
+    color: Color,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedCard(onClick = onClick, modifier = modifier, shape = MaterialTheme.shapes.extraLarge) {
+        Row(Modifier.padding(horizontal = 16.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(32.dp).clip(CircleShape).background(color.copy(alpha = 0.2f)), contentAlignment = Alignment.Center) {
+                Icon(icon, contentDescription = null, tint = color, modifier = Modifier.size(20.dp))
             }
-            Column(Modifier.padding(start = 10.dp)) {
-                Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                Text(formatMoney(amount), style = MaterialTheme.typography.bodyMedium)
+            Column(Modifier.padding(start = 12.dp)) {
+                Text(label, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
+                Text(formatMoney(amount), style = MaterialTheme.typography.titleMedium, maxLines = 1)
             }
         }
     }

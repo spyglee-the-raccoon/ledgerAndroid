@@ -1,8 +1,11 @@
 package work.spyglee.ladger.ui
 
 import android.net.Uri
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
@@ -94,7 +97,8 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
         if (sharedReceipt != null) navController.navigate(Routes.transactionEditor(receipt = sharedReceipt))
     }
 
-    NavHost(navController, startDestination = Routes.MAIN) {
+    // The screens cross-fade; without a background the window would show through halfway and flash.
+    NavHost(navController, startDestination = Routes.MAIN, modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
         composable(Routes.MAIN) {
             MainScreen(
                 onOpenSettings = { navController.navigate(Routes.SETTINGS) },

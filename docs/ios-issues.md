@@ -68,6 +68,9 @@ matches names ignoring case, so an import may attach transactions to either one.
 - `unlock_reason` (English): "Unlock app to see the **blance** and manipulate transactions" — typo.
 - `reminder_title` was "Budget Tracker" while the app is called Ladger. Since `6f46e7b` it is "Ledger", matching the
   iOS app's new display name; Android followed and is now called Ledger too.
+- The app icon (`AppIcon.appiconset/Ladger Logo.png`) still has "Ladger" written under the logo, while the app is
+  now called Ledger. Android's launcher and Play icons are generated from it, so they say "Ladger" too until the
+  iOS icon changes (then rerun `tools/make-icons.py`).
 
 ## Optional: receipt OCR that reads O as zero
 On a monospace receipt font, Android's OCR read "UKUPNO" as "UKUPN0". The Android parser now treats

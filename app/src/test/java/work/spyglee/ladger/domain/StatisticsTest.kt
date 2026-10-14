@@ -32,6 +32,39 @@ class StatisticsTest {
     }
 
     @Test
+    fun `top categories are the biggest all-time spenders with gap-filled months`() {
+        val dining = Category(id = 4, name = "Dining")
+        val games = Category(id = 5, name = "Games")
+        val top = Statistics.topCategories(
+            listOf(
+                expense("50", categoryId = 1, date = day(2026, 1, 10)),
+                expense("30", categoryId = 2, date = day(2026, 3, 2)),
+                expense("30", categoryId = 1, date = day(2026, 3, 5)),
+                expense("70", categoryId = 4, date = day(2026, 3, 9)),
+                expense("5", categoryId = 5, date = day(2025, 6, 1)),
+                expense("500", date = day(2026, 2, 1)),
+                expense("400", categoryId = 99, date = day(2026, 2, 1)),
+                income("1000", categoryId = 3, date = day(2026, 2, 1)),
+            ),
+            listOf(groceries, transport, salary, dining, games),
+            UTC,
+        )
+        // Groceries 80, Dining 70, Transport 30; Games is fourth, so its 2025 expense doesn't stretch the months.
+        assertEquals(listOf(groceries, dining, transport), top.categories)
+        assertEquals(listOf(YearMonth.of(2026, 1), YearMonth.of(2026, 2), YearMonth.of(2026, 3)), top.months.map { it.month })
+        assertEquals(listOf("50", "0", "0"), top.months[0].amounts.map { it.toPlainString() })
+        assertEquals(listOf("0", "0", "0"), top.months[1].amounts.map { it.toPlainString() })
+        assertEquals(listOf("30", "70", "30"), top.months[2].amounts.map { it.toPlainString() })
+    }
+
+    @Test
+    fun `top categories are empty without categorized expenses`() {
+        val top = Statistics.topCategories(listOf(expense("10"), income("5", categoryId = 3)), listOf(groceries, salary), UTC)
+        assertTrue(top.categories.isEmpty())
+        assertTrue(top.months.isEmpty())
+    }
+
+    @Test
     fun `income and expense months are gap-filled and ignore transfers`() {
         val months = Statistics.incomeExpenseByMonth(
             listOf(

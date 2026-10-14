@@ -3,10 +3,15 @@ package work.spyglee.ladger.ui
 import android.content.Context
 import android.text.format.DateFormat
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeLeft
+import androidx.compose.ui.test.swipeRight
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -44,7 +49,7 @@ class StatisticsFlowTest {
         database.close()
     }
 
-    private fun launch(withTransactions: Boolean) {
+    private fun launch(withTransactions: Boolean, openSettings: Boolean = true) {
         if (withTransactions) {
             runBlocking {
                 val cash = database.sourceDao().insert(Source(name = "Cash", initValue = BigDecimal("100")))
@@ -63,7 +68,7 @@ class StatisticsFlowTest {
                 LadgerTheme { LadgerNavHost() }
             }
         }
-        compose.onNodeWithContentDescription(context.getString(R.string.settings)).performClick()
+        if (openSettings) compose.onNodeWithContentDescription(context.getString(R.string.settings)).performClick()
     }
 
     private fun middleOf(month: YearMonth) = month.atDay(15).atTime(12, 0).atZone(ZoneId.systemDefault()).toInstant()
@@ -94,6 +99,37 @@ class StatisticsFlowTest {
         compose.onNodeWithContentDescription(title(lastMonth), substring = true).performClick()
 
         compose.onNodeWithText(formatMoney(BigDecimal("200"))).assertExists()
+    }
+
+    @Test
+    fun selectingAMonthInTopCategoriesShowsItsAmounts() {
+        launch(withTransactions = true)
+        compose.onNodeWithText(context.getString(R.string.top_categories)).performClick()
+
+        compose.onNodeWithText("Food").assertExists()
+        compose.onNodeWithText(context.getString(R.string.top_categories_about_title)).assertExists()
+        compose.onNodeWithContentDescription(title(thisMonth), substring = true).performClick()
+
+        compose.onNodeWithText(formatMoney(BigDecimal("30"))).assertExists()
+    }
+
+    @Test
+    fun swipingTheDonutGoesBackToMonthsWithTransactionsAndForwardToThisMonth() {
+        launch(withTransactions = true, openSettings = false)
+        val thisMonthLabel = context.getString(R.string.this_month_balance).uppercase()
+        val lastMonthLabel = title(lastMonth).uppercase()
+
+        compose.onNodeWithText(thisMonthLabel).performTouchInput { swipeRight() }
+        compose.onNodeWithText(lastMonthLabel).assertExists()
+        // Last month's balance in the donut, and its incomes on the income button.
+        compose.onAllNodesWithText(formatMoney(BigDecimal("200"))).assertCountEquals(2)
+
+        // Nothing is older than last month, and nothing is newer than this month.
+        compose.onNodeWithText(lastMonthLabel).performTouchInput { swipeRight() }
+        compose.onNodeWithText(lastMonthLabel).assertExists()
+        compose.onNodeWithText(lastMonthLabel).performTouchInput { swipeLeft() }
+        compose.onNodeWithText(thisMonthLabel).performTouchInput { swipeLeft() }
+        compose.onNodeWithText(thisMonthLabel).assertExists()
     }
 
     @Test

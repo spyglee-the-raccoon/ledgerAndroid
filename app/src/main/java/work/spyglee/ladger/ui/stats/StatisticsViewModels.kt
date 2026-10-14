@@ -16,11 +16,22 @@ import work.spyglee.ladger.data.Transaction
 import work.spyglee.ladger.domain.IncomeExpenseMonth
 import work.spyglee.ladger.domain.SavingsMonth
 import work.spyglee.ladger.domain.Statistics
+import work.spyglee.ladger.domain.TopCategories
 
 class IncomeExpenseViewModel(database: LadgerDatabase) : ViewModel() {
     /** Null while loading. */
     val months: StateFlow<List<IncomeExpenseMonth>?> = database.transactionDao().observeAll()
         .map { Statistics.incomeExpenseByMonth(it, ZoneId.systemDefault()) }
+        .flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+}
+
+class TopCategoriesViewModel(database: LadgerDatabase) : ViewModel() {
+    /** Null while loading. */
+    val topCategories: StateFlow<TopCategories?> = combine(
+        database.transactionDao().observeAll(),
+        database.categoryDao().observeAll(),
+    ) { transactions, categories -> Statistics.topCategories(transactions, categories, ZoneId.systemDefault()) }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 }

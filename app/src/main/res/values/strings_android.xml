@@ -19,4 +19,6 @@
     <string name="close">Close</string>
     <string name="camera_denied">Camera access is off for this app. Turn it on in system settings to scan receipts.</string>
     <string name="zoom_level">Zoom %1$s</string>
+    <string name="previous_month">Previous month</string>
+    <string name="next_month">Next month</string>
 </resources>

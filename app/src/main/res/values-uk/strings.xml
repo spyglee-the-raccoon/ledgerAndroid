@@ -51,6 +51,9 @@
     <string name="income">Прибуток</string>
     <string name="income_categories">Категорія прибутку</string>
     <string name="income_expense">Прибутки та витрати</string>
+    <string name="income_expense_about_chart">Цей графік порівнює, скільки ви заробили (зелений) і скільки витратили (червоний) щомісяця. Коли зелена лінія вища за червону, ви витратили менше, ніж заробили. Торкніться місяця, щоб побачити точні суми.</string>
+    <string name="income_expense_about_importance">Жити за своїми можливостями — витрачати менше, ніж заробляєте, — основа здорових фінансів. Це вберігає від боргів і дає змогу впоратися з несподіванками. Варто щомісяця відкладати хоча б трохи грошей, навіть невелику суму. Регулярні заощадження створюють фінансову подушку, яка з часом зростає й допомагає досягати більших цілей.</string>
+    <string name="income_expense_about_title">Чому це важливо</string>
     <string name="incomes">Прибутки</string>
     <string name="initial_value">Початкове значення</string>
     <string name="kind">Вид</string>
@@ -101,6 +104,9 @@
     <string name="this_month_balance">Баланс на цей місяць</string>
     <string name="today">Сьогодні</string>
     <string name="top_categories">Основні категорії</string>
+    <string name="top_categories_about_chart">Цей графік показує три категорії, на які ви загалом витратили найбільше, і скільки ви витрачали на кожну з них щомісяця. Торкніться місяця, щоб побачити точні суми.</string>
+    <string name="top_categories_about_importance">Знати, куди йдуть ваші гроші, — перший крок до керування ними. Саме в найбільших категоріях невеликі зміни зазвичай дають найбільший ефект. Звертайте увагу на місяці, коли лінія різко зростає, помічайте звички, що поступово збільшуються, і вирішуйте, чи ці витрати досі відповідають тому, що для вас важливо.</string>
+    <string name="top_categories_about_title">Чому це важливо</string>
     <string name="total_balance">Загальний баланс</string>
     <string name="transactions">Транзакції</string>
     <string name="transactions_for">Транзакції %1$s</string>

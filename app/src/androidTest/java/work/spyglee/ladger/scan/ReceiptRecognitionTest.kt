@@ -12,6 +12,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import java.io.File
 import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.LocalTime
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -53,6 +55,8 @@ class ReceiptRecognitionTest {
         val receipt = ReceiptRulesParser.parse(text)
         assertEquals("OCR text was:\n$text", BigDecimal("12.49"), receipt.total?.setScale(2))
         assertTrue("OCR text was:\n$text", receipt.merchant.orEmpty().startsWith("KONZUM"))
+        assertEquals("OCR text was:\n$text", LocalDate.of(2026, 10, 7), receipt.date)
+        assertEquals("OCR text was:\n$text", LocalTime.of(18, 42), receipt.time)
     }
 
     @Test

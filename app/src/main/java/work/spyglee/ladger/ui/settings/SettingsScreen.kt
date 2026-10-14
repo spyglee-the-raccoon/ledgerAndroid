@@ -14,6 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.TrendingUp
 import androidx.compose.material.icons.outlined.CreditCard
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.Fingerprint
@@ -68,6 +69,7 @@ fun SettingsScreen(
     onOpenCollections: () -> Unit,
     onOpenIncomeExpense: () -> Unit,
     onOpenSavings: () -> Unit,
+    onOpenTopCategories: () -> Unit,
 ) {
     val viewModel = appViewModel { SettingsViewModel(it) }
     val isReminderOn by viewModel.isReminderOn.collectAsStateWithLifecycle()
@@ -151,6 +153,7 @@ fun SettingsScreen(
             SectionHeader(stringResource(R.string.statistics), Modifier.padding(top = 16.dp))
             SettingsLink(Icons.Outlined.SwapVert, CategoryColor.GREEN.toColor(), stringResource(R.string.income_expense), onOpenIncomeExpense)
             SettingsLink(Icons.Outlined.MoveToInbox, CategoryColor.ORANGE.toColor(), stringResource(R.string.savings), onOpenSavings)
+            SettingsLink(Icons.AutoMirrored.Outlined.TrendingUp, CategoryColor.PURPLE.toColor(), stringResource(R.string.top_categories), onOpenTopCategories)
         }
     }
 

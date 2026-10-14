@@ -1,6 +1,6 @@
 """Generates the Android launcher icons from the iOS app icon.
 
-Usage (needs Pillow):  python tools/make-icons.py "<path to iOS repo>/budget tracker/Assets.xcassets/AppIcon.appiconset/Ladger Logo.png"
+Usage (needs Pillow):  python tools/make-icons.py "<path to iOS repo>/ledger/Assets.xcassets/AppIcon.appiconset/Ladger Logo.png"
 
 The iOS icon is a 1024 px rounded square with the artwork on a dark background. Android adaptive
 icons are 108 dp squares that the launcher masks into its own shape; only the middle 66 dp circle

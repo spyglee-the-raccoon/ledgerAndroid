@@ -1,4 +1,4 @@
-# Releasing Ladger for Android
+# Releasing Ledger for Android
 
 ## 1. Signing key (once)
 Google Play signs the app with its own key (Play App Signing); you sign uploads with an **upload key**.

@@ -1,6 +1,9 @@
 package work.spyglee.ladger.domain.receipt
 
 import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -42,6 +45,22 @@ class ReceiptDraftTest {
             .withReceipt(receipt.copy(categoryName = "Plaća"), learned = null, categories = categories)
         assertEquals("Weekly shop", draft.note)
         assertNull(draft.categoryId)
+    }
+
+    @Test
+    fun `the receipt's date and time become the transaction's`() {
+        val zone = ZoneId.of("Europe/Zagreb")
+        val day = LocalDate.of(2026, 10, 5)
+        val now = LocalTime.of(20, 15, 42)
+        fun dateOf(receipt: ParsedReceipt) =
+            TransactionDraft().withReceipt(receipt, learned = null, categories = categories, zone = zone, now = now).date
+
+        assertEquals(day.atTime(14, 35).atZone(zone).toInstant(), dateOf(receipt.copy(date = day, time = LocalTime.of(14, 35))))
+        // Without a printed time the current time is used, to the minute, as on iOS.
+        assertEquals(day.atTime(20, 15).atZone(zone).toInstant(), dateOf(receipt.copy(date = day)))
+        // A time without a date is not enough.
+        val before = TransactionDraft()
+        assertEquals(before.date, before.withReceipt(receipt.copy(time = LocalTime.NOON), learned = null, categories = categories).date)
     }
 
     @Test

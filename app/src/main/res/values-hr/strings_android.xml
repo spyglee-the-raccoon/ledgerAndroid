@@ -19,4 +19,6 @@
     <string name="close">Zatvori</string>
     <string name="camera_denied">Pristup kameri isključen je za ovu aplikaciju. Uključite ga u postavkama sustava da biste skenirali račune.</string>
     <string name="zoom_level">Povećanje %1$s</string>
+    <string name="previous_month">Prethodni mjesec</string>
+    <string name="next_month">Sljedeći mjesec</string>
 </resources>

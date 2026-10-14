@@ -1,8 +1,8 @@
-# Ladger for Android
+# Ledger for Android
 
-The Android version of Ladger, a local-only budgeting app; the iOS app (SwiftUI, in the
-`spyglee/budgetTracker` repository) is the reference for features and behaviour. Kotlin, Jetpack
-Compose, Room, CameraX and ML Kit; minSdk 26.
+The Android version of Ledger, a local-only budgeting app; the iOS app (SwiftUI, in the
+`spyglee/budgetTracker` repository) is the reference for features and behaviour. Android is up to date
+with iOS commit `6f46e7b`. Kotlin, Jetpack Compose, Room, CameraX and ML Kit; minSdk 26.
 
 Nothing leaves the device: the app has no INTERNET permission, receipts are read on the device, and
 backups are turned off. CSV files are compatible with the iOS app in both directions.

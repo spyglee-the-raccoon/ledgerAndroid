@@ -3,13 +3,16 @@ package work.spyglee.ladger.domain.receipt
 import java.math.BigDecimal
 import java.time.DateTimeException
 import java.time.LocalDate
+import java.time.LocalTime
 import work.spyglee.ladger.domain.lineBreak
 
+/** The purchase [date] and [time] are kept apart: a receipt's time is only used together with its date. */
 data class ParsedReceipt(
     val total: BigDecimal? = null,
     val date: LocalDate? = null,
     val merchant: String? = null,
     val categoryName: String? = null,
+    val time: LocalTime? = null,
 )
 
 /** Raw values produced by the on-device language model, before validation. */
@@ -18,6 +21,7 @@ data class GeneratedReceipt(
     val total: String?,
     val date: String?,
     val category: String?,
+    val time: String? = null,
 )
 
 /**
@@ -49,15 +53,29 @@ object ReceiptRulesParser {
         "ptu", "vat", "podatek", "podatk", "opodatk",
     )
 
+    /** Labels of the purchase time, as word starts: "godz" also matches the Polish "godz." and "godzina". */
+    private val timeStems = stemPatterns(
+        // Croatian / Serbian / English
+        "vrijeme", "vreme", "time",
+        // Ukrainian
+        "час",
+        // Polish
+        "godz",
+    )
+
+    /** Opening hours ("Radno vrijeme 08:00-21:00") are not the purchase time. */
+    private val openingHours = wordPatterns("radno").single()
+
     private val amountPattern = Regex("""\d{1,3}(?:[ .,]?\d{3})*[.,]\d{2}(?!\d)""")
     private val datePattern = Regex("""(\d{1,2})\.\s?(\d{1,2})\.\s?(\d{4})""")
+    private val timePattern = Regex("""(?<!\d)(\d{1,2})\s?:\s?(\d{2})(?::\d{2})?(?!\d)""")
 
     fun parse(text: String): ParsedReceipt {
         val lines = text.lowercase().split(lineBreak)
         val merchant = text.split(lineBreak)
             .map { it.trim(' ', '\t') }
             .firstOrNull { line -> line.any(Char::isLetter) }
-        return ParsedReceipt(total = findTotal(lines), date = findDate(text), merchant = merchant)
+        return ParsedReceipt(total = findTotal(lines), date = findDate(text), merchant = merchant, time = findTime(lines))
     }
 
     /**
@@ -73,6 +91,7 @@ object ReceiptRulesParser {
             date = generated.date?.let(::isoDate) ?: fallback.date,
             merchant = merchant.ifEmpty { fallback.merchant },
             categoryName = generated.category?.takeIf { it in categoryNames },
+            time = generated.time?.let(::firstTime) ?: fallback.time,
         )
     }
 
@@ -110,6 +129,27 @@ object ReceiptRulesParser {
             null
         }
     }
+
+    /**
+     * The time on (or on the line after) a line labeled e.g. VRIJEME; otherwise the first time
+     * printed anywhere on the receipt.
+     */
+    private fun findTime(lines: List<String>): LocalTime? {
+        val candidates = lines.filterNot { openingHours.containsMatchIn(it) }
+        candidates.forEachIndexed { index, line ->
+            if (timeStems.any { it.containsMatchIn(line) }) {
+                (firstTime(line) ?: candidates.getOrNull(index + 1)?.let(::firstTime))?.let { return it }
+            }
+        }
+        return candidates.firstNotNullOfOrNull(::firstTime)
+    }
+
+    /** The first valid `HH:MM` or `HH:MM:SS` in [string]; seconds are dropped. Also reads the model's time. */
+    fun firstTime(string: String): LocalTime? =
+        timePattern.findAll(string).firstNotNullOfOrNull { match ->
+            val (hour, minute) = match.destructured
+            if (hour.toInt() < 24 && minute.toInt() < 60) LocalTime.of(hour.toInt(), minute.toInt()) else null
+        }
 
     /**
      * Reads an amount whose last `.` or `,` is the decimal separator, so "1.234,56", "1,234.56"

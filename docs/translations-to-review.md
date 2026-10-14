@@ -1,6 +1,6 @@
 # Translations to review
 
-The 105 strings shared with iOS are generated from the iOS catalog (`tools/sync-ios-strings.ps1`) and
+The 110 strings shared with iOS are generated from the iOS catalog (`tools/sync-ios-strings.ps1`) and
 were translated by the iOS team. The strings below exist only on Android (iOS gets them from the
 system) and were translated during the port, without a native speaker. Please have them checked.
 
@@ -27,3 +27,5 @@ They live in `app/src/main/res/values*/strings_android.xml`. `%1$s` is replaced 
 | `close` | Close | Zatvori | Закрити |
 | `camera_denied` | Camera access is off for this app. Turn it on in system settings to scan receipts. | Pristup kameri isključen je za ovu aplikaciju. Uključite ga u postavkama sustava da biste skenirali račune. | Доступ до камери для цього застосунку вимкнено. Увімкніть його в налаштуваннях системи, щоб сканувати чеки. |
 | `zoom_level` | Zoom %1$s | Povećanje %1$s | Масштаб %1$s |
+| `previous_month` | Previous month | Prethodni mjesec | Попередній місяць |
+| `next_month` | Next month | Sljedeći mjesec | Наступний місяць |

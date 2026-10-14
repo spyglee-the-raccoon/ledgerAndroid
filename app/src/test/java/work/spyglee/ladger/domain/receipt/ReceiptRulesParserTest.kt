@@ -1,5 +1,6 @@
 package work.spyglee.ladger.domain.receipt
 
+import java.time.LocalTime
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -168,5 +169,35 @@ class ReceiptRulesParserTest {
             emptyList(),
         )
         assertAmount("15.89", merged.total)
+    }
+
+    @Test
+    fun `reads the time next to the date`() {
+        assertEquals(LocalTime.of(14, 22), ReceiptRulesParser.parse(konzumReceipt).time)
+        assertEquals(LocalTime.of(9, 7), ReceiptRulesParser.parse("Store\n05.10.2026. 09:07").time)
+    }
+
+    @Test
+    fun `prefers the time labeled vrijeme, also on the next line`() {
+        val receipt = ReceiptRulesParser.parse("Konzum\nBlagajna 10:15\nDatum: 05.10.2026.\nVrijeme: 14:35:12\nUKUPNO 15,89")
+        assertEquals(LocalTime.of(14, 35), receipt.time)
+        assertEquals(LocalTime.of(18, 3), ReceiptRulesParser.parse("Biedronka 11:00\nGodz.\n18:03").time)
+    }
+
+    @Test
+    fun `ignores opening hours and impossible times`() {
+        val receipt = ReceiptRulesParser.parse("Store\nRadno vrijeme 08:00-21:00\n05.10.2026. 18:42")
+        assertEquals(LocalTime.of(18, 42), receipt.time)
+        assertNull(ReceiptRulesParser.parse("Store\n05.10.2026.\nKasa 25:61").time)
+    }
+
+    @Test
+    fun `merge prefers a valid model time`() {
+        val fallback = ReceiptRulesParser.parse(konzumReceipt)
+        fun mergedTime(time: String?) =
+            ReceiptRulesParser.merge(fallback, GeneratedReceipt("Konzum", null, null, null, time), emptyList()).time
+        assertEquals(LocalTime.of(14, 30), mergedTime("14:30"))
+        assertEquals(LocalTime.of(14, 22), mergedTime(""))
+        assertEquals(LocalTime.of(14, 22), mergedTime("99:99"))
     }
 }

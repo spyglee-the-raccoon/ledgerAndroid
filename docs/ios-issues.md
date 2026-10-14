@@ -3,6 +3,8 @@
 Found while porting the iOS app (commit `2b36197`) to Android, which is now feature-complete. Most
 important first. Android avoids or fixes each of these; file references are to the iOS repo.
 
+Checked again at iOS `6f46e7b`: issues 2–6 are fixed there; 1, 7 and 8 and the typo in 9 are still open.
+
 ## 1. Dark mode: the lock screen probably lets balances show through
 `views/LockView.swift`, `components/BackgroundView.swift`, `ContentView.swift`
 
@@ -13,6 +15,7 @@ leaked in an automated test until an opaque layer was added under the gradient.
 **Fix:** put an opaque background (e.g. `Color(.systemBackground)`) under `BackgroundView` in `LockView`.
 
 ## 2. Receipt totals are skipped when the line contains "Hrvatska"
+**Fixed in iOS `6f46e7b`** (`containsWord`).
 `models/ReceiptParser.swift`, `findTotal`
 
 Keywords and VAT exclusions are matched as substrings, and `"vat"` is an exclusion, so a total line
@@ -22,6 +25,7 @@ containing "ptu", "pdv" etc.
 as word starts ("porez" still matches "poreza").
 
 ## 3. The unlock prompt can come back after every cancel
+**Fixed in iOS `6f46e7b`** (`shouldPromptOnActive`).
 `ContentView.swift`
 
 `unlock()` runs whenever the scene becomes `.active` while locked. Dismissing Face ID/the passcode
@@ -29,16 +33,19 @@ sheet makes the scene inactive and then active again, so the prompt reappears st
 **Fix:** prompt once per return from the background, and otherwise only when "Unlock" is tapped.
 
 ## 4. Share extension unavailable on iOS 26
+**Fixed in iOS `6f46e7b`.**
 `budget tracker.xcodeproj`: the share extension's deployment target is **iOS 27.0** while the app's is
 **26.5**, so "Share to Ladger" doesn't appear on iOS 26 devices.
 **Fix:** set the extension's deployment target to 26.5.
 
 ## 5. Share extension version doesn't match the app
+**Fixed in iOS `6f46e7b`** (both 0.1.0).
 The extension's `MARKETING_VERSION` is **1.0**, the app's **0.1**. App Store Connect requires an
 extension's version to match its containing app (warning ITMS-90473, rejection in some cases).
 **Fix:** use the same version for both targets.
 
 ## 6. The scanned receipt's date is never used
+**Fixed in iOS `6f46e7b`**, which also reads the receipt's time and shows the date picker when adding; Android follows.
 `views/AddTransactionView.swift`, `parseText`
 
 `ReceiptParser` finds the date but `parseText` doesn't set `draft.date`, and add mode has no date
@@ -59,7 +66,8 @@ matches names ignoring case, so an import may attach transactions to either one.
 
 ## 9. Text
 - `unlock_reason` (English): "Unlock app to see the **blance** and manipulate transactions" — typo.
-- `reminder_title` is "Budget Tracker" in all languages while the app is called Ladger. Intended?
+- `reminder_title` was "Budget Tracker" while the app is called Ladger. Since `6f46e7b` it is "Ledger", matching the
+  iOS app's new display name; Android followed and is now called Ledger too.
 
 ## Optional: receipt OCR that reads O as zero
 On a monospace receipt font, Android's OCR read "UKUPNO" as "UKUPN0". The Android parser now treats

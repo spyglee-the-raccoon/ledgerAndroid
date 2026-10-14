@@ -26,6 +26,7 @@ import work.spyglee.ladger.ui.settings.SourcesScreen
 import work.spyglee.ladger.ui.sources.SourcesOverviewScreen
 import work.spyglee.ladger.ui.stats.IncomeExpenseScreen
 import work.spyglee.ladger.ui.stats.SavingsScreen
+import work.spyglee.ladger.ui.stats.TopCategoriesScreen
 import work.spyglee.ladger.ui.transactions.TransactionEditorScreen
 import work.spyglee.ladger.ui.transactions.TransactionFilter
 import work.spyglee.ladger.ui.transactions.TransactionListScreen
@@ -39,6 +40,7 @@ private object Routes {
     const val COLLECTIONS = "collections"
     const val INCOME_EXPENSE = "stats/income_expense"
     const val SAVINGS = "stats/savings"
+    const val TOP_CATEGORIES = "stats/top_categories"
     const val TRANSACTION_EDITOR = "transaction?id={id}&kind={kind}&receipt={receipt}"
     const val TRANSACTION_LIST = "transactions/{filter}?sourceId={sourceId}"
     const val CATEGORY_EDITOR = "category?id={id}"
@@ -155,6 +157,7 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
                 onOpenCollections = { navController.navigate(Routes.COLLECTIONS) },
                 onOpenIncomeExpense = { navController.navigate(Routes.INCOME_EXPENSE) },
                 onOpenSavings = { navController.navigate(Routes.SAVINGS) },
+                onOpenTopCategories = { navController.navigate(Routes.TOP_CATEGORIES) },
             )
         }
         readableComposable(Routes.INCOME_EXPENSE) {
@@ -162,6 +165,9 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
         }
         readableComposable(Routes.SAVINGS) {
             SavingsScreen(onBack = back, onOpenTransaction = openTransaction, onOpenCollection = openCollection)
+        }
+        readableComposable(Routes.TOP_CATEGORIES) {
+            TopCategoriesScreen(onBack = back)
         }
         readableComposable(Routes.CATEGORIES) {
             CategoriesScreen(

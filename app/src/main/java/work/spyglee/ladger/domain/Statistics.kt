@@ -12,6 +12,11 @@ data class CategorySlice(val category: Category?, val amount: BigDecimal)
 
 data class IncomeExpenseMonth(val month: YearMonth, val incomes: BigDecimal, val expenses: BigDecimal)
 
+/** Spending per month in each of the [TopCategories]; [amounts] are in the order of its categories. */
+data class TopCategoriesMonth(val month: YearMonth, val amounts: List<BigDecimal>)
+
+data class TopCategories(val categories: List<Category>, val months: List<TopCategoriesMonth>)
+
 data class SavingsMonth(val month: YearMonth, val startBalance: BigDecimal, val endBalance: BigDecimal) {
     val difference: BigDecimal get() = endBalance - startBalance
     val base: BigDecimal get() = startBalance.min(endBalance)
@@ -56,6 +61,34 @@ object Statistics {
         return monthsBetween(incomes.keys + expenses.keys).map { month ->
             IncomeExpenseMonth(month, incomes[month] ?: BigDecimal.ZERO, expenses[month] ?: BigDecimal.ZERO)
         }
+    }
+
+    /**
+     * The [count] categories with the biggest all-time spending, biggest first, and how much went to
+     * each of them per month, from the first to the last month with such spending, gaps filled with
+     * zeros. Expenses without a known category are left out, as are incomes and transfers.
+     */
+    fun topCategories(transactions: List<Transaction>, categories: List<Category>, zone: ZoneId, count: Int = 3): TopCategories {
+        val expenses = transactions.filter { it.kind == TransactionKind.EXPENSE }
+        val totals = mutableMapOf<Long, BigDecimal>()
+        for (expense in expenses) {
+            expense.categoryId?.let { totals.merge(it, expense.amount, BigDecimal::add) }
+        }
+        val top = categories
+            .filter { it.id in totals }
+            .sortedByDescending { totals.getValue(it.id) }
+            .take(count)
+        val topIds = top.mapTo(HashSet()) { it.id }
+
+        val byMonth = mutableMapOf<YearMonth, MutableMap<Long, BigDecimal>>()
+        for (expense in expenses) {
+            val categoryId = expense.categoryId?.takeIf { it in topIds } ?: continue
+            byMonth.getOrPut(expense.date.yearMonth(zone)) { mutableMapOf() }.merge(categoryId, expense.amount, BigDecimal::add)
+        }
+        val months = monthsBetween(byMonth.keys).map { month ->
+            TopCategoriesMonth(month, top.map { byMonth[month]?.get(it.id) ?: BigDecimal.ZERO })
+        }
+        return TopCategories(top, months)
     }
 
     /**

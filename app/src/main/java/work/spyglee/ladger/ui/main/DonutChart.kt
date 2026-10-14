@@ -61,11 +61,11 @@ private const val UNCATEGORIZED_KEY = -1L
 private val CategorySlice.key: Long get() = category?.id ?: UNCATEGORIZED_KEY
 
 /**
- * This month's expenses by category as a ring. Tapping a slice selects it and shows its category
- * and amount in the middle; tapping it again, or outside the ring, shows the month balance.
+ * A month's expenses by category as a ring. Tapping a slice selects it and shows its category
+ * and amount in the middle; tapping it again, or outside the ring, shows the month balance under [title].
  */
 @Composable
-fun DonutChart(slices: List<CategorySlice>, monthBalance: BigDecimal, modifier: Modifier = Modifier) {
+fun DonutChart(slices: List<CategorySlice>, monthBalance: BigDecimal, title: String, modifier: Modifier = Modifier) {
     var storedKey by rememberSaveable { mutableStateOf<Long?>(null) }
     // A selected category can disappear (e.g. its last expense was deleted); then nothing is selected.
     val selected = slices.firstOrNull { it.key == storedKey }
@@ -130,7 +130,7 @@ fun DonutChart(slices: List<CategorySlice>, monthBalance: BigDecimal, modifier: 
             } else {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        stringResource(R.string.this_month_balance).uppercase(),
+                        title.uppercase(),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,

@@ -157,10 +157,7 @@ fun TransactionEditorScreen(transactionId: Long?, initialKind: TransactionKind, 
                 Modifier.fillMaxSize().padding(padding).imePadding().verticalScroll(rememberScrollState()).padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                // As on iOS, the date can only be changed when editing; new transactions are dated now.
-                if (viewModel.isEditing) {
-                    DateTimeField(draft.date, viewModel::setDate)
-                }
+                DateTimeField(draft.date, viewModel::setDate)
                 if (isParsing) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                         CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)

@@ -19,4 +19,6 @@
     <string name="close">Закрити</string>
     <string name="camera_denied">Доступ до камери для цього застосунку вимкнено. Увімкніть його в налаштуваннях системи, щоб сканувати чеки.</string>
     <string name="zoom_level">Масштаб %1$s</string>
+    <string name="previous_month">Попередній місяць</string>
+    <string name="next_month">Наступний місяць</string>
 </resources>

@@ -230,10 +230,10 @@ fun TransactionEditorScreen(transactionId: Long?, initialKind: TransactionKind, 
 
 data class PickerOption(val id: Long, val name: String, val icon: ImageVector, val color: Color)
 
-/** A dropdown of sources or categories, each shown with its icon. */
+/** A dropdown of sources or categories, each shown with its icon. With [onClear], "None" comes first and clears the choice. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PickerField(label: String, options: List<PickerOption>, selectedId: Long?, onSelect: (Long) -> Unit) {
+fun PickerField(label: String, options: List<PickerOption>, selectedId: Long?, onSelect: (Long) -> Unit, onClear: (() -> Unit)? = null) {
     var expanded by remember { mutableStateOf(false) }
     val selected = options.firstOrNull { it.id == selectedId }
     ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
@@ -247,6 +247,15 @@ fun PickerField(label: String, options: List<PickerOption>, selectedId: Long?, o
             modifier = Modifier.fillMaxWidth().menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
         )
         ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            if (onClear != null) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.none)) },
+                    onClick = {
+                        onClear()
+                        expanded = false
+                    },
+                )
+            }
             options.forEach { option ->
                 DropdownMenuItem(
                     text = { Text(option.name) },

@@ -16,6 +16,8 @@ data class TransactionDraft(
     val categoryId: Long? = null,
     val note: String = "",
     val date: Instant = Instant.now(),
+    /** Kept when editing a transaction a plan recorded, so it stays linked to the plan. */
+    val plannedTransactionId: Long? = null,
 ) {
     /** Expenses need a source and category, incomes a destination and category, transfers both sources. */
     val isValid: Boolean
@@ -53,6 +55,7 @@ data class TransactionDraft(
         note = note,
         date = date,
         categoryId = categoryId.takeIf { kind != TransactionKind.TRANSFER },
+        plannedTransactionId = plannedTransactionId,
     )
 
     companion object {
@@ -64,6 +67,7 @@ data class TransactionDraft(
             categoryId = transaction.categoryId,
             note = transaction.note,
             date = transaction.date,
+            plannedTransactionId = transaction.plannedTransactionId,
         )
     }
 }

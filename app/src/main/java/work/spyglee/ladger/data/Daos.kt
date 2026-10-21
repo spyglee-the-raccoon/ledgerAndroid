@@ -75,6 +75,25 @@ interface TransactionDao {
 }
 
 @Dao
+interface PlannedTransactionDao {
+    @Query("SELECT * FROM planned_transactions ORDER BY startDate, id")
+    fun observeAll(): Flow<List<PlannedTransaction>>
+
+    @Query("SELECT * FROM planned_transactions ORDER BY startDate, id")
+    suspend fun getAll(): List<PlannedTransaction>
+
+    @Query("SELECT * FROM planned_transactions WHERE NOT isPaused ORDER BY startDate, id")
+    suspend fun getActive(): List<PlannedTransaction>
+
+    @Query("SELECT * FROM planned_transactions WHERE id = :id")
+    suspend fun getById(id: Long): PlannedTransaction?
+
+    @Insert suspend fun insert(planned: PlannedTransaction): Long
+    @Update suspend fun update(planned: PlannedTransaction)
+    @Delete suspend fun delete(planned: PlannedTransaction)
+}
+
+@Dao
 interface MerchantCategoryDao {
     @Query("SELECT * FROM merchant_categories WHERE merchantKey = :key LIMIT 1")
     suspend fun findByKey(key: String): MerchantCategory?

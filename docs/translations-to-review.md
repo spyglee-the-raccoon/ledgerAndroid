@@ -1,6 +1,6 @@
 # Translations to review
 
-The 110 strings shared with iOS are generated from the iOS catalog (`tools/sync-ios-strings.ps1`) and
+The 135 strings shared with iOS are generated from the iOS catalog (`tools/sync-ios-strings.ps1`) and
 were translated by the iOS team. The strings below exist only on Android (iOS gets them from the
 system) and were translated during the port, without a native speaker. Please have them checked.
 
@@ -11,7 +11,6 @@ They live in `app/src/main/res/values*/strings_android.xml`. `%1$s` is replaced 
 |---|---|---|---|
 | `back` | Back | Natrag | Назад |
 | `cancel` | Cancel | Odustani | Скасувати |
-| `delete` | Delete | Izbriši | Видалити |
 | `remove_from_collection` | Remove from collection | Ukloni iz kolekcije | Вилучити з колекції |
 | `change_sign` | Change sign | Promijeni predznak | Змінити знак |
 | `change_date` | Change date | Promijeni datum | Змінити дату |
@@ -29,3 +28,6 @@ They live in `app/src/main/res/values*/strings_android.xml`. `%1$s` is replaced 
 | `zoom_level` | Zoom %1$s | Povećanje %1$s | Масштаб %1$s |
 | `previous_month` | Previous month | Prethodni mjesec | Попередній місяць |
 | `next_month` | Next month | Sljedeći mjesec | Наступний місяць |
+| `no_categories` | No categories | Nema kategorija | Немає категорій |
+| `increase` | Increase | Povećaj | Збільшити |
+| `decrease` | Decrease | Smanji | Зменшити |

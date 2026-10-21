@@ -20,6 +20,18 @@ enum class CategoryKind(val raw: String) {
     }
 }
 
+/** How often a planned transaction repeats; its interval multiplies the unit (every 2 weeks). */
+enum class RecurrenceFrequency(val raw: String) {
+    DAILY("daily"),
+    WEEKLY("weekly"),
+    MONTHLY("monthly"),
+    YEARLY("yearly");
+
+    companion object {
+        fun fromRaw(raw: String): RecurrenceFrequency = entries.first { it.raw == raw }
+    }
+}
+
 /** The 14 colors a category or source can use. [PRIMARY] follows the theme's foreground color. */
 enum class CategoryColor(val raw: String) {
     PRIMARY("primary"),

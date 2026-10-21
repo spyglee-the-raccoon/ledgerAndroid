@@ -32,6 +32,7 @@ class CsvRepository(private val database: LadgerDatabase) {
             sources = database.sourceDao().getAll(),
             categories = database.categoryDao().getAll(),
             zone = ZoneId.systemDefault(),
+            plannedTransactions = database.plannedTransactionDao().getAll(),
         )
         return CsvExport(files, transactions.size)
     }

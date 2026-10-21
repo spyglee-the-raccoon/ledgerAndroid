@@ -7,6 +7,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import java.io.File
 import java.math.BigDecimal
+import java.time.Duration
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -17,6 +21,7 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import work.spyglee.ladger.domain.PlannedTransactionDraft
 import work.spyglee.ladger.domain.csv.CsvImportException
 import work.spyglee.ladger.domain.csv.CsvImporter
 
@@ -165,7 +170,76 @@ class LadgerDatabaseTest {
         val result = csv.import(listOf(CsvImporter.Input("expenses.csv", "date;amount;source;category\n01.10.2026;1;Cash;Food\n")))
         assertEquals(1, result.importedCount)
         val export = csv.export()
-        assertEquals(listOf("expenses.csv"), export.files.map { it.fileName })
+        assertEquals(listOf("expenses.csv", "sources.csv"), export.files.map { it.fileName })
         assertEquals(1, export.transactionCount)
+    }
+
+    @Test
+    fun plannedTransactionsRecordEachOccurrenceOnce() = runTest {
+        val alarm = RecordingAlarm()
+        val planned = PlannedTransactionRepository(db, alarm) { ZoneOffset.UTC }
+        val cash = db.sourceDao().insert(Source(name = "Cash"))
+        val food = db.categoryDao().insert(Category(name = "Food"))
+        // Whole milliseconds, as the database stores them.
+        val start = Instant.now().truncatedTo(ChronoUnit.MILLIS).minus(Duration.ofDays(20))
+        planned.save(
+            null,
+            PlannedTransactionDraft(
+                BigDecimal("5"), TransactionKind.EXPENSE, sourceId = cash, categoryId = food,
+                frequency = RecurrenceFrequency.WEEKLY, startDate = start,
+            ),
+        )
+
+        // Saving records what is already due: 20 days ago, 13 days ago and 6 days ago.
+        val plan = planned.observeAll().first().single()
+        assertEquals(3, plan.occurrencesGenerated)
+        assertEquals(3, db.transactionDao().getRecent(10).count { it.plannedTransactionId == plan.id })
+        assertEquals(start.plus(Duration.ofDays(21)), alarm.scheduledAt)
+        assertTrue(planned.recordDue().isEmpty())
+
+        // Nothing is recorded while paused.
+        planned.setPaused(plan.id, true)
+        assertNull(alarm.scheduledAt)
+        assertTrue(planned.recordDue(Instant.now().plus(Duration.ofDays(8))).isEmpty())
+        planned.setPaused(plan.id, false)
+        assertEquals(3, db.transactionDao().count())
+
+        // Deleting the plan keeps what it recorded.
+        planned.delete(plan.id)
+        assertNull(alarm.scheduledAt)
+        val recorded = db.transactionDao().getRecent(10)
+        assertEquals(3, recorded.size)
+        assertTrue(recorded.all { it.plannedTransactionId == null && it.categoryId == food })
+    }
+
+    @Test
+    fun editingAPlanKeepsTheOccurrencesAlreadyRecorded() = runTest {
+        val planned = PlannedTransactionRepository(db, RecordingAlarm()) { ZoneOffset.UTC }
+        val bank = db.sourceDao().insert(Source(name = "Bank"))
+        val salary = db.categoryDao().insert(Category(name = "Salary", kind = CategoryKind.INCOME))
+        val draft = PlannedTransactionDraft(
+            BigDecimal("2000"), TransactionKind.INCOME, destinationId = bank, categoryId = salary,
+            startDate = Instant.now().minus(Duration.ofDays(1)),
+        )
+        planned.save(null, draft)
+        val id = planned.observeAll().first().single().id
+
+        planned.save(id, draft.copy(amount = BigDecimal("2100"), note = "Raise"))
+        val plan = planned.get(id)!!
+        assertEquals(1, plan.occurrencesGenerated)
+        assertEquals("Raise", plan.note)
+        assertEquals(1, db.transactionDao().count())
+    }
+
+    private class RecordingAlarm : PlannedTransactionAlarm {
+        var scheduledAt: Instant? = null
+
+        override fun schedule(at: Instant) {
+            scheduledAt = at
+        }
+
+        override fun cancel() {
+            scheduledAt = null
+        }
     }
 }

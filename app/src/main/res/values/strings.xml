@@ -5,6 +5,7 @@
     <string name="add">Add</string>
     <string name="add_category">Add category</string>
     <string name="add_collection">Add collection</string>
+    <string name="add_planned_transaction">Add planned transaction</string>
     <string name="add_source">Add source</string>
     <string name="add_to_collection">Add to collection</string>
     <string name="add_transaction">Add transaction</string>
@@ -21,14 +22,35 @@
     <string name="collections">Collections</string>
     <string name="color">Color</string>
     <string name="confirm_password">Confirm password</string>
+    <string name="daily">Daily</string>
     <string name="date">Date</string>
+    <string name="delete">Delete</string>
     <string name="destination">Destination</string>
     <string name="edit_category">Edit category</string>
     <string name="edit_collection">Edit collection</string>
+    <string name="edit_planned_transaction">Edit planned transaction</string>
     <string name="edit_source">Edit source</string>
     <string name="edit_transaction">Edit transaction</string>
     <string name="email">Email</string>
+    <string name="end_date">Ends</string>
+    <string name="ended">Ended</string>
     <string name="error">Error</string>
+    <plurals name="every_n_days">
+        <item quantity="one">Every %1$d day</item>
+        <item quantity="other">Every %1$d days</item>
+    </plurals>
+    <plurals name="every_n_months">
+        <item quantity="one">Every %1$d month</item>
+        <item quantity="other">Every %1$d months</item>
+    </plurals>
+    <plurals name="every_n_weeks">
+        <item quantity="one">Every %1$d week</item>
+        <item quantity="other">Every %1$d weeks</item>
+    </plurals>
+    <plurals name="every_n_years">
+        <item quantity="one">Every %1$d year</item>
+        <item quantity="other">Every %1$d years</item>
+    </plurals>
     <string name="expense">Expense</string>
     <string name="expense_categories">Expense categories</string>
     <string name="expenses">Expenses</string>
@@ -40,6 +62,8 @@
         <item quantity="one">Exported %1$d transaction.</item>
         <item quantity="other">Exported %1$d transactions.</item>
     </plurals>
+    <string name="frequency">Frequency</string>
+    <string name="has_end_date">End date</string>
     <string name="icon">Icon</string>
     <string name="import_csv">Import from CSV</string>
     <string name="import_error_unknown_format">“%1$s” isn’t a recognized incomes, expenses, or transfers file. Check that the header row matches the export format.</string>
@@ -59,21 +83,31 @@
     <string name="lock_the_app">Require biometrics</string>
     <string name="log_in">Log in</string>
     <string name="month">Month</string>
+    <string name="monthly">Monthly</string>
     <string name="name">Name</string>
     <string name="new_category">New category</string>
     <string name="no_collections">No collections</string>
+    <string name="no_planned_transactions">No planned transactions</string>
     <string name="no_source">No source</string>
     <string name="no_transactions">No Transactions</string>
+    <string name="none">None</string>
     <string name="note">Note</string>
     <string name="ok">OK</string>
     <string name="parsing">On it…</string>
     <string name="password">Password</string>
+    <string name="pause">Pause</string>
+    <string name="paused">Paused</string>
+    <string name="planned_transaction_performed_body">%1$s: %2$s has been recorded.</string>
+    <string name="planned_transaction_performed_title">Planned transaction performed</string>
+    <string name="planned_transactions">Planned transactions</string>
     <string name="remind_me">Remind to enter transactions</string>
     <string name="reminder_body">Don\'t forget to log today\'s expenses.</string>
     <string name="reminder_title">Ledger</string>
+    <string name="resume">Resume</string>
     <string name="save">Save</string>
     <string name="savings">Savings</string>
     <string name="scan_your_receipt">Scan your receipt</string>
+    <string name="schedule">Schedule</string>
     <string name="search_symbols">Search symbols</string>
     <string name="search_transactions">Search transactions</string>
     <string name="seed_bank_card">Bank card</string>
@@ -99,6 +133,7 @@
     <string name="source_exists">A source with this name already exists</string>
     <string name="source_name">Source name</string>
     <string name="sources">Sources</string>
+    <string name="start_date">Starts</string>
     <string name="statistics">Statistics</string>
     <string name="this_month_balance">This month balance</string>
     <string name="today">Today</string>
@@ -114,5 +149,7 @@
     <string name="uncategorized">Uncategorized</string>
     <string name="unlock">Unlock</string>
     <string name="unlock_reason">Unlock app to see the blance and manipulate transactions</string>
+    <string name="weekly">Weekly</string>
+    <string name="yearly">Yearly</string>
     <string name="yesterday">Yesterday</string>
 </resources>

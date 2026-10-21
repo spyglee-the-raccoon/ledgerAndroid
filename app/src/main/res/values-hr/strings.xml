@@ -4,6 +4,7 @@
     <string name="add">Dodaj</string>
     <string name="add_category">Dodaj kategoriju</string>
     <string name="add_collection">Dodaj kolekciju</string>
+    <string name="add_planned_transaction">Dodaj planiranu transakciju</string>
     <string name="add_source">Dodaj izvor</string>
     <string name="add_to_collection">Dodaj u kolekciju</string>
     <string name="add_transaction">Dodaj transakciju</string>
@@ -20,14 +21,43 @@
     <string name="collections">Kolekcije</string>
     <string name="color">Boja</string>
     <string name="confirm_password">Potvrdi lozinku</string>
+    <string name="daily">Dnevno</string>
     <string name="date">Datum</string>
+    <string name="delete">Obriši</string>
     <string name="destination">Odredište</string>
     <string name="edit_category">Uredi kategoriju</string>
     <string name="edit_collection">Uredi kolekciju</string>
+    <string name="edit_planned_transaction">Uredi planiranu transakciju</string>
     <string name="edit_source">Uredi izvor</string>
     <string name="edit_transaction">Uredi transakciju</string>
     <string name="email">E-mail</string>
+    <string name="end_date">Završetak</string>
+    <string name="ended">Završeno</string>
     <string name="error">Pogreška</string>
+    <plurals name="every_n_days">
+        <item quantity="zero">Svakih %1$d dana</item>
+        <item quantity="one">Svakih %1$d dan</item>
+        <item quantity="few">Svaka %1$d dana</item>
+        <item quantity="other">Svakih %1$d dana</item>
+    </plurals>
+    <plurals name="every_n_months">
+        <item quantity="zero">Svakih %1$d mjeseci</item>
+        <item quantity="one">Svakih %1$d mjesec</item>
+        <item quantity="few">Svaka %1$d mjeseca</item>
+        <item quantity="other">Svakih %1$d mjeseci</item>
+    </plurals>
+    <plurals name="every_n_weeks">
+        <item quantity="zero">Svakih %1$d tjedana</item>
+        <item quantity="one">Svakih %1$d tjedan</item>
+        <item quantity="few">Svaka %1$d tjedna</item>
+        <item quantity="other">Svakih %1$d tjedana</item>
+    </plurals>
+    <plurals name="every_n_years">
+        <item quantity="zero">Svakih %1$d godina</item>
+        <item quantity="one">Svakih %1$d godinu</item>
+        <item quantity="few">Svake %1$d godine</item>
+        <item quantity="other">Svakih %1$d godina</item>
+    </plurals>
     <string name="expense">Rashod</string>
     <string name="expense_categories">Kategorije rashoda</string>
     <string name="expenses">Rashodi</string>
@@ -40,6 +70,8 @@
         <item quantity="few">Izvezene su %1$d transakcije.</item>
         <item quantity="other">Izvezeno je %1$d transakcija.</item>
     </plurals>
+    <string name="frequency">Učestalost</string>
+    <string name="has_end_date">Datum završetka</string>
     <string name="icon">Ikona</string>
     <string name="import_csv">Uvezi iz CSV-a</string>
     <string name="import_error_unknown_format">„%1$s“ nije prepoznata datoteka prihoda, troškova ili prijenosa. Provjerite odgovara li redak zaglavlja formatu izvoza.</string>
@@ -59,21 +91,31 @@
     <string name="lock_the_app">Zahtijevaj biometrijsku provjeru</string>
     <string name="log_in">Prijavi se</string>
     <string name="month">Mjesec</string>
+    <string name="monthly">Mjesečno</string>
     <string name="name">Ime</string>
     <string name="new_category">Nova kategorija</string>
     <string name="no_collections">Nema kolekcija</string>
+    <string name="no_planned_transactions">Nema planiranih transakcija</string>
     <string name="no_source">Bez izvora</string>
     <string name="no_transactions">Nema transakcija</string>
+    <string name="none">Ništa</string>
     <string name="note">Bilješka</string>
     <string name="ok">OK</string>
     <string name="parsing">Samo malo…</string>
     <string name="password">Lozinka</string>
+    <string name="pause">Pauziraj</string>
+    <string name="paused">Pauzirano</string>
+    <string name="planned_transaction_performed_body">%1$s: %2$s je zabilježeno.</string>
+    <string name="planned_transaction_performed_title">Planirana transakcija izvršena</string>
+    <string name="planned_transactions">Planirane transakcije</string>
     <string name="remind_me">Podsjeti na unos transakcija</string>
     <string name="reminder_body">Ne zaboravi zabilježiti današnje troškove.</string>
     <string name="reminder_title">Praćenje budžeta</string>
+    <string name="resume">Nastavi</string>
     <string name="save">Spremi</string>
     <string name="savings">Ušteđevina</string>
     <string name="scan_your_receipt">Skeniraj račun</string>
+    <string name="schedule">Raspored</string>
     <string name="search_symbols">Pretraži simbole</string>
     <string name="search_transactions">Pretraži transakcije</string>
     <string name="seed_bank_card">Bankovna kartica</string>
@@ -99,6 +141,7 @@
     <string name="source_exists">Izvor s tim nazivom već postoji</string>
     <string name="source_name">Naziv izvora</string>
     <string name="sources">Izvori</string>
+    <string name="start_date">Početak</string>
     <string name="statistics">Statistika</string>
     <string name="this_month_balance">Stanje ovog mjeseca</string>
     <string name="today">Danas</string>
@@ -114,5 +157,7 @@
     <string name="uncategorized">Bez kategorije</string>
     <string name="unlock">Otključaj</string>
     <string name="unlock_reason">Otključajte aplikaciju za prikaz stanja i upravljanje transakcijama</string>
+    <string name="weekly">Tjedno</string>
+    <string name="yearly">Godišnje</string>
     <string name="yesterday">Jučer</string>
 </resources>

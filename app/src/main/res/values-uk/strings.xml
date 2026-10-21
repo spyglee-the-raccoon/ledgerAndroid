@@ -4,6 +4,7 @@
     <string name="add">Додати</string>
     <string name="add_category">Додати категорію</string>
     <string name="add_collection">Додати колекцію</string>
+    <string name="add_planned_transaction">Додати заплановану транзакцію</string>
     <string name="add_source">Додати джерело</string>
     <string name="add_to_collection">Додати до колекції</string>
     <string name="add_transaction">Додати транзакцію</string>
@@ -20,14 +21,47 @@
     <string name="collections">Колекції</string>
     <string name="color">Колір</string>
     <string name="confirm_password">Підтвердіть пароль</string>
+    <string name="daily">Щодня</string>
     <string name="date">Дата</string>
+    <string name="delete">Видалити</string>
     <string name="destination">На</string>
     <string name="edit_category">Редагувати категорію</string>
     <string name="edit_collection">Редагувати колекцію</string>
+    <string name="edit_planned_transaction">Редагувати заплановану транзакцію</string>
     <string name="edit_source">Редагувати джерело</string>
     <string name="edit_transaction">Редагувати транзакцію</string>
     <string name="email">Email</string>
+    <string name="end_date">Завершення</string>
+    <string name="ended">Завершено</string>
     <string name="error">Помилка</string>
+    <plurals name="every_n_days">
+        <item quantity="zero">Кожні %1$d днів</item>
+        <item quantity="one">Кожні %1$d день</item>
+        <item quantity="few">Кожні %1$d дні</item>
+        <item quantity="many">Кожні %1$d днів</item>
+        <item quantity="other">Кожні %1$d дня</item>
+    </plurals>
+    <plurals name="every_n_months">
+        <item quantity="zero">Кожні %1$d місяців</item>
+        <item quantity="one">Кожні %1$d місяць</item>
+        <item quantity="few">Кожні %1$d місяці</item>
+        <item quantity="many">Кожні %1$d місяців</item>
+        <item quantity="other">Кожні %1$d місяця</item>
+    </plurals>
+    <plurals name="every_n_weeks">
+        <item quantity="zero">Кожні %1$d тижнів</item>
+        <item quantity="one">Кожні %1$d тиждень</item>
+        <item quantity="few">Кожні %1$d тижні</item>
+        <item quantity="many">Кожні %1$d тижнів</item>
+        <item quantity="other">Кожні %1$d тижня</item>
+    </plurals>
+    <plurals name="every_n_years">
+        <item quantity="zero">Кожні %1$d років</item>
+        <item quantity="one">Кожні %1$d рік</item>
+        <item quantity="few">Кожні %1$d роки</item>
+        <item quantity="many">Кожні %1$d років</item>
+        <item quantity="other">Кожні %1$d року</item>
+    </plurals>
     <string name="expense">Витрата</string>
     <string name="expense_categories">Категорія витрати</string>
     <string name="expenses">Витрати</string>
@@ -41,6 +75,8 @@
         <item quantity="many">Експортовано %1$d транзакцій.</item>
         <item quantity="other">Експортовано %1$d транзакції.</item>
     </plurals>
+    <string name="frequency">Частота</string>
+    <string name="has_end_date">Дата завершення</string>
     <string name="icon">Іконка</string>
     <string name="import_csv">Імпортувати з CSV</string>
     <string name="import_error_unknown_format">«%1$s» не є розпізнаним файлом доходів, витрат або переказів. Перевірте, чи рядок заголовків відповідає формату експорту.</string>
@@ -60,21 +96,31 @@
     <string name="lock_the_app">Запитувати біометрію</string>
     <string name="log_in">Увійти</string>
     <string name="month">Місяць</string>
+    <string name="monthly">Щомісяця</string>
     <string name="name">Імʼя</string>
     <string name="new_category">Нова категорія</string>
     <string name="no_collections">Немає колекцій</string>
+    <string name="no_planned_transactions">Немає запланованих транзакцій</string>
     <string name="no_source">Без джерела</string>
     <string name="no_transactions">Немає транзакцій</string>
+    <string name="none">Немає</string>
     <string name="note">Примітка</string>
     <string name="ok">OK</string>
     <string name="parsing">Розшифровка…</string>
     <string name="password">Пароль</string>
+    <string name="pause">Призупинити</string>
+    <string name="paused">Призупинено</string>
+    <string name="planned_transaction_performed_body">%1$s: %2$s записано.</string>
+    <string name="planned_transaction_performed_title">Заплановану транзакцію виконано</string>
+    <string name="planned_transactions">Заплановані транзакції</string>
     <string name="remind_me">Нагадувати вносити транзакції</string>
     <string name="reminder_body">Не забудьте записати сьогоднішні витрати.</string>
     <string name="reminder_title">Трекер бюджету</string>
+    <string name="resume">Відновити</string>
     <string name="save">Зберегти</string>
     <string name="savings">Заощадження</string>
     <string name="scan_your_receipt">Відскануй чек</string>
+    <string name="schedule">Розклад</string>
     <string name="search_symbols">Пошук іконки</string>
     <string name="search_transactions">Пошук транзакцій</string>
     <string name="seed_bank_card">Банківська картка</string>
@@ -100,6 +146,7 @@
     <string name="source_exists">Джерело з такою назвою вже існує</string>
     <string name="source_name">Імʼя джерела</string>
     <string name="sources">Джерела</string>
+    <string name="start_date">Початок</string>
     <string name="statistics">Статистика</string>
     <string name="this_month_balance">Баланс на цей місяць</string>
     <string name="today">Сьогодні</string>
@@ -115,5 +162,7 @@
     <string name="uncategorized">Без категорії</string>
     <string name="unlock">Розблокувати</string>
     <string name="unlock_reason">Розблокуйте програму, щоб переглянути баланс і керувати транзакціями</string>
+    <string name="weekly">Щотижня</string>
+    <string name="yearly">Щороку</string>
     <string name="yesterday">Вчора</string>
 </resources>

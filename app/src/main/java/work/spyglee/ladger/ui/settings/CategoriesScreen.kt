@@ -1,6 +1,7 @@
 package work.spyglee.ladger.ui.settings
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
@@ -14,12 +15,15 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -71,6 +75,12 @@ fun CategoriesScreen(onBack: () -> Unit, onAdd: () -> Unit, onEdit: (Long) -> Un
             }
         },
     ) { padding ->
+        if (categories.isEmpty()) {
+            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+                Text(stringResource(R.string.no_categories), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            return@Scaffold
+        }
         LazyColumn(Modifier.fillMaxSize().padding(padding)) {
             for ((kind, title) in listOf(CategoryKind.EXPENSE to R.string.expense_categories, CategoryKind.INCOME to R.string.income_categories)) {
                 item(key = "header-${kind.raw}") { SectionHeader(stringResource(title)) }

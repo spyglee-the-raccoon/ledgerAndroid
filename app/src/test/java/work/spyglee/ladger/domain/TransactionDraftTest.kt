@@ -58,6 +58,12 @@ class TransactionDraftTest {
     }
 
     @Test
+    fun `editing a recorded transaction keeps its plan`() {
+        val recorded = TransactionDraft(ten, TransactionKind.EXPENSE, sourceId = 1, categoryId = 1, plannedTransactionId = 3).toTransaction(id = 9)
+        assertEquals(3L, TransactionDraft.from(recorded).copy(note = "edited").toTransaction(id = 9).plannedTransactionId)
+    }
+
+    @Test
     fun `amount input accepts comma or dot and rejects junk`() {
         assertAmount("12.49", AmountInput.parse("12,49"))
         assertAmount("12.49", AmountInput.parse(" 12.49 "))

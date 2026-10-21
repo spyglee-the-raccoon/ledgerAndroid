@@ -16,10 +16,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import java.time.ZoneId
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -36,8 +38,10 @@ import work.spyglee.ladger.domain.DayGrouping
 import work.spyglee.ladger.domain.DaySection
 import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.LadgerTopBar
+import work.spyglee.ladger.ui.components.SearchField
 import work.spyglee.ladger.ui.components.rememberAddToCollection
 import work.spyglee.ladger.ui.components.transactionSections
+import work.spyglee.ladger.ui.sources.matches
 
 /** Which transactions a list shows. */
 sealed interface TransactionFilter {
@@ -48,6 +52,10 @@ sealed interface TransactionFilter {
     data class Source(val sourceId: Long) : TransactionFilter
 }
 
+/** Expense and income lists have a search field, as on iOS. */
+val TransactionFilter.isSearchable: Boolean
+    get() = this == TransactionFilter.Expenses || this == TransactionFilter.Incomes
+
 data class TransactionListState(
     val sections: List<DaySection> = emptyList(),
     val categories: Map<Long, Category> = emptyMap(),
@@ -56,6 +64,7 @@ data class TransactionListState(
 
 class TransactionListViewModel(private val database: LadgerDatabase, val filter: TransactionFilter) : ViewModel() {
     private val dao = database.transactionDao()
+    val query = MutableStateFlow("")
 
     private val transactions = when (filter) {
         TransactionFilter.Expenses -> dao.observeByKind(TransactionKind.EXPENSE)
@@ -68,10 +77,12 @@ class TransactionListViewModel(private val database: LadgerDatabase, val filter:
         transactions,
         database.categoryDao().observeAll(),
         database.sourceDao().observeAll(),
-    ) { items, categories, sources ->
+        query,
+    ) { items, categories, sources, query ->
+        val byId = categories.associateBy { it.id }
         TransactionListState(
-            sections = DayGrouping.groupByDay(items, ZoneId.systemDefault()),
-            categories = categories.associateBy { it.id },
+            sections = DayGrouping.groupByDay(items.filter { it.matches(query, byId) }, ZoneId.systemDefault()),
+            categories = byId,
             sourceName = (filter as? TransactionFilter.Source)?.let { f -> sources.firstOrNull { it.id == f.sourceId }?.name },
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TransactionListState())
@@ -91,6 +102,7 @@ fun TransactionListScreen(
 ) {
     val viewModel = appViewModel { TransactionListViewModel(it.database, filter) }
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val query by viewModel.query.collectAsStateWithLifecycle()
     val addToCollection = rememberAddToCollection(onAdded = onOpenCollection)
 
     // Expense and income lists can add and delete; per-source lists only show, as on iOS.
@@ -117,12 +129,19 @@ fun TransactionListScreen(
             }
         },
     ) { padding ->
-        if (state.sections.isEmpty()) {
-            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Text(stringResource(R.string.no_transactions), color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-        } else {
-            LazyColumn(Modifier.fillMaxSize().padding(padding)) {
+        // The search field stays while nothing matches, so the search can be changed.
+        Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+            LazyColumn(Modifier.fillMaxSize()) {
+                if (filter.isSearchable) {
+                    item(key = "search") {
+                        SearchField(
+                            query,
+                            { viewModel.query.value = it },
+                            stringResource(R.string.search_transactions),
+                            Modifier.padding(horizontal = 16.dp),
+                        )
+                    }
+                }
                 transactionSections(
                     sections = state.sections,
                     categories = state.categories,
@@ -130,6 +149,9 @@ fun TransactionListScreen(
                     onSwipe = if (addKind != null) viewModel::delete else null,
                     onAddToCollection = addToCollection::start,
                 )
+            }
+            if (state.sections.isEmpty()) {
+                Text(stringResource(R.string.no_transactions), color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
     }

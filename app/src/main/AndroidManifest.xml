@@ -18,7 +18,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera.any" android:required="false" />
 
-    <!-- Daily reminder: the notification itself, and rescheduling it after a reboot. -->
+    <!--
+        Daily reminder and planned transactions: the notifications, and setting their alarms again
+        after a reboot.
+    -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
@@ -51,6 +54,9 @@
 
         <receiver
             android:name=".reminder.ReminderReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".reminder.PlannedTransactionReceiver"
             android:exported="false" />
         <receiver
             android:name=".reminder.ReminderRescheduleReceiver"

@@ -94,6 +94,12 @@ class MainActivity : FragmentActivity() {
         handleDebugIntent(intent)
     }
 
+    override fun onStart() {
+        super.onStart()
+        // Records planned transactions that fell due while the alarm couldn't, as iOS does when the app opens.
+        container.applicationScope.launch { container.plannedTransactions.recordDue() }
+    }
+
     override fun onResume() {
         super.onResume()
         promptToUnlockIfNeeded()

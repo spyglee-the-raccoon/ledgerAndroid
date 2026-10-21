@@ -21,6 +21,8 @@ import work.spyglee.ladger.ui.collections.CollectionEditorScreen
 import work.spyglee.ladger.ui.collections.CollectionsScreen
 import work.spyglee.ladger.ui.components.ReadableWidth
 import work.spyglee.ladger.ui.main.MainScreen
+import work.spyglee.ladger.ui.planned.PlannedTransactionEditorScreen
+import work.spyglee.ladger.ui.planned.PlannedTransactionsScreen
 import work.spyglee.ladger.ui.settings.CategoriesScreen
 import work.spyglee.ladger.ui.settings.CategoryEditorScreen
 import work.spyglee.ladger.ui.settings.SettingsScreen
@@ -41,6 +43,7 @@ private object Routes {
     const val SOURCES = "sources"
     const val SOURCES_OVERVIEW = "sources_overview"
     const val COLLECTIONS = "collections"
+    const val PLANNED_TRANSACTIONS = "planned_transactions"
     const val INCOME_EXPENSE = "stats/income_expense"
     const val SAVINGS = "stats/savings"
     const val TOP_CATEGORIES = "stats/top_categories"
@@ -50,6 +53,7 @@ private object Routes {
     const val SOURCE_EDITOR = "source?id={id}"
     const val COLLECTION = "collection/{id}"
     const val COLLECTION_EDITOR = "collection_editor?id={id}"
+    const val PLANNED_TRANSACTION_EDITOR = "planned_transaction?id={id}"
 
     fun transactionEditor(id: Long? = null, kind: TransactionKind = TransactionKind.EXPENSE, receipt: Uri? = null) =
         "transaction?id=${id ?: NO_ID}&kind=${kind.raw}" + (receipt?.let { "&receipt=${Uri.encode(it.toString())}" } ?: "")
@@ -65,6 +69,7 @@ private object Routes {
     fun sourceEditor(id: Long? = null) = "source?id=${id ?: NO_ID}"
     fun collection(id: Long) = "collection/$id"
     fun collectionEditor(id: Long? = null) = "collection_editor?id=${id ?: NO_ID}"
+    fun plannedTransactionEditor(id: Long? = null) = "planned_transaction?id=${id ?: NO_ID}"
 }
 
 private const val NO_ID = -1L
@@ -159,6 +164,7 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
                 onOpenCategories = { navController.navigate(Routes.CATEGORIES) },
                 onOpenSources = { navController.navigate(Routes.SOURCES) },
                 onOpenCollections = { navController.navigate(Routes.COLLECTIONS) },
+                onOpenPlannedTransactions = { navController.navigate(Routes.PLANNED_TRANSACTIONS) },
                 onOpenIncomeExpense = { navController.navigate(Routes.INCOME_EXPENSE) },
                 onOpenSavings = { navController.navigate(Routes.SAVINGS) },
                 onOpenTopCategories = { navController.navigate(Routes.TOP_CATEGORIES) },
@@ -212,6 +218,16 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
         }
         readableComposable(Routes.COLLECTION_EDITOR, arguments = listOf(optionalId)) { entry ->
             CollectionEditorScreen(collectionId = entry.optionalId(), onDone = back)
+        }
+        readableComposable(Routes.PLANNED_TRANSACTIONS) {
+            PlannedTransactionsScreen(
+                onBack = back,
+                onAdd = { navController.navigate(Routes.plannedTransactionEditor()) },
+                onEdit = { navController.navigate(Routes.plannedTransactionEditor(it)) },
+            )
+        }
+        readableComposable(Routes.PLANNED_TRANSACTION_EDITOR, arguments = listOf(optionalId)) { entry ->
+            PlannedTransactionEditorScreen(plannedId = entry.optionalId(), onDone = back)
         }
     }
 }

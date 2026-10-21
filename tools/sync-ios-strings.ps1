@@ -12,7 +12,7 @@
     %lld -> %1$d), and plural variations become <plurals>.
 
 .EXAMPLE
-    pwsh tools/sync-ios-strings.ps1 -XcStrings "D:\github projects\budgetTracker\budgetTracker\ledger\Localizable.xcstrings"
+    pwsh tools/sync-ios-strings.ps1 -XcStrings "D:\github projects\ledgerIos\ledger\Localizable.xcstrings"
 #>
 param(
     [Parameter(Mandatory)] [string] $XcStrings,

@@ -4,6 +4,7 @@ Found while porting the iOS app (commit `2b36197`) to Android, which is now feat
 important first. Android avoids or fixes each of these; file references are to the iOS repo.
 
 Checked again at iOS `6f46e7b`: issues 2–6 are fixed there; 1, 7 and 8 and the typo in 9 are still open.
+Checked again at iOS `f909b82`: no change to those; 10–13 are new, from planned transactions.
 
 ## 1. Dark mode: the lock screen probably lets balances show through
 `views/LockView.swift`, `components/BackgroundView.swift`, `ContentView.swift`
@@ -71,6 +72,37 @@ matches names ignoring case, so an import may attach transactions to either one.
 - The app icon (`AppIcon.appiconset/Ladger Logo.png`) still has "Ladger" written under the logo, while the app is
   now called Ledger. Android's launcher and Play icons are generated from it, so they say "Ladger" too until the
   iOS icon changes (then rerun `tools/make-icons.py`).
+
+## 10. "Planned transaction performed" arrives before anything is recorded
+`models/PlannedTransactionNotifier.swift`, `components/RecurranceEngine.swift`, `ContentView.swift`
+
+Each plan's next due date gets a notification saying "Netflix: €12.99 has been recorded", but the
+transaction is only created by `RecurrenceEngine.generateDue` when the app next becomes active. Until
+then the balances leave it out, however long the app stays closed.
+**Fix:** record in the background (e.g. a `BGAppRefreshTask`), or word the notification as "due" rather
+than "recorded". Android sets an alarm for the due time that records the transaction and then notifies.
+
+## 11. Exported sources and planned transactions can't be imported
+`models/CSVExporter.swift`, `models/CSVImporter.swift`
+
+The export now also writes `sources.csv` and `planned_transactions.csv`, but the importer only reads
+transaction files and rejects the whole import ("unknown format") if either is selected. Selecting every
+file in an export folder, the obvious way to restore a backup, imports nothing. Android does the same, to match.
+**Fix:** skip these files when importing, or import them (sources with initial value, icon and colour; plans).
+
+## 12. Changing a plan's start date can record an occurrence twice
+`views/AddPlannedTransactionView.swift`, `models/PlannedTransaction.swift`
+
+Editing keeps `occurrencesGenerated`, and occurrences are counted from the start date. If a monthly plan
+that has recorded 1 October is moved to start on 1 September, occurrence 1 is 1 October again and is
+recorded a second time, while 1 September never is. Moving the start later skips the new start date.
+Changing the frequency or interval shifts the next date the same way. Android does the same, to match.
+**Fix:** when the schedule changes, count only the new occurrences up to the last recorded one.
+
+## 13. `no_categories` has no text
+`Localizable.xcstrings`: the key was added without any localization, so an empty categories list shows
+"no_categories". Android has its own text for now (`strings_android.xml`, listed in
+translations-to-review.md); once iOS adds it, the Android build fails on the duplicate until that copy is removed.
 
 ## Optional: receipt OCR that reads O as zero
 On a monospace receipt font, Android's OCR read "UKUPNO" as "UKUPN0". The Android parser now treats

@@ -10,10 +10,12 @@ import work.spyglee.ladger.data.CsvRepository
 import work.spyglee.ladger.data.DefaultDataSeeder
 import work.spyglee.ladger.data.LadgerDatabase
 import work.spyglee.ladger.data.MerchantRepository
+import work.spyglee.ladger.data.PlannedTransactionRepository
 import work.spyglee.ladger.data.SettingsRepository
 import work.spyglee.ladger.data.settingsDataStore
 import work.spyglee.ladger.lock.AppLock
 import work.spyglee.ladger.reminder.DailyReminder
+import work.spyglee.ladger.reminder.PlannedTransactionNotifier
 import work.spyglee.ladger.scan.ReceiptScanner
 
 /** App-wide dependencies, created once in [LadgerApp]. */
@@ -27,6 +29,8 @@ class AppContainer(context: Context, val database: LadgerDatabase = LadgerDataba
     val csvDocuments = CsvDocuments(context.contentResolver)
     val seeder = DefaultDataSeeder(database, settings, context::getString)
     val reminder = DailyReminder(context)
+    val plannedNotifier = PlannedTransactionNotifier(context)
+    val plannedTransactions = PlannedTransactionRepository(database, plannedNotifier)
     val appLock = AppLock()
     val receipts = ReceiptScanner(context)
     val saveSound = SaveSound(context)

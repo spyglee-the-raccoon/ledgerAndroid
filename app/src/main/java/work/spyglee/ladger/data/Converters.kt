@@ -20,4 +20,7 @@ class Converters {
 
     @TypeConverter fun fromCategoryColor(value: CategoryColor): String = value.raw
     @TypeConverter fun toCategoryColor(value: String): CategoryColor = CategoryColor.fromRaw(value)
+
+    @TypeConverter fun fromRecurrenceFrequency(value: RecurrenceFrequency): String = value.raw
+    @TypeConverter fun toRecurrenceFrequency(value: String): RecurrenceFrequency = RecurrenceFrequency.fromRaw(value)
 }

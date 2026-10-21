@@ -59,6 +59,11 @@ fun headerDate(day: LocalDate): String {
 fun formatTime(instant: Instant, zone: ZoneId = ZoneId.systemDefault()): String =
     instant.atZone(zone).format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(currentLocale()))
 
+/** Day, month and year, e.g. "21 Oct 2026". */
+@Composable
+fun formatDate(instant: Instant, zone: ZoneId = ZoneId.systemDefault()): String =
+    instant.atZone(zone).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(currentLocale()))
+
 @Composable
 fun formatDateTime(instant: Instant, zone: ZoneId = ZoneId.systemDefault()): String =
     instant.atZone(zone).format(

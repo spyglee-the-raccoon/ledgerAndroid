@@ -3,7 +3,6 @@
 <resources>
     <string name="back">Назад</string>
     <string name="cancel">Скасувати</string>
-    <string name="delete">Видалити</string>
     <string name="remove_from_collection">Вилучити з колекції</string>
     <string name="change_sign">Змінити знак</string>
     <string name="change_date">Змінити дату</string>
@@ -21,4 +20,7 @@
     <string name="zoom_level">Масштаб %1$s</string>
     <string name="previous_month">Попередній місяць</string>
     <string name="next_month">Наступний місяць</string>
+    <string name="no_categories">Немає категорій</string>
+    <string name="increase">Збільшити</string>
+    <string name="decrease">Зменшити</string>
 </resources>

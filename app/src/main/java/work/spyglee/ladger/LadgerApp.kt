@@ -12,9 +12,10 @@ class LadgerApp : Application() {
         super.onCreate()
         container = AppContainer(this)
         container.applicationScope.launch { container.seeder.seedIfNeeded() }
-        // A force stop clears the reminder alarm; scheduling again replaces it if it still exists.
+        // A force stop clears the alarms; scheduling again replaces them if they still exist.
         container.applicationScope.launch {
             if (container.settings.isReminderOn.first()) container.reminder.schedule()
         }
+        container.applicationScope.launch { container.plannedTransactions.reschedule() }
     }
 }

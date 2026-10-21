@@ -24,6 +24,7 @@ import androidx.compose.material.icons.outlined.IosShare
 import androidx.compose.material.icons.outlined.MoveToInbox
 import androidx.compose.material.icons.outlined.NotificationsActive
 import androidx.compose.material.icons.outlined.SwapVert
+import androidx.compose.material.icons.outlined.Update
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -67,6 +68,7 @@ fun SettingsScreen(
     onOpenCategories: () -> Unit,
     onOpenSources: () -> Unit,
     onOpenCollections: () -> Unit,
+    onOpenPlannedTransactions: () -> Unit,
     onOpenIncomeExpense: () -> Unit,
     onOpenSavings: () -> Unit,
     onOpenTopCategories: () -> Unit,
@@ -122,6 +124,12 @@ fun SettingsScreen(
             SettingsLink(Icons.Outlined.GridView, CategoryColor.BLUE.toColor(), stringResource(R.string.categories), onOpenCategories)
             SettingsLink(Icons.Outlined.CreditCard, CategoryColor.GREEN.toColor(), stringResource(R.string.sources), onOpenSources)
             SettingsLink(Icons.Outlined.Folder, CategoryColor.CYAN.toColor(), stringResource(R.string.collections), onOpenCollections)
+            SettingsLink(
+                Icons.Outlined.Update,
+                CategoryColor.YELLOW.toColor(),
+                stringResource(R.string.planned_transactions),
+                onOpenPlannedTransactions,
+            )
             SettingsToggle(
                 Icons.Outlined.NotificationsActive,
                 CategoryColor.RED.toColor(),

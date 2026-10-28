@@ -48,13 +48,16 @@ The app is local-only and has **no INTERNET permission** (libraries that request
   is turned off (`allowBackup="false"`, data extraction rules exclude everything). This includes
   phone-to-phone transfer, so moving to a new phone means Settings → Export to CSV, then Import.
 - Receipt photos and PDFs are read on the device (ML Kit's bundled text recognizer, and Gemini Nano in
-  Android's AICore service where available) and are not stored.
+  Android's AICore service where available). Since iOS `46702e5` a photo taken with "Scan your receipt" is
+  kept with its transaction (a 1600 px JPEG in the app's private `files/receipts`, excluded from backup like
+  everything else), with the products read from it; nothing leaves the device, so it still isn't "collected".
+  Shared images and PDFs are only read, not stored.
 
 ## 5. Permissions (for review questions)
 | Permission | Why |
 |---|---|
 | `CAMERA` | Photographing receipts; requested when "Scan your receipt" is tapped. |
-| `POST_NOTIFICATIONS` | The optional daily reminder at 20:30; requested when it's turned on. |
+| `POST_NOTIFICATIONS` | The optional daily reminder at 20:30, "planned transaction performed" and "budget limit reached"; requested when the reminder is turned on or a plan or budget is saved. |
 | `RECEIVE_BOOT_COMPLETED` | Scheduling the reminder again after a restart. |
 | `USE_BIOMETRIC` | The optional app lock. |
 | `BIND_SERVICE` (AICore) | Talking to Gemini Nano on the device, if the phone has it. |

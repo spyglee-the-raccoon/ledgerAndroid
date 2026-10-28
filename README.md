@@ -18,6 +18,17 @@ Open in Android Studio, or:
 ./gradlew connectedDebugAndroidTest    # on a device or emulator: database, UI flows, real OCR
 ```
 
+With more than one device attached, pick one with `ANDROID_SERIAL` (e.g. `emulator-5554`):
+`connectedDebugAndroidTest` installs on every device and **uninstalls the app afterwards, deleting its data**.
+The planned transaction and budgeting flow tests need notifications allowed, which that uninstall resets. To
+keep the app's data, install and run the tests directly:
+
+```sh
+./gradlew installDebug installDebugAndroidTest
+adb shell pm grant work.spyglee.ladger android.permission.POST_NOTIFICATIONS
+adb shell am instrument -w work.spyglee.ladger.test/androidx.test.runner.AndroidJUnitRunner
+```
+
 Releasing, signing and the Play Data safety answers: [docs/RELEASE.md](docs/RELEASE.md).
 
 ## Layout

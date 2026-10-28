@@ -20,7 +20,6 @@
     <string name="zoom_level">Povećanje %1$s</string>
     <string name="previous_month">Prethodni mjesec</string>
     <string name="next_month">Sljedeći mjesec</string>
-    <string name="no_categories">Nema kategorija</string>
     <string name="increase">Povećaj</string>
     <string name="decrease">Smanji</string>
 </resources>

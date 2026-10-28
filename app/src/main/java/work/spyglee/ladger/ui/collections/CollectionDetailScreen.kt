@@ -41,6 +41,8 @@ import work.spyglee.ladger.domain.CategoryTotal
 import work.spyglee.ladger.domain.Collections
 import work.spyglee.ladger.domain.DayGrouping
 import work.spyglee.ladger.domain.DaySection
+import work.spyglee.ladger.domain.byTransaction
+import work.spyglee.ladger.domain.matches
 import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.CategoryIcon
 import work.spyglee.ladger.ui.components.LadgerTopBar
@@ -50,7 +52,6 @@ import work.spyglee.ladger.ui.components.SectionHeader
 import work.spyglee.ladger.ui.components.rememberAddToCollection
 import work.spyglee.ladger.ui.components.transactionSections
 import work.spyglee.ladger.ui.formatMoney
-import work.spyglee.ladger.ui.sources.matches
 import work.spyglee.ladger.ui.theme.iconFor
 import work.spyglee.ladger.ui.theme.toColor
 
@@ -70,8 +71,9 @@ class CollectionDetailViewModel(database: LadgerDatabase, private val repository
     val state: StateFlow<CollectionDetailState> = combine(
         database.collectionDao().observeWithTransactions(collectionId),
         database.categoryDao().observeAll(),
+        database.receiptItemDao().observeNames(),
         query,
-    ) { withTransactions, categories, query ->
+    ) { withTransactions, categories, itemNames, query ->
         val transactions = withTransactions?.transactions.orEmpty()
         val byId = categories.associateBy { it.id }
         CollectionDetailState(
@@ -79,7 +81,7 @@ class CollectionDetailViewModel(database: LadgerDatabase, private val repository
             collection = withTransactions?.collection,
             total = Collections.total(transactions),
             topCategories = Collections.topCategories(transactions, categories),
-            sections = DayGrouping.groupByDay(transactions.filter { it.matches(query, byId) }, ZoneId.systemDefault()),
+            sections = DayGrouping.groupByDay(transactions.filter { it.matches(query, byId, itemNames.byTransaction()) }, ZoneId.systemDefault()),
             categories = byId,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CollectionDetailState())

@@ -10,6 +10,8 @@ import com.google.mlkit.genai.prompt.generateContentRequest
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.withTimeoutOrNull
 import work.spyglee.ladger.domain.receipt.GeneratedReceipt
+import work.spyglee.ladger.domain.receipt.ParsedReceiptItem
+import work.spyglee.ladger.domain.receipt.ReceiptItems
 import work.spyglee.ladger.domain.receipt.ReceiptPrompt
 
 /**
@@ -76,9 +78,38 @@ class NanoReceiptParser {
         }
     }
 
+    /**
+     * The purchased products in [receiptText] (iOS `parseItems`), or an empty list when the model is
+     * unavailable, fails or takes too long. A separate request, so a long list can't crowd out the total.
+     */
+    suspend fun generateItems(receiptText: String): List<ParsedReceiptItem> {
+        val model = availableModel() ?: return emptyList()
+        return try {
+            val response = withTimeoutOrNull(ITEMS_TIMEOUT_MILLIS) {
+                model.generateContent(
+                    generateContentRequest(SystemInstruction(ReceiptItems.instructions), TextPart(ReceiptItems.prompt(receiptText))) {
+                        temperature = 0f
+                        topK = 1
+                        maxOutputTokens = ITEMS_MAX_OUTPUT_TOKENS
+                    }
+                )
+            }
+            ReceiptItems.parseResponse(response?.candidates?.firstOrNull()?.text)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.i(TAG, "Gemini Nano failed to list the items", e)
+            emptyList()
+        }
+    }
+
     private companion object {
         const val TAG = "NanoReceiptParser"
         const val TIMEOUT_MILLIS = 20_000L
         const val MAX_OUTPUT_TOKENS = 200
+
+        /** A long receipt takes a while: up to 80 lines of about 20 tokens; the Prompt API allows 4096. */
+        const val ITEMS_TIMEOUT_MILLIS = 60_000L
+        const val ITEMS_MAX_OUTPUT_TOKENS = 2_048
     }
 }

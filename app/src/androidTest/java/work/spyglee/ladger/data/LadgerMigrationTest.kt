@@ -18,8 +18,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 /**
- * Opens a version 1 database with the current app database, so Room runs the migration and then
- * checks the result against the current schema. Room's MigrationTestHelper isn't used: it needs a
+ * Opens an older version's database with the current app database, so Room runs the migrations and
+ * then checks the result against the current schema. Room's MigrationTestHelper isn't used: it needs a
  * newer kotlinx-serialization than the app's dependencies allow on the test classpath.
  */
 @RunWith(AndroidJUnit4::class)
@@ -32,8 +32,8 @@ class LadgerMigrationTest {
     }
 
     @Test
-    fun version2KeepsTransactionsAndCollections() = runTest {
-        createVersion1 { db ->
+    fun version1KeepsTransactionsAndCollections() = runTest {
+        createVersion(1) { db ->
             db.execSQL("INSERT INTO sources (id, name, systemImage, initValue, color, createdAt) VALUES (1, 'Cash', 'banknote', '50', 'green', 0)")
             db.execSQL("INSERT INTO categories (id, name, systemImage, color, kind) VALUES (2, 'Food', 'cart', 'orange', 'expense')")
             db.execSQL(
@@ -55,15 +55,51 @@ class LadgerMigrationTest {
             // Recreating the transactions table must not cascade into collection memberships.
             assertEquals(listOf(3L), database.collectionDao().observeWithTransactions(4).first()?.transactions?.map { it.id })
             assertTrue(database.plannedTransactionDao().getAll().isEmpty())
+            assertTrue(database.budgetDao().getAll().isEmpty())
         } finally {
             database.close()
         }
     }
 
-    /** Creates the tables of schema 1 exactly as Room exported them, then lets [fill] add rows. */
-    private fun createVersion1(fill: (SQLiteDatabase) -> Unit) {
+    @Test
+    fun version3KeepsPlannedTransactionsAndAddsBudgetsAndReceipts() = runTest {
+        createVersion(2) { db ->
+            db.execSQL("INSERT INTO categories (id, name, systemImage, color, kind) VALUES (2, 'Food', 'cart', 'orange', 'expense')")
+            db.execSQL(
+                "INSERT INTO planned_transactions (id, amount, kind, sourceId, destinationId, note, categoryId, frequency, `interval`, " +
+                    "startDate, endDate, occurrencesGenerated, isPaused) VALUES (5, '9.99', 'expense', NULL, NULL, 'Netflix', 2, 'monthly', 1, " +
+                    "1760000000000, NULL, 1, 0)"
+            )
+            db.execSQL(
+                "INSERT INTO transactions (id, amount, kind, sourceId, destinationId, note, date, categoryId, plannedTransactionId) " +
+                    "VALUES (3, '9.99', 'expense', NULL, NULL, 'Netflix', 1760000000000, 2, 5)"
+            )
+        }
+
+        val database = Room.databaseBuilder(context, LadgerDatabase::class.java, DB_NAME).build()
+        try {
+            assertEquals(5L, database.transactionDao().getById(3)?.plannedTransactionId)
+            assertEquals(1, database.plannedTransactionDao().getById(5)?.occurrencesGenerated)
+            assertTrue(database.budgetDao().getAll().isEmpty())
+            assertTrue(database.receiptItemDao().observeForTransaction(3).first().isEmpty())
+
+            // The new tables work, including the cascade from categories.
+            database.budgetDao().insert(Budget(monthlyLimit = BigDecimal("100"), categoryId = 2))
+            database.receiptItemDao().insertAll(
+                listOf(ReceiptItem(transactionId = 3, name = "NETFLIX", normalizedName = "netflix", unitPrice = BigDecimal("9.99"), totalPrice = BigDecimal("9.99")))
+            )
+            database.categoryDao().delete(database.categoryDao().getAll().single())
+            assertTrue(database.budgetDao().getAll().isEmpty())
+            assertEquals(1, database.receiptItemDao().observeForTransaction(3).first().size)
+        } finally {
+            database.close()
+        }
+    }
+
+    /** Creates the tables of schema [version] exactly as Room exported them, then lets [fill] add rows. */
+    private fun createVersion(version: Int, fill: (SQLiteDatabase) -> Unit) {
         val assets = InstrumentationRegistry.getInstrumentation().context.assets
-        val json = assets.open("${LadgerDatabase::class.java.canonicalName}/1.json").bufferedReader().use { it.readText() }
+        val json = assets.open("${LadgerDatabase::class.java.canonicalName}/$version.json").bufferedReader().use { it.readText() }
         val schema = JSONObject(json).getJSONObject("database")
         context.deleteDatabase(DB_NAME)
         SQLiteDatabase.openOrCreateDatabase(context.getDatabasePath(DB_NAME), null).use { db ->
@@ -78,7 +114,7 @@ class LadgerMigrationTest {
             val setup = schema.getJSONArray("setupQueries")
             for (i in 0 until setup.length()) db.execSQL(setup.getString(i))
             fill(db)
-            db.version = 1
+            db.version = version
         }
     }
 

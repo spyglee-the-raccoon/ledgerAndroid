@@ -42,6 +42,8 @@ import work.spyglee.ladger.data.LadgerDatabase
 import work.spyglee.ladger.data.TransactionCollection
 import work.spyglee.ladger.domain.DayGrouping
 import work.spyglee.ladger.domain.DaySection
+import work.spyglee.ladger.domain.byTransaction
+import work.spyglee.ladger.domain.matches
 import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.AppearanceForm
 import work.spyglee.ladger.ui.components.DuplicateNameDialog
@@ -50,7 +52,6 @@ import work.spyglee.ladger.ui.components.SearchField
 import work.spyglee.ladger.ui.components.SectionHeader
 import work.spyglee.ladger.ui.components.TransactionRow
 import work.spyglee.ladger.ui.dayTitle
-import work.spyglee.ladger.ui.sources.matches
 
 data class TransactionChoices(val sections: List<DaySection> = emptyList(), val categories: Map<Long, Category> = emptyMap())
 
@@ -70,10 +71,11 @@ class CollectionEditorViewModel(
     val choices: StateFlow<TransactionChoices> = combine(
         database.transactionDao().observeAll(),
         database.categoryDao().observeAll(),
+        database.receiptItemDao().observeNames(),
         query,
-    ) { transactions, categories, query ->
+    ) { transactions, categories, itemNames, query ->
         val byId = categories.associateBy { it.id }
-        TransactionChoices(DayGrouping.groupByDay(transactions.filter { it.matches(query, byId) }, ZoneId.systemDefault()), byId)
+        TransactionChoices(DayGrouping.groupByDay(transactions.filter { it.matches(query, byId, itemNames.byTransaction()) }, ZoneId.systemDefault()), byId)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TransactionChoices())
 
     init {

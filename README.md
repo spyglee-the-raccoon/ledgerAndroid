@@ -2,11 +2,12 @@
 
 The Android version of Ledger, a local-only budgeting app; the iOS app (SwiftUI, in the
 `spyglee-the-raccoon/ledgerIos` repository) is the reference for features and behaviour. Android is up to date
-with iOS commit `f909b82`. Kotlin, Jetpack Compose, Room, CameraX and ML Kit; minSdk 26.
+with iOS commit `46702e5`. Kotlin, Jetpack Compose, Room, CameraX and ML Kit; minSdk 26.
 
 Nothing leaves the device: the app has no INTERNET permission, receipts are read on the device, and
 backups are turned off. CSV files are compatible with the iOS app in both directions. Like iOS, the export
-also writes `sources.csv` and `planned_transactions.csv`, which neither app can import.
+also writes `accounts.csv` and `planned_transactions.csv`, which neither app can import; budgets and receipts
+aren't exported, as on iOS. Scanned receipt pages are kept as JPEGs in the app's `files/receipts` folder.
 
 ## Build and test
 Open in Android Studio, or:
@@ -22,8 +23,8 @@ Releasing, signing and the Play Data safety answers: [docs/RELEASE.md](docs/RELE
 ## Layout
 - `data/` Room entities and DAOs, repositories, CSV file access
 - `domain/` plain Kotlin business rules ported from iOS (balances, statistics, CSV, receipt parsing)
-- `ui/` Compose screens; `scan/` camera, OCR and Gemini Nano; `lock/` app lock; `reminder/` daily reminder and
-  the alarm that records planned transactions when they fall due
+- `ui/` Compose screens; `scan/` camera, OCR and Gemini Nano; `lock/` app lock; `reminder/` daily reminder,
+  budget alerts and the alarm that records planned transactions when they fall due
 
 ## Tools
 - `tools/sync-ios-strings.ps1`: regenerates `strings.xml` (en/hr/uk) from the iOS string catalog.

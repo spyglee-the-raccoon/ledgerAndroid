@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import java.math.BigDecimal
 import java.time.Instant
 import kotlinx.coroutines.flow.Flow
 
@@ -53,6 +54,9 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE date >= :start AND date < :end ORDER BY date DESC, id DESC")
     fun observeBetween(start: Instant, end: Instant): Flow<List<Transaction>>
 
+    @Query("SELECT * FROM transactions WHERE date >= :start AND date < :end ORDER BY date DESC, id DESC")
+    suspend fun getBetween(start: Instant, end: Instant): List<Transaction>
+
     /** Money going out of or into [sourceId]. */
     @Query("SELECT * FROM transactions WHERE sourceId = :sourceId OR destinationId = :sourceId ORDER BY date DESC, id DESC")
     fun observeForSource(sourceId: Long): Flow<List<Transaction>>
@@ -91,6 +95,64 @@ interface PlannedTransactionDao {
     @Insert suspend fun insert(planned: PlannedTransaction): Long
     @Update suspend fun update(planned: PlannedTransaction)
     @Delete suspend fun delete(planned: PlannedTransaction)
+}
+
+@Dao
+interface BudgetDao {
+    @Query("SELECT * FROM budgets ORDER BY id")
+    fun observeAll(): Flow<List<Budget>>
+
+    @Query("SELECT * FROM budgets ORDER BY id")
+    suspend fun getAll(): List<Budget>
+
+    @Query("SELECT * FROM budgets WHERE id = :id")
+    suspend fun getById(id: Long): Budget?
+
+    @Insert suspend fun insert(budget: Budget): Long
+    @Update suspend fun update(budget: Budget)
+    @Delete suspend fun delete(budget: Budget)
+}
+
+/** A receipt line's name, for searching transactions by what was bought. */
+data class ReceiptItemName(val transactionId: Long, val name: String)
+
+/** A receipt line with its transaction's date and note (the store), for price comparison. */
+data class DatedReceiptItem(
+    val id: Long,
+    val name: String,
+    val normalizedName: String,
+    val unitPrice: BigDecimal,
+    val date: Instant,
+    val store: String,
+)
+
+@Dao
+interface ReceiptItemDao {
+    @Query("SELECT * FROM receipt_items WHERE transactionId = :transactionId ORDER BY position, id")
+    fun observeForTransaction(transactionId: Long): Flow<List<ReceiptItem>>
+
+    @Query("SELECT transactionId, name FROM receipt_items")
+    fun observeNames(): Flow<List<ReceiptItemName>>
+
+    @Query(
+        """SELECT receipt_items.id, name, normalizedName, unitPrice, transactions.date AS date, transactions.note AS store
+        FROM receipt_items JOIN transactions ON transactions.id = receipt_items.transactionId"""
+    )
+    fun observeDated(): Flow<List<DatedReceiptItem>>
+
+    @Insert suspend fun insertAll(items: List<ReceiptItem>)
+    @Delete suspend fun delete(item: ReceiptItem)
+}
+
+@Dao
+interface ReceiptPhotoDao {
+    @Query("SELECT * FROM receipt_photos WHERE transactionId = :transactionId ORDER BY pageIndex, id")
+    fun observeForTransaction(transactionId: Long): Flow<List<ReceiptPhoto>>
+
+    @Query("SELECT fileName FROM receipt_photos")
+    suspend fun getAllFileNames(): List<String>
+
+    @Insert suspend fun insertAll(photos: List<ReceiptPhoto>)
 }
 
 @Dao

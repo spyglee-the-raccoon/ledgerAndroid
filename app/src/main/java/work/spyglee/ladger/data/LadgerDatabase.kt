@@ -7,7 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-/** Version 2 adds planned transactions (iOS `f909b82`). */
+/** Version 2 adds planned transactions (iOS `f909b82`), version 3 budgets and receipt items and photos (iOS `46702e5`). */
 @Database(
     entities = [
         Category::class,
@@ -17,9 +17,12 @@ import androidx.room.TypeConverters
         TransactionCollection::class,
         CollectionTransaction::class,
         PlannedTransaction::class,
+        Budget::class,
+        ReceiptItem::class,
+        ReceiptPhoto::class,
     ],
-    version = 2,
-    autoMigrations = [AutoMigration(from = 1, to = 2)],
+    version = 3,
+    autoMigrations = [AutoMigration(from = 1, to = 2), AutoMigration(from = 2, to = 3)],
 )
 @TypeConverters(Converters::class)
 abstract class LadgerDatabase : RoomDatabase() {
@@ -29,6 +32,9 @@ abstract class LadgerDatabase : RoomDatabase() {
     abstract fun merchantCategoryDao(): MerchantCategoryDao
     abstract fun collectionDao(): CollectionDao
     abstract fun plannedTransactionDao(): PlannedTransactionDao
+    abstract fun budgetDao(): BudgetDao
+    abstract fun receiptItemDao(): ReceiptItemDao
+    abstract fun receiptPhotoDao(): ReceiptPhotoDao
 
     companion object {
         fun build(context: Context): LadgerDatabase =

@@ -1,9 +1,11 @@
 package work.spyglee.ladger
 
 import android.content.Context
+import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import work.spyglee.ladger.data.BudgetRepository
 import work.spyglee.ladger.data.CollectionRepository
 import work.spyglee.ladger.data.CsvDocuments
 import work.spyglee.ladger.data.CsvRepository
@@ -11,9 +13,11 @@ import work.spyglee.ladger.data.DefaultDataSeeder
 import work.spyglee.ladger.data.LadgerDatabase
 import work.spyglee.ladger.data.MerchantRepository
 import work.spyglee.ladger.data.PlannedTransactionRepository
+import work.spyglee.ladger.data.ReceiptRepository
 import work.spyglee.ladger.data.SettingsRepository
 import work.spyglee.ladger.data.settingsDataStore
 import work.spyglee.ladger.lock.AppLock
+import work.spyglee.ladger.reminder.BudgetNotifier
 import work.spyglee.ladger.reminder.DailyReminder
 import work.spyglee.ladger.reminder.PlannedTransactionNotifier
 import work.spyglee.ladger.scan.ReceiptScanner
@@ -30,7 +34,9 @@ class AppContainer(context: Context, val database: LadgerDatabase = LadgerDataba
     val seeder = DefaultDataSeeder(database, settings, context::getString)
     val reminder = DailyReminder(context)
     val plannedNotifier = PlannedTransactionNotifier(context)
-    val plannedTransactions = PlannedTransactionRepository(database, plannedNotifier)
+    val budgets = BudgetRepository(database, BudgetNotifier(context))
+    val plannedTransactions = PlannedTransactionRepository(database, plannedNotifier, onRecorded = budgets::check)
+    val receiptFiles = ReceiptRepository(database, File(context.filesDir, "receipts"))
     val appLock = AppLock()
     val receipts = ReceiptScanner(context)
     val saveSound = SaveSound(context)

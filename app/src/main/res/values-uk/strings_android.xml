@@ -20,7 +20,6 @@
     <string name="zoom_level">Масштаб %1$s</string>
     <string name="previous_month">Попередній місяць</string>
     <string name="next_month">Наступний місяць</string>
-    <string name="no_categories">Немає категорій</string>
     <string name="increase">Збільшити</string>
     <string name="decrease">Зменшити</string>
 </resources>

@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import work.spyglee.ladger.R
+import work.spyglee.ladger.data.BudgetRepository
 import work.spyglee.ladger.data.Category
 import work.spyglee.ladger.data.CategoryColor
 import work.spyglee.ladger.data.LadgerDatabase
@@ -45,7 +46,8 @@ import work.spyglee.ladger.data.Transaction
 import work.spyglee.ladger.domain.Balances
 import work.spyglee.ladger.domain.DayGrouping
 import work.spyglee.ladger.domain.DaySection
-import work.spyglee.ladger.domain.containsFolded
+import work.spyglee.ladger.domain.byTransaction
+import work.spyglee.ladger.domain.matches
 import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.CategoryIcon
 import work.spyglee.ladger.ui.components.LadgerTopBar
@@ -67,33 +69,30 @@ data class SourcesOverviewState(
     val categories: Map<Long, Category> = emptyMap(),
 )
 
-/** Note or category name containing [query], ignoring case and diacritics, as iOS search does. */
-fun Transaction.matches(query: String, categories: Map<Long, Category>): Boolean {
-    val trimmed = query.trim()
-    if (trimmed.isEmpty()) return true
-    return note.containsFolded(trimmed) || categoryId?.let(categories::get)?.name?.containsFolded(trimmed) == true
-}
-
-class SourcesOverviewViewModel(private val database: LadgerDatabase) : ViewModel() {
+class SourcesOverviewViewModel(private val database: LadgerDatabase, private val budgets: BudgetRepository) : ViewModel() {
     val query = MutableStateFlow("")
 
     val state: StateFlow<SourcesOverviewState> = combine(
         database.sourceDao().observeAll(),
         database.transactionDao().observeAll(),
         database.categoryDao().observeAll(),
+        database.receiptItemDao().observeNames(),
         query,
-    ) { sources, transactions, categories, query ->
+    ) { sources, transactions, categories, itemNames, query ->
         val byId = categories.associateBy { it.id }
         SourcesOverviewState(
             sources = sources.map { SourceBalance(it, Balances.forSource(it.id, it.initValue, transactions)) },
             unassignedBalance = if (transactions.any(Balances::isUnassigned)) Balances.forSource(null, BigDecimal.ZERO, transactions) else null,
-            sections = DayGrouping.groupByDay(transactions.filter { it.matches(query, byId) }, ZoneId.systemDefault()),
+            sections = DayGrouping.groupByDay(transactions.filter { it.matches(query, byId, itemNames.byTransaction()) }, ZoneId.systemDefault()),
             categories = byId,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), SourcesOverviewState())
 
     fun delete(transaction: Transaction) {
-        viewModelScope.launch { database.transactionDao().delete(transaction) }
+        viewModelScope.launch {
+            database.transactionDao().delete(transaction)
+            budgets.check()
+        }
     }
 }
 
@@ -106,7 +105,7 @@ fun SourcesOverviewScreen(
     onOpenTransaction: (Long) -> Unit,
     onOpenCollection: (Long) -> Unit,
 ) {
-    val viewModel = appViewModel { SourcesOverviewViewModel(it.database) }
+    val viewModel = appViewModel { SourcesOverviewViewModel(it.database, it.budgets) }
     val state by viewModel.state.collectAsStateWithLifecycle()
     val query by viewModel.query.collectAsStateWithLifecycle()
     var sourcesExpanded by rememberSaveable { mutableStateOf(true) }

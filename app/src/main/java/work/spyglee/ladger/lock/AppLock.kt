@@ -47,7 +47,8 @@ class AppLock(private val clock: () -> Long = SystemClock::elapsedRealtime) {
      * The app is about to open one of its own outside pages: a file picker, or a system settings page
      * for the app. Coming back from it doesn't ask to unlock again (decision D5); on iOS such pickers
      * are part of the app. Android can't tell whether the user went somewhere else from there, so a
-     * return after more than [OWN_PAGE_LIMIT_MS] locks anyway.
+     * return after more than [OWN_PAGE_LIMIT_MS] locks anyway, and so does the screen turning off
+     * ([onScreenOff]).
      */
     fun expectReturn() {
         ownPageOpenedAt = clock()
@@ -67,6 +68,16 @@ class AppLock(private val clock: () -> Long = SystemClock::elapsedRealtime) {
             leftForOwnPageAt = clock()
             return
         }
+        if (appLockOn) locked.value = true
+    }
+
+    /**
+     * The screen turned off. Locks right away, so a trip to one of the app's own pages doesn't leave it
+     * unlocked for a phone that was put down. In the foreground, going to the background locks anyway.
+     */
+    fun onScreenOff(appLockOn: Boolean) {
+        ownPageOpenedAt = null
+        leftForOwnPageAt = null
         if (appLockOn) locked.value = true
     }
 

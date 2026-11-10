@@ -1,7 +1,10 @@
 package work.spyglee.ladger
 
 import android.app.KeyguardManager
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
@@ -30,6 +33,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import work.spyglee.ladger.lock.AuthPurpose
+import work.spyglee.ladger.reminder.keepShownAmountsOffLockScreen
 import work.spyglee.ladger.ui.Authenticator
 import work.spyglee.ladger.ui.LadgerNavHost
 import work.spyglee.ladger.ui.LocalAppContainer
@@ -45,11 +49,22 @@ class MainActivity : FragmentActivity() {
     /** Last known value of the app lock setting; false until the setting has loaded. */
     private var appLockOn = false
 
+    /** Locks when the screen turns off, also while the user is in one of the app's own pages (D5). */
+    private val screenOffReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            container.appLock.onScreenOff(appLockOn)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         // Created here rather than when needed, so a prompt that is open during rotation still reports back.
         biometricPrompt = BiometricPrompt(this, ContextCompat.getMainExecutor(this), AuthenticationCallback())
+        // Registered for the activity's whole life, so it also hears the screen turn off while the app is stopped.
+        ContextCompat.registerReceiver(
+            this, screenOffReceiver, IntentFilter(Intent.ACTION_SCREEN_OFF), ContextCompat.RECEIVER_NOT_EXPORTED
+        )
         lifecycleScope.launch {
             container.settings.isAppLockOn.collect { on ->
                 appLockOn = on
@@ -98,6 +113,11 @@ class MainActivity : FragmentActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(screenOffReceiver)
+        super.onDestroy()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -167,7 +187,11 @@ class MainActivity : FragmentActivity() {
         override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
             val purpose = container.appLock.onAuthenticationFinished(success = true)
             if (purpose is AuthPurpose.SetAppLock) {
-                container.applicationScope.launch { container.settings.setAppLockOn(purpose.on) }
+                container.applicationScope.launch {
+                    container.settings.setAppLockOn(purpose.on)
+                    // Notifications posted while the lock was off move off the lock screen too (D5).
+                    if (purpose.on) keepShownAmountsOffLockScreen(applicationContext)
+                }
             }
         }
 

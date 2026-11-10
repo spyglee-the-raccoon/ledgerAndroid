@@ -41,15 +41,17 @@ class LockScreenNotificationTest {
     }
 
     /**
-     * The visibility of the notification posted with [tag] and [id]. Posting is asynchronous, and other
-     * tests' notifications may arrive meanwhile, so it waits for this one.
+     * Fails unless the notification posted with [tag] and [id] gets [expected] visibility. Posting is
+     * asynchronous, and other tests' notifications may arrive meanwhile, so it waits for this one.
      */
-    private fun postedVisibility(tag: String, id: Int): Int {
+    private fun assertVisibility(expected: Int, tag: String, id: Int) {
+        var actual: Int? = null
         repeat(100) {
-            manager.activeNotifications.firstOrNull { it.tag == tag && it.id == id }?.let { return it.notification.visibility }
+            actual = manager.activeNotifications.firstOrNull { it.tag == tag && it.id == id }?.notification?.visibility
+            if (actual == expected) return
             SystemClock.sleep(50)
         }
-        throw AssertionError("No notification $tag/$id was posted")
+        assertEquals("visibility of $tag/$id", expected, actual)
     }
 
     private val planned = PlannedTransaction(id = PLANNED_ID.toLong(), amount = BigDecimal("12.99"), kind = TransactionKind.EXPENSE, note = "Netflix")
@@ -58,32 +60,45 @@ class LockScreenNotificationTest {
     @Test
     fun plannedTransactionStaysOffTheLockScreenWhileTheAppLockIsOn() = runTest {
         PlannedTransactionNotifier(context) { true }.showRecorded(planned, category = null)
-        assertEquals(Notification.VISIBILITY_SECRET, postedVisibility(PLANNED_TAG, PLANNED_ID))
+        assertVisibility(Notification.VISIBILITY_SECRET, PLANNED_TAG, PLANNED_ID)
     }
 
     @Test
     fun plannedTransactionKeepsTheSystemDefaultWithTheAppLockOff() = runTest {
         PlannedTransactionNotifier(context) { false }.showRecorded(planned, category = null)
-        assertEquals(Notification.VISIBILITY_PRIVATE, postedVisibility(PLANNED_TAG, PLANNED_ID))
+        assertVisibility(Notification.VISIBILITY_PRIVATE, PLANNED_TAG, PLANNED_ID)
     }
 
     @Test
     fun budgetAlertStaysOffTheLockScreenWhileTheAppLockIsOn() = runTest {
         BudgetNotifier(context) { true }.showReached(usage, category = null)
-        assertEquals(Notification.VISIBILITY_SECRET, postedVisibility(BUDGET_TAG, BUDGET_ID))
+        assertVisibility(Notification.VISIBILITY_SECRET, BUDGET_TAG, BUDGET_ID)
     }
 
     @Test
     fun budgetAlertKeepsTheSystemDefaultWithTheAppLockOff() = runTest {
         BudgetNotifier(context) { false }.showReached(usage, category = null)
-        assertEquals(Notification.VISIBILITY_PRIVATE, postedVisibility(BUDGET_TAG, BUDGET_ID))
+        assertVisibility(Notification.VISIBILITY_PRIVATE, BUDGET_TAG, BUDGET_ID)
+    }
+
+    @Test
+    fun turningTheAppLockOnMovesShownNotificationsOffTheLockScreen() = runTest {
+        PlannedTransactionNotifier(context) { false }.showRecorded(planned, category = null)
+        BudgetNotifier(context) { false }.showReached(usage, category = null)
+        assertVisibility(Notification.VISIBILITY_PRIVATE, PLANNED_TAG, PLANNED_ID)
+        assertVisibility(Notification.VISIBILITY_PRIVATE, BUDGET_TAG, BUDGET_ID)
+
+        keepShownAmountsOffLockScreen(context)
+
+        assertVisibility(Notification.VISIBILITY_SECRET, PLANNED_TAG, PLANNED_ID)
+        assertVisibility(Notification.VISIBILITY_SECRET, BUDGET_TAG, BUDGET_ID)
     }
 
     private companion object {
-        // The tags the notifiers post with. The ids are unlike any the other tests' plans and budgets get,
+        // The ids are unlike any the other tests' plans and budgets get,
         // so a late notification from another test can't be mistaken for this one.
-        const val PLANNED_TAG = "planned_transaction"
-        const val BUDGET_TAG = "budget"
+        const val PLANNED_TAG = PlannedTransactionNotifier.NOTIFICATION_TAG
+        const val BUDGET_TAG = BudgetNotifier.NOTIFICATION_TAG
         const val PLANNED_ID = 7_001
         const val BUDGET_ID = 3_001
     }

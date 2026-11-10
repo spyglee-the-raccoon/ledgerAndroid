@@ -82,7 +82,7 @@ class PlannedTransactionNotifier(
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
 
-    private companion object {
+    internal companion object {
         const val CHANNEL_ID = "planned_transactions"
         const val NOTIFICATION_TAG = "planned_transaction"
 

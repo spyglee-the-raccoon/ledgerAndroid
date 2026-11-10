@@ -117,4 +117,23 @@ class AppLockTest {
         lock.onBackground(appLockOn = true)
         assertTrue(lock.isLocked.value)
     }
+
+    @Test
+    fun theScreenTurningOffDuringAnOwnPageTripLocks() {
+        unlock()
+        lock.expectReturn()
+        lock.onBackground(appLockOn = true)
+        lock.onScreenOff(appLockOn = true)
+        now += 10_000
+        lock.onForeground(appLockOn = true)
+        assertTrue(lock.isLocked.value)
+        assertTrue(lock.shouldPromptOnForeground(appLockOn = true))
+    }
+
+    @Test
+    fun theScreenTurningOffLocksOnlyWhenAppLockIsOn() {
+        unlock()
+        lock.onScreenOff(appLockOn = false)
+        assertFalse(lock.isLocked.value)
+    }
 }

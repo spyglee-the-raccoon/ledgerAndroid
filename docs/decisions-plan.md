@@ -90,6 +90,8 @@ the old app and an import into the new one; this loses receipt photos. Then unin
   - app details when the camera permission is refused (transaction editor).
 - The next trip to the background then doesn't lock, and coming back within 5 minutes stays unlocked.
   - After 5 minutes it locks, since Android can't tell whether the user went somewhere else from there.
+  - The screen turning off during the trip locks it right away, so a phone that was put down never comes
+    back to an unlocked app.
   - If the app doesn't go to the background within 10 seconds, the expectation lapses.
 - `MainActivity.onStart` calls `onForeground`, before the unlock prompt in `onResume`.
 - If Android ends the app's process while the user is in the picker, the app starts locked, as any new
@@ -104,15 +106,18 @@ the old app and an import into the new one; this loses receipt photos. Then unin
   sensitive content on the lock screen, and that isn't the default.
 - The notifiers read the lock setting when they post (`showRecorded` and `BudgetAlerts.showReached` suspend
   now), so a notification from an alarm while the app was closed follows it too.
+- Turning the lock on posts the planned-transaction and budget notifications that are already showing again,
+  without sound, so they leave the lock screen too.
 - The daily reminder has no amounts and is unchanged.
 
 **Tested**
-- Unit tests: 5 new `AppLockTest` cases (own page within and after the limit, one trip only, a lapsed
-  expectation, coming back without leaving).
+- Unit tests: 7 new `AppLockTest` cases (own page within and after the limit, one trip only, a lapsed
+  expectation, coming back without leaving, the screen turning off).
 - On the emulator:
-  - The new `LockScreenNotificationTest` checks both notifications with the lock on and off.
+  - The new `LockScreenNotificationTest` checks both notifications with the lock on and off, and that
+    turning the lock on moves notifications already showing off the lock screen.
   - By hand with the lock on: the import picker stops the app, and coming back doesn't ask to unlock. Going
-    home and coming back does ask.
+    home and coming back does ask, and so does turning the screen off while the picker is open.
 
 The app switcher stays as it is (decided).
 

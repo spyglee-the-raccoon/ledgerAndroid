@@ -56,7 +56,7 @@ class BudgetNotifier(context: Context, private val isAppLockOn: suspend () -> Bo
         manager.notify(NOTIFICATION_TAG, usage.budget.id.toInt(), notification)
     }
 
-    private companion object {
+    internal companion object {
         const val CHANNEL_ID = "budgets"
         const val NOTIFICATION_TAG = "budget"
     }

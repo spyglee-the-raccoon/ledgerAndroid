@@ -46,6 +46,10 @@ about 4,000 lines of code, 1,400 of them tests.
 | **Demo data**: `DemoData/generate.py` writes a year of data as CSV files | S | none; useful as shared test data (D12) |
 | Login and sign-up screens removed | none | Android never had them |
 
+**Update, 10 November:** the rows that need no decision are done on branch `sync-ios-8a76b5d-part1`. That covers CSV
+for all data, editing receipt items, budget alerts, quick actions, Polish (with per-app language still open in D8),
+the new icon, and the iOS tests and demo data as Android tests.
+
 ### Known iOS issues, checked again at `fa64623`
 [ios-issues.md](ios-issues.md) lists problems found during the port. At `fa64623`:
 
@@ -65,8 +69,10 @@ about 4,000 lines of code, 1,400 of them tests.
     unlocked. Logging a transaction through Siri ignores the lock altogether. See `intents/LedgerEntities.swift`,
     `ensureAppUnlocked`.
   - The on/off toggle in the budget list doesn't re-arm the budget alert; editing the budget does.
+  - Restoring a backup loses the general limit when the budgets screen was ever opened, because that screen
+    creates an empty one, which the import then keeps.
 
-These will be added to ios-issues.md with the next sync.
+These are #16–#19 in ios-issues.md.
 
 ---
 
@@ -399,7 +405,8 @@ tell the user the same thing.
 **Context.** Android copies some iOS bugs so both apps behave the same:
 - #8: "Food" and "food" are different names.
 - #12: changing a plan's start date can record an occurrence twice.
-- The budget list toggle doesn't re-arm the alert.
+- The budget list toggle doesn't re-arm the alert (#18).
+- Restoring a backup keeps the empty general limit instead of the backup's (#19).
 
 **Android proposal:** agree on the correct behaviour for each one now. iOS fixes first, Android follows in the same
 sync, and neither app fixes a shared behaviour alone.

@@ -9,6 +9,7 @@ import kotlinx.coroutines.sync.withLock
 import work.spyglee.ladger.domain.BudgetUsage
 import work.spyglee.ladger.domain.Budgets
 import work.spyglee.ladger.domain.MonthRange
+import work.spyglee.ladger.domain.withEdits
 
 /** Tells the user a budget reached its limit. */
 fun interface BudgetAlerts {
@@ -47,12 +48,13 @@ class BudgetRepository(
                 dao.insert(Budget(monthlyLimit = limit, isActive = isActive, categoryId = categoryId))
             } else {
                 val existing = dao.getById(id) ?: return
-                dao.update(existing.copy(monthlyLimit = limit, isActive = isActive, categoryId = if (existing.isGeneral) null else categoryId))
+                dao.update(existing.withEdits(limit, isActive, categoryId))
             }
             checkLocked(Instant.now())
         }
     }
 
+    /** The switch in the budget list. Unlike saving in the editor it keeps this month's alert date, as on iOS. */
     suspend fun setActive(id: Long, isActive: Boolean) {
         mutex.withLock { dao.getById(id)?.let { dao.update(it.copy(isActive = isActive)) } }
     }

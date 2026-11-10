@@ -140,6 +140,16 @@ interface ReceiptItemDao {
     )
     fun observeDated(): Flow<List<DatedReceiptItem>>
 
+    @Query("SELECT * FROM receipt_items WHERE transactionId = :transactionId ORDER BY position, id")
+    suspend fun getForTransaction(transactionId: Long): List<ReceiptItem>
+
+    @Query("SELECT * FROM receipt_items ORDER BY transactionId, position, id")
+    suspend fun getAll(): List<ReceiptItem>
+
+    @Insert suspend fun insert(item: ReceiptItem): Long
+
+    @Query("DELETE FROM receipt_items WHERE transactionId = :transactionId")
+    suspend fun deleteForTransaction(transactionId: Long)
     @Insert suspend fun insertAll(items: List<ReceiptItem>)
     @Delete suspend fun delete(item: ReceiptItem)
 }

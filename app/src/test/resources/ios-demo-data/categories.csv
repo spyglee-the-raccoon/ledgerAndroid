@@ -1,0 +1,15 @@
+name;kind;icon;color
+Groceries;expense;cart;green
+Restaurants;expense;fork.knife;orange
+Transport;expense;car;blue
+Housing;expense;house;brown
+Utilities;expense;lightbulb;yellow
+Health;expense;cross.case;red
+Entertainment;expense;film;purple
+Shopping;expense;bag;pink
+Subscriptions;expense;tv;indigo
+Other;expense;questionmark.circle;gray
+Salary;income;briefcase;green
+Freelance;income;laptopcomputer;teal
+Gifts;income;gift;pink
+Investments;income;chart.line.uptrend.xyaxis;mint

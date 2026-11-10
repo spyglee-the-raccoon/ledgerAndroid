@@ -173,8 +173,54 @@ class LadgerDatabaseTest {
         val result = csv.import(listOf(CsvImporter.Input("expenses.csv", "date;amount;source;category\n01.10.2026;1;Cash;Food\n")))
         assertEquals(1, result.importedCount)
         val export = csv.export()
-        assertEquals(listOf("expenses.csv", "accounts.csv"), export.files.map { it.fileName })
+        assertEquals(listOf("expenses.csv", "accounts.csv", "categories.csv"), export.files.map { it.fileName })
         assertEquals(1, export.transactionCount)
+    }
+
+    /** Every kind of data goes through the real queries and foreign keys, as iOS's `CSVRoundTripTests`. */
+    @Test
+    fun csvExportImportsIntoAnEmptyDatabase() = runTest {
+        val cash = db.sourceDao().insert(Source(name = "Cash", initValue = BigDecimal("-20.5")))
+        val food = db.categoryDao().insert(Category(name = "Food", systemImage = "fork.knife", color = CategoryColor.ORANGE))
+        val lunch = db.transactionDao().insert(
+            Transaction(amount = BigDecimal("12.5"), kind = TransactionKind.EXPENSE, sourceId = cash, categoryId = food, note = "Lunch")
+        )
+        db.receiptItemDao().insertAll(
+            listOf(ReceiptItem(transactionId = lunch, name = "Soup", normalizedName = "soup", unitPrice = BigDecimal("12.5"), totalPrice = BigDecimal("12.5")))
+        )
+        val trip = db.collectionDao().insert(TransactionCollection(name = "Trip"))
+        db.collectionDao().addTransaction(CollectionTransaction(trip, lunch))
+        db.budgetDao().insert(Budget(monthlyLimit = BigDecimal("200"), categoryId = food))
+        db.plannedTransactionDao().insert(
+            PlannedTransaction(amount = BigDecimal("9.99"), kind = TransactionKind.EXPENSE, sourceId = cash, startDate = Instant.parse("2100-01-01T00:00:00Z"))
+        )
+        val export = CsvRepository(db).export()
+
+        val target = Room.inMemoryDatabaseBuilder(context, LadgerDatabase::class.java).build()
+        try {
+            val result = CsvRepository(target).import(export.files.map { CsvImporter.Input(it.fileName, it.text) })
+            assertEquals(1, result.importedCount)
+            assertEquals(0, result.skippedCount)
+
+            assertEquals("-20.5", target.sourceDao().getAll().single().initValue.toPlainString())
+            assertEquals(CategoryColor.ORANGE, target.categoryDao().getAll().single().color)
+            val imported = target.transactionDao().getAllChronological().single()
+            assertEquals(listOf("Soup"), target.receiptItemDao().getForTransaction(imported.id).map { it.name })
+            val collection = target.collectionDao().getAll().single()
+            assertEquals(listOf(imported.id), target.collectionDao().getTransactionIds(collection.id))
+            assertEquals(imported.categoryId, target.budgetDao().getAll().single().categoryId)
+            assertEquals(1, target.plannedTransactionDao().getAll().size)
+
+            // Importing the same files again adds the transaction a second time, as on iOS, but nothing else.
+            CsvRepository(target).import(export.files.map { CsvImporter.Input(it.fileName, it.text) })
+            assertEquals(2, target.transactionDao().count())
+            assertEquals(1, target.sourceDao().count())
+            assertEquals(1, target.budgetDao().getAll().size)
+            assertEquals(1, target.plannedTransactionDao().getAll().size)
+            assertEquals(1, target.collectionDao().getAll().size)
+        } finally {
+            target.close()
+        }
     }
 
     @Test
@@ -250,7 +296,7 @@ class LadgerDatabaseTest {
     }
 
     @Test
-    fun budgetAlertsOncePerMonthAndAgainAfterDroppingBelow() = runTest {
+    fun budgetAlertsOncePerMonthUntilEdited() = runTest {
         val alerts = mutableListOf<String>()
         val budgets = BudgetRepository(db, { _, category -> alerts += category?.name ?: "general" }) { ZoneOffset.UTC }
         val food = db.categoryDao().insert(Category(name = "Food"))
@@ -270,10 +316,17 @@ class LadgerDatabaseTest {
         budgets.check(now)
         assertEquals(listOf("Food"), alerts)
 
+        // Dropping below the limit and reaching it again stays silent this month (iOS 8a76b5d).
         db.transactionDao().delete(db.transactionDao().getById(lunch)!!)
         budgets.check(now)
-        assertNull(db.budgetDao().getAll().single { !it.isGeneral }.lastAlertDate)
+        assertEquals(now, db.budgetDao().getAll().single { !it.isGeneral }.lastAlertDate)
         db.transactionDao().insert(Transaction(amount = BigDecimal("120"), kind = TransactionKind.EXPENSE, categoryId = food, date = now))
+        budgets.check(now)
+        assertEquals(listOf("Food", "general"), alerts)
+
+        // Editing the budget allows a new alert. (Saving checks too, but for the real current month.)
+        val foodBudget = db.budgetDao().getAll().single { !it.isGeneral }
+        budgets.save(foodBudget.id, BigDecimal("30"), isActive = true, categoryId = food)
         budgets.check(now)
         assertEquals(listOf("Food", "general", "Food"), alerts)
 
@@ -313,8 +366,10 @@ class LadgerDatabaseTest {
         assertEquals(listOf("Konzum", "Konzum"), receipts.observeDatedItems().first().map { it.store })
         assertEquals(listOf(ReceiptItemName(id, "MLIJEKO  1L"), ReceiptItemName(id, "KRUH")), db.receiptItemDao().observeNames().first())
 
-        receipts.deleteItem(items.last())
-        assertEquals(1, receipts.observeItems(id).first().size)
+        // Editing the items replaces them and numbers them again.
+        receipts.replaceItems(id, listOf(ParsedReceiptItem("KRUH", BigDecimal.ONE, BigDecimal("0.49"), BigDecimal("0.49"))))
+        val edited = receipts.items(id).single()
+        assertEquals("KRUH" to 0, edited.name to edited.position)
 
         // A referenced file stays; once the transaction is gone the sweep deletes it, but only when it's old enough.
         receipts.sweepOrphans(Instant.now().plus(Duration.ofDays(1)))

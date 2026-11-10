@@ -1,12 +1,15 @@
 # iOS issues found while porting Ladger to Android
 
 Found while porting the iOS app (commit `2b36197`) to Android, which is now feature-complete. Most
-important first. Android avoids or fixes each of these; file references are to the iOS repo.
+important first. Android avoids or fixes most of these; where it behaves the same "to match", the issue
+says so. File references are to the iOS repo.
 
 Checked again at iOS `6f46e7b`: issues 2–6 are fixed there; 1, 7 and 8 and the typo in 9 are still open.
 Checked again at iOS `f909b82`: no change to those; 10–13 are new, from planned transactions.
 Checked again at iOS `46702e5`: 13 is fixed and the app icon no longer says "Ladger" (9); 1, 7, 8, 10–12 and the
 typo in 9 are still open; 14 and 15 are new, from budgets and receipt items.
+Checked again at iOS `fa64623`: 11 is fixed and 15 mostly (receipt photos still aren't exported); 1, 7, 8, 10, 12, 14
+and the typo in 9 are still open; 16–19 are new, from widgets, Siri, budget alerts and the new CSV files.
 
 ## 1. Dark mode: the lock screen probably lets balances show through
 `views/LockView.swift`, `components/BackgroundView.swift`, `ContentView.swift`
@@ -65,7 +68,8 @@ plans) will fail to load the store.
 
 ## 8. Duplicate-name checks are case-sensitive
 Categories, sources and collections: "Food" and "food" can both be created, while the CSV importer
-matches names ignoring case, so an import may attach transactions to either one.
+matches names ignoring case, so an import may attach transactions to either one. Since `8a76b5d` Siri matches
+category and account names exactly too (`intents/LedgerEntities.swift`). Android does the same, to match.
 
 ## 9. Text
 - `unlock_reason` (English): "Unlock app to see the **blance** and manipulate transactions" — typo.
@@ -84,6 +88,7 @@ then the balances leave it out, however long the app stays closed.
 than "recorded". Android sets an alarm for the due time that records the transaction and then notifies.
 
 ## 11. Exported sources and planned transactions can't be imported
+**Fixed in iOS `8a76b5d`**: the importer recognizes every exported file by its header; Android follows.
 `models/CSVExporter.swift`, `models/CSVImporter.swift`
 
 The export now also writes `accounts.csv` (`sources.csv` before `46702e5`) and `planned_transactions.csv`, but the importer only reads
@@ -116,12 +121,49 @@ reflected: on 1 November the reminder can still say the limit is reached.
 hint when the scheduled text is from an earlier month. Android works the text out when the reminder goes off.
 
 ## 15. Budgets and receipts aren't in the CSV export
+**Mostly fixed in iOS `8a76b5d`**: budgets, categories, collections and receipt items are exported and imported;
+Android follows. Receipt photos (and learned merchant categories) still aren't exported.
 `models/CSVExporter.swift`
 
 The export writes transactions, accounts and planned transactions, but not budgets, receipt items or
 photos. Restoring a backup on a new phone loses every limit and the whole price history. Android does
 the same, to match.
 **Fix:** export `budgets.csv` and `receipt_items.csv` (and import them, see 11).
+
+## 16. Widgets show money while the app is locked
+`LedgerWidgets/*.swift`, `models/WidgetSnapshotWriter.swift`
+
+With "lock the app" on, the home screen widgets still show the month's balance, the budget and the last three
+transactions with their notes. Nothing checks the lock setting and nothing is marked `privacySensitive()`, so
+the data also shows on a locked iPhone. Android has no widgets yet; what they should show is decision D5 in
+[platform-decisions.md](platform-decisions.md).
+**Fix:** when the lock is on, write a snapshot without amounts (or mark the views `privacySensitive()`).
+
+## 17. Siri questions refuse whenever the lock setting is on; logging ignores it
+`intents/LedgerEntities.swift` (`ensureAppUnlocked`), `intents/LogTransactionIntent.swift`
+
+`ensureAppUnlocked` throws when the "lock the app" *setting* is on, not when the app is locked, so with the
+setting on every question ("how much budget is left") is refused, even right after unlocking the app. Logging a
+transaction doesn't check the lock at all. Android has no Siri equivalent (decision D3).
+**Fix:** decide what the lock covers (D5), then check the same thing in every intent.
+
+## 18. Switching a budget off and on doesn't re-arm its alert
+`views/BudgetingView.swift` (`BudgetCardView`), `models/Budget.swift` (`BudgetDraft.apply`)
+
+Since `8a76b5d` a budget alerts once a month, and saving it in the editor with a changed limit, category or
+on/off state clears `lastAlertDate` so it can alert again. The switch on the budget card binds `isActive`
+directly and skips that, so switching a budget off and on in the list doesn't re-arm it while doing the same
+in the editor does. Android does the same, to match.
+**Fix:** clear `lastAlertDate` in the card's toggle too, or in neither place.
+
+## 19. Restoring a backup loses the general limit
+`models/CSVImporter.swift` (`insertBudget`), `views/BudgetingView.swift`
+
+The budgets screen creates an empty, inactive general limit the first time it opens. The importer skips any
+budget that already exists, so importing a `budgets.csv` with a general limit (`;500;true`) into an app whose
+budgets screen was ever opened keeps the empty one. Category budgets only have the same problem when one
+for that category exists already. Android does the same, to match.
+**Fix:** let an imported budget update an existing one that has no limit, or always take the imported values.
 
 ## Optional: receipt OCR that reads O as zero
 On a monospace receipt font, Android's OCR read "UKUPNO" as "UKUPN0". The Android parser now treats

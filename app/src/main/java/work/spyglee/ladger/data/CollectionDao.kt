@@ -41,6 +41,9 @@ interface CollectionDao {
     @Query("SELECT transactionId FROM collection_transactions WHERE collectionId = :collectionId")
     suspend fun getTransactionIds(collectionId: Long): List<Long>
 
+    @Query("SELECT * FROM collection_transactions")
+    suspend fun getAllMemberships(): List<CollectionTransaction>
+
     @Insert suspend fun insert(collection: TransactionCollection): Long
     @Update suspend fun update(collection: TransactionCollection)
     @Delete suspend fun delete(collection: TransactionCollection)

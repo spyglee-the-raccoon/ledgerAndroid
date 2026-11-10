@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import work.spyglee.ladger.QuickAction
 import work.spyglee.ladger.data.TransactionKind
 import work.spyglee.ladger.ui.collections.CollectionDetailScreen
 import work.spyglee.ladger.ui.collections.CollectionEditorScreen
@@ -54,7 +55,7 @@ private object Routes {
     const val TOP_CATEGORIES = "stats/top_categories"
     const val PRICE_COMPARISON = "stats/price_comparison"
     const val PRICE_HISTORY = "stats/price_history/{key}"
-    const val TRANSACTION_EDITOR = "transaction?id={id}&kind={kind}&receipt={receipt}"
+    const val TRANSACTION_EDITOR = "transaction?id={id}&kind={kind}&receipt={receipt}&scan={scan}"
     const val TRANSACTION_LIST = "transactions/{filter}?sourceId={sourceId}"
     const val CATEGORY_EDITOR = "category?id={id}"
     const val SOURCE_EDITOR = "source?id={id}"
@@ -63,8 +64,9 @@ private object Routes {
     const val PLANNED_TRANSACTION_EDITOR = "planned_transaction?id={id}"
     const val BUDGET_EDITOR = "budget?id={id}"
 
-    fun transactionEditor(id: Long? = null, kind: TransactionKind = TransactionKind.EXPENSE, receipt: Uri? = null) =
-        "transaction?id=${id ?: NO_ID}&kind=${kind.raw}" + (receipt?.let { "&receipt=${Uri.encode(it.toString())}" } ?: "")
+    fun transactionEditor(id: Long? = null, kind: TransactionKind = TransactionKind.EXPENSE, receipt: Uri? = null, scan: Boolean = false) =
+        "transaction?id=${id ?: NO_ID}&kind=${kind.raw}" + (receipt?.let { "&receipt=${Uri.encode(it.toString())}" } ?: "") +
+            (if (scan) "&scan=true" else "")
 
     fun transactionList(filter: TransactionFilter) = when (filter) {
         TransactionFilter.Expenses -> "transactions/expenses"
@@ -103,15 +105,31 @@ private val optionalId = navArgument("id") {
 
 private fun NavBackStackEntry.optionalId(): Long? = arguments?.getLong("id")?.takeIf { it != NO_ID }
 
-/** [sharedReceipt] is a receipt shared from another app; the add transaction screen opens with it. */
+/**
+ * [sharedReceipt] is a receipt shared from another app; the add transaction screen opens with it.
+ * [quickAction] is an app icon shortcut to open, after which [onQuickActionHandled] is called.
+ */
 @Composable
-fun LadgerNavHost(navController: NavHostController = rememberNavController(), sharedReceipt: Uri? = null) {
+fun LadgerNavHost(
+    navController: NavHostController = rememberNavController(),
+    sharedReceipt: Uri? = null,
+    quickAction: QuickAction? = null,
+    onQuickActionHandled: () -> Unit = {},
+) {
     val back: () -> Unit = { navController.popBackStack() }
     val openTransaction: (Long) -> Unit = { navController.navigate(Routes.transactionEditor(it)) }
     val openCollection: (Long) -> Unit = { navController.navigate(Routes.collection(it)) }
 
     LaunchedEffect(sharedReceipt) {
         if (sharedReceipt != null) navController.navigate(Routes.transactionEditor(receipt = sharedReceipt))
+    }
+    LaunchedEffect(quickAction) {
+        when (quickAction) {
+            QuickAction.ADD_TRANSACTION -> navController.navigate(Routes.transactionEditor())
+            QuickAction.SCAN -> navController.navigate(Routes.transactionEditor(scan = true))
+            null -> return@LaunchedEffect
+        }
+        onQuickActionHandled()
     }
 
     // The screens cross-fade; without a background the window would show through halfway and flash.
@@ -131,6 +149,7 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
                 optionalId,
                 navArgument("kind") { type = NavType.StringType; defaultValue = TransactionKind.EXPENSE.raw },
                 navArgument("receipt") { type = NavType.StringType; nullable = true; defaultValue = null },
+                navArgument("scan") { type = NavType.BoolType; defaultValue = false },
             ),
         ) { entry ->
             TransactionEditorScreen(
@@ -138,6 +157,7 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
                 initialKind = TransactionKind.fromRaw(entry.arguments?.getString("kind") ?: TransactionKind.EXPENSE.raw),
                 onDone = back,
                 sharedReceipt = entry.arguments?.getString("receipt")?.let(Uri::parse),
+                startsScanning = entry.arguments?.getBoolean("scan") ?: false,
             )
         }
         readableComposable(

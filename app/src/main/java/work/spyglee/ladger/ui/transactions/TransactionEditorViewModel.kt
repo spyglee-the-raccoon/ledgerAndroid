@@ -21,7 +21,6 @@ import work.spyglee.ladger.AppContainer
 import work.spyglee.ladger.BuildConfig
 import work.spyglee.ladger.data.Category
 import work.spyglee.ladger.data.CategoryKind
-import work.spyglee.ladger.data.ReceiptItem
 import work.spyglee.ladger.data.Source
 import work.spyglee.ladger.data.TransactionKind
 import work.spyglee.ladger.domain.AmountInput
@@ -61,17 +60,23 @@ class TransactionEditorViewModel(
     /** The merchant of the last scanned receipt; its category and source are remembered on save. */
     private var scannedMerchant: String? = null
 
-    /** The scanned page (JPEG) and the products read from it, saved with a new transaction. */
+    /** The scanned page (JPEG), saved with a new transaction. */
     private val _scannedPhotos = MutableStateFlow<List<ByteArray>>(emptyList())
     val scannedPhotos: StateFlow<List<ByteArray>> = _scannedPhotos.asStateFlow()
-    private val _scannedItems = MutableStateFlow<List<ParsedReceiptItem>>(emptyList())
-    val scannedItems: StateFlow<List<ParsedReceiptItem>> = _scannedItems.asStateFlow()
 
-    /** What an edited transaction was saved with. */
+    /** The pages an edited transaction was saved with. */
     val savedPhotos: StateFlow<List<File>> = (transactionId?.let(container.receiptFiles::observePhotos) ?: flowOf(emptyList()))
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-    val savedItems: StateFlow<List<ReceiptItem>> = (transactionId?.let(container.receiptFiles::observeItems) ?: flowOf(emptyList()))
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    /**
+     * The receipt items being edited: the ones read from a scan, or an edited transaction's saved
+     * ones. As on iOS since `8a76b5d`, they can be fixed, added and removed; an edited transaction's
+     * saved items are only replaced on save, and only if this list changed.
+     */
+    private val _items = MutableStateFlow<List<EditableReceiptItem>>(emptyList())
+    val items: StateFlow<List<EditableReceiptItem>> = _items.asStateFlow()
+    private var itemsChanged = false
+    private var nextItemKey = 0L
 
     val categories: StateFlow<List<Category>> =
         database.categoryDao().observeAll().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -84,6 +89,9 @@ class TransactionEditorViewModel(
                 transactionDao.getById(transactionId)?.let { transaction ->
                     _draft.value = TransactionDraft.from(transaction)
                     _amountText.value = AmountInput.format(transaction.amount, decimalSeparator)
+                }
+                _items.value = container.receiptFiles.items(transactionId).map {
+                    editable(ParsedReceiptItem(it.name, it.quantity, it.unitPrice, it.totalPrice))
                 }
             } else {
                 suggestSources()
@@ -117,11 +125,20 @@ class TransactionEditorViewModel(
     /** Reads the photo and keeps a smaller copy of it to save with the transaction, as iOS keeps scanned pages. */
     fun onPhotoConfirmed(photo: Bitmap) = scan(photo) { container.receipts.recognize(photo) }
 
-    fun removeScannedItem(index: Int) = _scannedItems.update { items -> items.filterIndexed { i, _ -> i != index } }
-
-    fun deleteSavedItem(item: ReceiptItem) {
-        viewModelScope.launch { container.receiptFiles.deleteItem(item) }
+    /** Saves the item editor: replaces the item with [key], or adds a new one when [key] is null. */
+    fun saveItem(key: Long?, item: ParsedReceiptItem) {
+        _items.update { items ->
+            if (key == null) items + editable(item) else items.map { if (it.key == key) it.copy(item = item) else it }
+        }
+        itemsChanged = true
     }
+
+    fun removeItem(key: Long) {
+        _items.update { items -> items.filterNot { it.key == key } }
+        itemsChanged = true
+    }
+
+    private fun editable(item: ParsedReceiptItem) = EditableReceiptItem(nextItemKey++, item)
 
     /**
      * Shows "parsing" right away, then fills the form from the recognized text, as iOS's parseText does.
@@ -131,7 +148,6 @@ class TransactionEditorViewModel(
     private fun scan(photo: Bitmap? = null, recognize: suspend () -> String) {
         _isParsing.value = true
         _isRecognizingItems.value = true
-        _scannedItems.value = emptyList()
         _scannedPhotos.value = emptyList()
         viewModelScope.launch {
             val page = photo?.let { async { container.receipts.photoData(it) } }
@@ -161,24 +177,29 @@ class TransactionEditorViewModel(
         _draft.value.amount?.let { _amountText.value = AmountInput.format(it, decimalSeparator) }
 
         _isParsing.value = false
-        _scannedItems.value = container.receipts.parseItems(text)
-        if (BuildConfig.DEBUG) Log.d(TAG, "Recognized items: ${_scannedItems.value}")
+        val items = container.receipts.parseItems(text)
+        if (BuildConfig.DEBUG) Log.d(TAG, "Recognized items: $items")
+        // A scan replaces the items, as on iOS.
+        _items.value = items.map(::editable)
+        itemsChanged = true
     }
 
     /**
      * Saves and then calls [onSaved]; does nothing while the draft is incomplete or items are still
-     * being read. A new transaction keeps the scanned page, and its items if it is an expense, as on iOS.
+     * being read. A new transaction keeps the scanned page, and its items if it is an expense, as on
+     * iOS. An edited expense gets its changed items; other kinds keep what they had.
      */
     fun save(onSaved: () -> Unit) {
         val draft = _draft.value
         if (!draft.isValid || _isRecognizingItems.value) return
+        val items = _items.value.map { it.item }
         viewModelScope.launch {
             if (transactionId != null) {
                 transactionDao.update(draft.toTransaction(transactionId))
+                if (itemsChanged && draft.kind == TransactionKind.EXPENSE) container.receiptFiles.replaceItems(transactionId, items)
             } else {
                 val id = transactionDao.insert(draft.toTransaction())
-                val items = if (draft.kind == TransactionKind.EXPENSE) _scannedItems.value else emptyList()
-                container.receiptFiles.attach(id, _scannedPhotos.value, items)
+                container.receiptFiles.attach(id, _scannedPhotos.value, if (draft.kind == TransactionKind.EXPENSE) items else emptyList())
                 container.saveSound.play()
             }
             learnMerchantCategory(draft)
@@ -213,3 +234,6 @@ class TransactionEditorViewModel(
         const val TAG = "TransactionEditor"
     }
 }
+
+/** A receipt item in the editor; [key] tells equal lines apart. */
+data class EditableReceiptItem(val key: Long, val item: ParsedReceiptItem)

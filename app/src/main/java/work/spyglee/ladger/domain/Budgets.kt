@@ -27,6 +27,22 @@ enum class BudgetHint { WELL_UNDER, UNDER_HALF, OVER_HALF, GETTING_CLOSE, ALMOST
 /** The result of [Budgets.check]: budgets to notify about, and budgets whose alert date changed. */
 data class BudgetCheck(val alerts: List<BudgetUsage>, val updated: List<Budget>)
 
+/**
+ * [this] budget saved from the editor, as iOS's `BudgetDraft.apply`: changing the limit, switching it
+ * on or off, or moving it to another category allows a new alert this month. The general limit
+ * keeps having no category. (The switch in the budget list doesn't go through here, as on iOS.)
+ */
+fun Budget.withEdits(limit: BigDecimal, isActive: Boolean, categoryId: Long?): Budget {
+    val newCategoryId = if (isGeneral) null else categoryId
+    val isChanged = monthlyLimit.compareTo(limit) != 0 || this.isActive != isActive || this.categoryId != newCategoryId
+    return copy(
+        monthlyLimit = limit,
+        isActive = isActive,
+        categoryId = newCategoryId,
+        lastAlertDate = if (isChanged) null else lastAlertDate,
+    )
+}
+
 /** The iOS `BudgetNotifier` and `BudgetingView` rules. */
 object Budgets {
     /** Each budget with the expenses of [month]: all of them for the general limit, else its category's. */
@@ -44,21 +60,20 @@ object Budgets {
 
     /**
      * Budgets that reached their limit and weren't notified about yet this month get an alert and
-     * [now] as their alert date. A budget notified this month that is no longer reached (an expense
-     * was edited or deleted) has its alert date cleared, so reaching the limit again alerts again.
+     * [now] as their alert date. Since iOS `8a76b5d` a budget alerts at most once a month: it stays
+     * silent until next month even if spending dips below the limit and reaches it again. Only
+     * editing the budget ([Budget.withEdits]) allows a new alert.
      */
     fun check(usages: List<BudgetUsage>, month: MonthRange, now: Instant): BudgetCheck {
         val alerts = mutableListOf<BudgetUsage>()
         val updated = mutableListOf<Budget>()
         for (usage in usages) {
             val budget = usage.budget
-            val wasAlerted = budget.lastAlertDate?.let { it in month } ?: false
-            if (usage.isReached && !wasAlerted) {
+            val wasAlertedThisMonth = budget.lastAlertDate?.let { it in month } ?: false
+            if (usage.isReached && !wasAlertedThisMonth) {
                 val alerted = budget.copy(lastAlertDate = now)
                 updated += alerted
                 alerts += usage.copy(budget = alerted)
-            } else if (!usage.isReached && wasAlerted) {
-                updated += budget.copy(lastAlertDate = null)
             }
         }
         return BudgetCheck(alerts, updated)

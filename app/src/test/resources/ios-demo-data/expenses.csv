@@ -1,0 +1,505 @@
+date;amount;source;category;details
+01.11.2025;19.98;Bank Card;Groceries;Value Discount
+01.11.2025;650;Bank Card;Housing;Rent
+01.11.2025;22.37;Bank Card;Restaurants;Bistro 21
+03.11.2025;39;Bank Card;Transport;Monthly transit pass
+03.11.2025;58.8;Bank Card;Transport;Fuel
+04.11.2025;10.47;Bank Card;Groceries;Value Discount
+05.11.2025;13.99;Bank Card;Subscriptions;StreamFlix
+05.11.2025;39;Bank Card;Health;Gym membership
+05.11.2025;2.6;Cash;Restaurants;Coffee to go
+05.11.2025;67.43;Bank Card;Transport;Fuel
+06.11.2025;54.55;Bank Card;Transport;Fuel
+06.11.2025;18.73;Bank Card;Health;Pharmacy
+08.11.2025;18.5;Cash;Groceries;Value Discount
+10.11.2025;21.61;Bank Card;Health;Pharmacy
+11.11.2025;18.44;Cash;Groceries;Corner Deli
+11.11.2025;7.37;Cash;Restaurants;Café Central
+12.11.2025;10.99;Bank Card;Subscriptions;Music+
+12.11.2025;2.99;Bank Card;Subscriptions;Cloud storage
+13.11.2025;4.97;Bank Card;Groceries;Value Discount
+14.11.2025;47.96;Cash;Restaurants;Bistro 21
+14.11.2025;25.31;Bank Card;Health;Pharmacy
+15.11.2025;14.7;Bank Card;Groceries;Fresh Market
+15.11.2025;86.63;Bank Card;Utilities;Electricity
+15.11.2025;27.48;Bank Card;Utilities;Water
+17.11.2025;20.07;Bank Card;Health;Pharmacy
+18.11.2025;9.53;Bank Card;Groceries;Value Discount
+18.11.2025;3.1;Cash;Restaurants;Coffee to go
+19.11.2025;2.2;Cash;Restaurants;Coffee to go
+20.11.2025;9.55;Bank Card;Groceries;Fresh Market
+20.11.2025;29.99;Bank Card;Utilities;Internet
+20.11.2025;15;Bank Card;Utilities;Mobile plan
+20.11.2025;2.2;Cash;Restaurants;Coffee to go
+21.11.2025;2.2;Cash;Restaurants;Coffee to go
+22.11.2025;24.33;Bank Card;Groceries;Value Discount
+24.11.2025;15.55;Cash;Other;Charity donation
+27.11.2025;62.27;Bank Card;Transport;Fuel
+28.11.2025;17.46;Bank Card;Restaurants;Thai Garden
+28.11.2025;2.4;Cash;Restaurants;Coffee to go
+28.11.2025;189;Bank Card;Shopping;Black Friday headphones
+29.11.2025;28.33;Bank Card;Groceries;Fresh Market
+29.11.2025;41.21;Bank Card;Restaurants;The Burger Joint
+01.12.2025;650;Bank Card;Housing;Rent
+01.12.2025;3.1;Cash;Restaurants;Coffee to go
+02.12.2025;2.6;Cash;Restaurants;Coffee to go
+03.12.2025;39;Bank Card;Transport;Monthly transit pass
+03.12.2025;2.4;Cash;Restaurants;Coffee to go
+04.12.2025;13.19;Bank Card;Groceries;Fresh Market
+05.12.2025;13.99;Bank Card;Subscriptions;StreamFlix
+05.12.2025;39;Bank Card;Health;Gym membership
+05.12.2025;2.4;Cash;Restaurants;Coffee to go
+06.12.2025;17.32;Bank Card;Groceries;Value Discount
+06.12.2025;6.98;Cash;Restaurants;Café Central
+07.12.2025;39.74;Bank Card;Restaurants;The Burger Joint
+07.12.2025;14.68;Bank Card;Transport;Taxi
+09.12.2025;13.14;Bank Card;Groceries;Value Discount
+12.12.2025;10.99;Bank Card;Subscriptions;Music+
+12.12.2025;2.99;Bank Card;Subscriptions;Cloud storage
+13.12.2025;23.02;Bank Card;Groceries;Fresh Market
+14.12.2025;124.5;Bank Card;Shopping;Christmas gifts
+15.12.2025;88.93;Bank Card;Utilities;Electricity
+15.12.2025;22.8;Bank Card;Utilities;Water
+16.12.2025;53.41;Bank Card;Transport;Fuel
+18.12.2025;5.17;Bank Card;Groceries;Value Discount
+19.12.2025;41.52;Bank Card;Shopping;Home decor
+20.12.2025;32.19;Bank Card;Groceries;Value Discount
+20.12.2025;29.99;Bank Card;Utilities;Internet
+20.12.2025;15;Bank Card;Utilities;Mobile plan
+20.12.2025;34.58;Bank Card;Restaurants;Bistro 21
+20.12.2025;86.3;Bank Card;Shopping;Christmas gifts
+22.12.2025;47.72;Bank Card;Transport;Fuel
+23.12.2025;7.22;Cash;Groceries;Value Discount
+23.12.2025;25.06;Bank Card;Health;Pharmacy
+24.12.2025;3.1;Cash;Restaurants;Coffee to go
+25.12.2025;22;Bank Card;Restaurants;Sushi Bar Koi
+26.12.2025;24.14;Bank Card;Restaurants;Thai Garden
+26.12.2025;3.1;Cash;Restaurants;Coffee to go
+27.12.2025;10.07;Bank Card;Groceries;Value Discount
+30.12.2025;10.97;Bank Card;Groceries;Value Discount
+31.12.2025;75;Bank Card;Entertainment;New Year's Eve party
+01.01.2026;2.88;Bank Card;Groceries;Fresh Market
+01.01.2026;650;Bank Card;Housing;Rent
+02.01.2026;21.92;Cash;Restaurants;Bistro 21
+03.01.2026;30.27;Cash;Groceries;Value Discount
+03.01.2026;39;Bank Card;Transport;Monthly transit pass
+04.01.2026;26.19;Bank Card;Restaurants;The Burger Joint
+05.01.2026;13.99;Bank Card;Subscriptions;StreamFlix
+05.01.2026;39;Bank Card;Health;Gym membership
+05.01.2026;13.22;Bank Card;Restaurants;Café Central
+05.01.2026;17.76;Bank Card;Transport;Taxi
+06.01.2026;12.16;Cash;Groceries;Value Discount
+06.01.2026;18.55;Cash;Restaurants;Pizzeria Napoli
+09.01.2026;18.71;Bank Card;Restaurants;Pizzeria Napoli
+10.01.2026;38.51;Cash;Groceries;Value Discount
+10.01.2026;34.34;Cash;Restaurants;The Burger Joint
+10.01.2026;38.93;Bank Card;Shopping;Books
+12.01.2026;10.99;Bank Card;Subscriptions;Music+
+12.01.2026;2.99;Bank Card;Subscriptions;Cloud storage
+12.01.2026;18.34;Bank Card;Transport;Taxi
+13.01.2026;2.6;Cash;Restaurants;Coffee to go
+14.01.2026;31.7;Bank Card;Restaurants;Sushi Bar Koi
+15.01.2026;7.78;Bank Card;Groceries;Fresh Market
+15.01.2026;91.17;Bank Card;Utilities;Electricity
+15.01.2026;27.11;Bank Card;Utilities;Water
+15.01.2026;19.36;Bank Card;Health;Pharmacy
+17.01.2026;39.92;Bank Card;Groceries;Value Discount
+17.01.2026;37.59;Bank Card;Restaurants;The Burger Joint
+18.01.2026;40.98;Cash;Restaurants;Bistro 21
+20.01.2026;3.86;Bank Card;Groceries;Value Discount
+20.01.2026;29.99;Bank Card;Utilities;Internet
+20.01.2026;15;Bank Card;Utilities;Mobile plan
+20.01.2026;3.1;Cash;Restaurants;Coffee to go
+21.01.2026;7;Bank Card;Transport;Taxi
+22.01.2026;11.98;Bank Card;Groceries;Corner Deli
+22.01.2026;2.2;Cash;Restaurants;Coffee to go
+22.01.2026;33.03;Bank Card;Health;Pharmacy
+23.01.2026;39.81;Cash;Restaurants;Pizzeria Napoli
+24.01.2026;20.09;Bank Card;Groceries;Value Discount
+24.01.2026;24.6;Cash;Restaurants;The Burger Joint
+24.01.2026;349;Bank Card;Shopping;Standing desk
+24.01.2026;219;Bank Card;Shopping;Office chair
+26.01.2026;67.9;Bank Card;Transport;Fuel
+27.01.2026;2.48;Bank Card;Groceries;Value Discount
+29.01.2026;2.4;Cash;Restaurants;Coffee to go
+30.01.2026;2.4;Cash;Restaurants;Coffee to go
+31.01.2026;33.07;Bank Card;Groceries;Corner Deli
+31.01.2026;62.74;Bank Card;Transport;Fuel
+31.01.2026;179;Bank Card;Shopping;Monitor 27 inch
+01.02.2026;650;Bank Card;Housing;Rent
+01.02.2026;45.62;Bank Card;Restaurants;The Burger Joint
+01.02.2026;9.17;Bank Card;Entertainment;Museum
+03.02.2026;39;Bank Card;Transport;Monthly transit pass
+04.02.2026;2.2;Cash;Restaurants;Coffee to go
+04.02.2026;25.34;Bank Card;Health;Pharmacy
+05.02.2026;16.84;Bank Card;Groceries;Fresh Market
+05.02.2026;13.99;Bank Card;Subscriptions;StreamFlix
+05.02.2026;39;Bank Card;Health;Gym membership
+05.02.2026;2.6;Cash;Restaurants;Coffee to go
+07.02.2026;36.06;Bank Card;Groceries;Value Discount
+07.02.2026;9.56;Bank Card;Restaurants;Café Central
+07.02.2026;39.9;Bank Card;Shopping;Desk lamp
+08.02.2026;36.57;Bank Card;Restaurants;Pizzeria Napoli
+08.02.2026;18.76;Bank Card;Entertainment;Museum
+10.02.2026;8.49;Bank Card;Groceries;Fresh Market
+10.02.2026;420;Bank Card;Transport;Car insurance
+10.02.2026;29.08;Bank Card;Health;Pharmacy
+12.02.2026;7.46;Bank Card;Groceries;Value Discount
+12.02.2026;10.99;Bank Card;Subscriptions;Music+
+12.02.2026;2.99;Bank Card;Subscriptions;Cloud storage
+12.02.2026;9.99;Bank Card;Restaurants;Café Central
+14.02.2026;17.26;Bank Card;Groceries;Value Discount
+14.02.2026;9.85;Bank Card;Health;Pharmacy
+15.02.2026;89.36;Bank Card;Utilities;Electricity
+15.02.2026;22.57;Bank Card;Utilities;Water
+15.02.2026;67.7;Bank Card;Transport;Fuel
+16.02.2026;2.2;Cash;Restaurants;Coffee to go
+16.02.2026;67.14;Bank Card;Transport;Fuel
+19.02.2026;1.29;Bank Card;Groceries;Fresh Market
+20.02.2026;29.99;Bank Card;Utilities;Internet
+20.02.2026;15;Bank Card;Utilities;Mobile plan
+21.02.2026;19.71;Bank Card;Groceries;Value Discount
+23.02.2026;43.89;Bank Card;Shopping;Electronics accessories
+24.02.2026;8.05;Cash;Groceries;Value Discount
+24.02.2026;66.56;Bank Card;Transport;Fuel
+24.02.2026;8.54;Bank Card;Transport;Taxi
+26.02.2026;5.77;Bank Card;Groceries;Fresh Market
+26.02.2026;3.1;Cash;Restaurants;Coffee to go
+27.02.2026;37.09;Cash;Restaurants;Thai Garden
+27.02.2026;2.4;Cash;Restaurants;Coffee to go
+28.02.2026;51.3;Cash;Groceries;Corner Deli
+01.03.2026;650;Bank Card;Housing;Rent
+02.03.2026;89.99;Bank Card;Subscriptions;Cloud storage yearly upgrade
+02.03.2026;60.72;Bank Card;Transport;Fuel
+03.03.2026;13.69;Cash;Groceries;Corner Deli
+03.03.2026;39;Bank Card;Transport;Monthly transit pass
+05.03.2026;13.99;Bank Card;Subscriptions;StreamFlix
+05.03.2026;39;Bank Card;Health;Gym membership
+05.03.2026;6.49;Bank Card;Restaurants;Café Central
+05.03.2026;2.2;Cash;Restaurants;Coffee to go
+06.03.2026;8.18;Bank Card;Restaurants;Café Central
+06.03.2026;2.2;Cash;Restaurants;Coffee to go
+06.03.2026;18.01;Bank Card;Transport;Taxi
+07.03.2026;18.72;Bank Card;Groceries;Corner Deli
+08.03.2026;31.49;Cash;Restaurants;The Burger Joint
+08.03.2026;15.01;Bank Card;Transport;Taxi
+09.03.2026;32.93;Bank Card;Shopping;Home decor
+10.03.2026;20.21;Cash;Other;Haircut
+11.03.2026;2.6;Cash;Restaurants;Coffee to go
+12.03.2026;23.38;Bank Card;Groceries;Value Discount
+12.03.2026;10.99;Bank Card;Subscriptions;Music+
+12.03.2026;2.99;Bank Card;Subscriptions;Cloud storage
+13.03.2026;26.13;Cash;Restaurants;Pizzeria Napoli
+13.03.2026;2.2;Cash;Restaurants;Coffee to go
+14.03.2026;29.01;Cash;Groceries;Value Discount
+14.03.2026;21.79;Bank Card;Restaurants;Thai Garden
+15.03.2026;81.23;Bank Card;Utilities;Electricity
+15.03.2026;27.35;Bank Card;Utilities;Water
+15.03.2026;19.5;Bank Card;Entertainment;Board game cafe
+16.03.2026;2.4;Cash;Restaurants;Coffee to go
+18.03.2026;2.4;Cash;Restaurants;Coffee to go
+20.03.2026;29.99;Bank Card;Utilities;Internet
+20.03.2026;15;Bank Card;Utilities;Mobile plan
+21.03.2026;38.08;Bank Card;Groceries;Corner Deli
+21.03.2026;20.77;Bank Card;Health;Pharmacy
+23.03.2026;3.1;Cash;Restaurants;Coffee to go
+24.03.2026;7.33;Bank Card;Groceries;Value Discount
+25.03.2026;37.36;Bank Card;Restaurants;Pizzeria Napoli
+26.03.2026;7.26;Bank Card;Groceries;Value Discount
+27.03.2026;47.82;Bank Card;Restaurants;The Burger Joint
+28.03.2026;14.88;Bank Card;Groceries;Corner Deli
+30.03.2026;2.4;Cash;Restaurants;Coffee to go
+31.03.2026;1.83;Bank Card;Groceries;Fresh Market
+31.03.2026;10.55;Bank Card;Transport;Taxi
+01.04.2026;650;Bank Card;Housing;Rent
+01.04.2026;52.35;Bank Card;Transport;Fuel
+03.04.2026;39;Bank Card;Transport;Monthly transit pass
+03.04.2026;3.1;Cash;Restaurants;Coffee to go
+04.04.2026;14.75;Bank Card;Groceries;Value Discount
+04.04.2026;11.25;Bank Card;Restaurants;Café Central
+05.04.2026;13.99;Bank Card;Subscriptions;StreamFlix
+05.04.2026;39;Bank Card;Health;Gym membership
+05.04.2026;14.34;Bank Card;Transport;Taxi
+06.04.2026;47.6;Cash;Restaurants;Bistro 21
+07.04.2026;13.46;Bank Card;Groceries;Value Discount
+09.04.2026;18.12;Bank Card;Transport;Taxi
+11.04.2026;18.83;Cash;Groceries;Fresh Market
+12.04.2026;10.99;Bank Card;Subscriptions;Music+
+12.04.2026;2.99;Bank Card;Subscriptions;Cloud storage
+14.04.2026;9.13;Bank Card;Groceries;Value Discount
+14.04.2026;47.44;Bank Card;Shopping;Clothes
+15.04.2026;45.27;Bank Card;Utilities;Electricity
+15.04.2026;27.66;Bank Card;Utilities;Water
+15.04.2026;2.6;Cash;Restaurants;Coffee to go
+16.04.2026;6.88;Bank Card;Groceries;Corner Deli
+18.04.2026;21.24;Bank Card;Groceries;Value Discount
+18.04.2026;64.9;Bank Card;Shopping;Spring jacket
+19.04.2026;67.67;Bank Card;Transport;Fuel
+20.04.2026;29.99;Bank Card;Utilities;Internet
+20.04.2026;15;Bank Card;Utilities;Mobile plan
+20.04.2026;16.46;Bank Card;Transport;Taxi
+21.04.2026;20.83;Bank Card;Groceries;Fresh Market
+23.04.2026;13.01;Cash;Restaurants;Café Central
+24.04.2026;2.4;Cash;Restaurants;Coffee to go
+25.04.2026;14.16;Bank Card;Groceries;Corner Deli
+25.04.2026;24.96;Bank Card;Restaurants;Bistro 21
+26.04.2026;23.25;Bank Card;Restaurants;The Burger Joint
+28.04.2026;4.41;Bank Card;Groceries;Value Discount
+28.04.2026;2.2;Cash;Restaurants;Coffee to go
+28.04.2026;12.21;Bank Card;Transport;Taxi
+30.04.2026;2.4;Cash;Restaurants;Coffee to go
+01.05.2026;650;Bank Card;Housing;Rent
+01.05.2026;34.59;Bank Card;Restaurants;The Burger Joint
+01.05.2026;2.6;Cash;Restaurants;Coffee to go
+01.05.2026;52.44;Bank Card;Transport;Fuel
+02.05.2026;31.27;Bank Card;Groceries;Value Discount
+02.05.2026;5.27;Bank Card;Health;Pharmacy
+03.05.2026;39;Bank Card;Transport;Monthly transit pass
+05.05.2026;13.99;Bank Card;Subscriptions;StreamFlix
+05.05.2026;39;Bank Card;Health;Gym membership
+05.05.2026;3.1;Cash;Restaurants;Coffee to go
+05.05.2026;56.83;Bank Card;Shopping;Clothes
+06.05.2026;60;Bank Card;Health;Dentist
+07.05.2026;9.32;Bank Card;Groceries;Value Discount
+07.05.2026;2.2;Cash;Restaurants;Coffee to go
+07.05.2026;51.62;Bank Card;Transport;Fuel
+08.05.2026;29.55;Bank Card;Restaurants;Sushi Bar Koi
+09.05.2026;22.52;Bank Card;Groceries;Value Discount
+12.05.2026;10.99;Bank Card;Subscriptions;Music+
+12.05.2026;2.99;Bank Card;Subscriptions;Cloud storage
+12.05.2026;2.2;Cash;Restaurants;Coffee to go
+13.05.2026;2.6;Cash;Restaurants;Coffee to go
+14.05.2026;6.24;Bank Card;Groceries;Fresh Market
+15.05.2026;45.77;Bank Card;Utilities;Electricity
+15.05.2026;28.94;Bank Card;Utilities;Water
+15.05.2026;11.56;Bank Card;Transport;Taxi
+15.05.2026;15.19;Cash;Other;Dry cleaning
+16.05.2026;21;Bank Card;Groceries;Value Discount
+19.05.2026;3.32;Bank Card;Groceries;Value Discount
+20.05.2026;29.99;Bank Card;Utilities;Internet
+20.05.2026;15;Bank Card;Utilities;Mobile plan
+20.05.2026;31.92;Cash;Restaurants;Pizzeria Napoli
+20.05.2026;238;Bank Card;Transport;Flight tickets
+21.05.2026;8.82;Bank Card;Groceries;Value Discount
+23.05.2026;44.37;Bank Card;Groceries;Value Discount
+24.05.2026;21.08;Bank Card;Restaurants;Sushi Bar Koi
+28.05.2026;7.85;Bank Card;Groceries;Value Discount
+28.05.2026;2.4;Cash;Restaurants;Coffee to go
+30.05.2026;23.7;Bank Card;Groceries;Fresh Market
+01.06.2026;650;Bank Card;Housing;Rent
+01.06.2026;42.88;Cash;Restaurants;Pizzeria Napoli
+01.06.2026;72.08;Bank Card;Shopping;Shoes
+02.06.2026;5;Bank Card;Groceries;Value Discount
+02.06.2026;2.6;Cash;Restaurants;Coffee to go
+03.06.2026;39;Bank Card;Transport;Monthly transit pass
+03.06.2026;45.82;Bank Card;Restaurants;Sushi Bar Koi
+03.06.2026;2.6;Cash;Restaurants;Coffee to go
+04.06.2026;12.43;Bank Card;Groceries;Corner Deli
+04.06.2026;2.2;Cash;Restaurants;Coffee to go
+05.06.2026;13.99;Bank Card;Subscriptions;StreamFlix
+05.06.2026;39;Bank Card;Health;Gym membership
+06.06.2026;25.63;Bank Card;Groceries;Corner Deli
+06.06.2026;33.09;Bank Card;Restaurants;Bistro 21
+07.06.2026;7.52;Bank Card;Transport;Taxi
+08.06.2026;62.08;Bank Card;Transport;Fuel
+09.06.2026;10.61;Bank Card;Groceries;Value Discount
+10.06.2026;2.6;Cash;Restaurants;Coffee to go
+10.06.2026;65.99;Bank Card;Shopping;Home decor
+11.06.2026;1.64;Bank Card;Groceries;Value Discount
+11.06.2026;3.1;Cash;Restaurants;Coffee to go
+12.06.2026;10.99;Bank Card;Subscriptions;Music+
+12.06.2026;2.99;Bank Card;Subscriptions;Cloud storage
+12.06.2026;43.8;Bank Card;Restaurants;Sushi Bar Koi
+13.06.2026;30.96;Bank Card;Groceries;Fresh Market
+15.06.2026;45.43;Bank Card;Utilities;Electricity
+15.06.2026;25.37;Bank Card;Utilities;Water
+15.06.2026;6.41;Bank Card;Health;Pharmacy
+16.06.2026;9.86;Bank Card;Groceries;Fresh Market
+18.06.2026;9.71;Bank Card;Groceries;Fresh Market
+19.06.2026;22.64;Bank Card;Restaurants;The Burger Joint
+19.06.2026;2.4;Cash;Restaurants;Coffee to go
+20.06.2026;12.78;Bank Card;Groceries;Fresh Market
+20.06.2026;29.99;Bank Card;Utilities;Internet
+20.06.2026;15;Bank Card;Utilities;Mobile plan
+20.06.2026;13.1;Bank Card;Entertainment;Cinema
+21.06.2026;9.06;Bank Card;Restaurants;Café Central
+23.06.2026;5.92;Bank Card;Groceries;Corner Deli
+25.06.2026;7.19;Bank Card;Groceries;Fresh Market
+25.06.2026;20.57;Cash;Restaurants;The Burger Joint
+26.06.2026;28.37;Bank Card;Restaurants;The Burger Joint
+27.06.2026;23.29;Cash;Groceries;Value Discount
+28.06.2026;16.94;Bank Card;Transport;Taxi
+28.06.2026;36.46;Bank Card;Entertainment;Concert tickets
+29.06.2026;2.2;Cash;Restaurants;Coffee to go
+01.07.2026;650;Bank Card;Housing;Rent
+01.07.2026;2.4;Cash;Restaurants;Coffee to go
+02.07.2026;12.84;Cash;Groceries;Fresh Market
+02.07.2026;3.1;Cash;Restaurants;Coffee to go
+03.07.2026;39;Bank Card;Transport;Monthly transit pass
+03.07.2026;43.17;Bank Card;Restaurants;Pizzeria Napoli
+03.07.2026;3.1;Cash;Restaurants;Coffee to go
+04.07.2026;40.58;Bank Card;Groceries;Value Discount
+04.07.2026;23.42;Cash;Other;Haircut
+05.07.2026;13.99;Bank Card;Subscriptions;StreamFlix
+05.07.2026;39;Bank Card;Health;Gym membership
+07.07.2026;20.21;Bank Card;Groceries;Fresh Market
+08.07.2026;10.99;Bank Card;Health;Pharmacy
+09.07.2026;10.08;Bank Card;Groceries;Fresh Market
+09.07.2026;2.2;Cash;Restaurants;Coffee to go
+10.07.2026;29.62;Cash;Restaurants;Pizzeria Napoli
+11.07.2026;22.27;Bank Card;Groceries;Corner Deli
+11.07.2026;19.47;Bank Card;Restaurants;Sushi Bar Koi
+11.07.2026;412;Bank Card;Housing;Seaside apartment
+11.07.2026;54;Bank Card;Transport;Ferry
+12.07.2026;10.99;Bank Card;Subscriptions;Music+
+12.07.2026;2.99;Bank Card;Subscriptions;Cloud storage
+12.07.2026;22.68;Bank Card;Restaurants;Sushi Bar Koi
+12.07.2026;14.54;Cash;Other;Dry cleaning
+12.07.2026;46.8;Bank Card;Restaurants;Konoba Ribar
+13.07.2026;15.11;Bank Card;Shopping;Shoes
+13.07.2026;35;Bank Card;Entertainment;Boat tour
+14.07.2026;20.66;Bank Card;Groceries;Corner Deli
+14.07.2026;61.2;Bank Card;Restaurants;Seafood dinner
+15.07.2026;49.48;Bank Card;Utilities;Electricity
+15.07.2026;26.25;Bank Card;Utilities;Water
+15.07.2026;28.5;Bank Card;Shopping;Souvenirs
+16.07.2026;10.55;Bank Card;Groceries;Fresh Market
+16.07.2026;22.4;Bank Card;Restaurants;Ice cream & drinks
+17.07.2026;29.62;Bank Card;Restaurants;Pizzeria Napoli
+17.07.2026;3.1;Cash;Restaurants;Coffee to go
+17.07.2026;40;Bank Card;Transport;Rental scooter
+18.07.2026;29.97;Bank Card;Groceries;Fresh Market
+18.07.2026;7.08;Bank Card;Restaurants;Café Central
+18.07.2026;15.48;Bank Card;Health;Pharmacy
+19.07.2026;32.93;Bank Card;Restaurants;Pizzeria Napoli
+20.07.2026;29.99;Bank Card;Utilities;Internet
+20.07.2026;15;Bank Card;Utilities;Mobile plan
+20.07.2026;3.1;Cash;Restaurants;Coffee to go
+21.07.2026;10.32;Bank Card;Groceries;Fresh Market
+23.07.2026;2.4;Cash;Restaurants;Coffee to go
+25.07.2026;22.39;Bank Card;Groceries;Fresh Market
+26.07.2026;67.3;Bank Card;Transport;Fuel
+26.07.2026;34.65;Bank Card;Health;Pharmacy
+28.07.2026;30.59;Bank Card;Groceries;Fresh Market
+28.07.2026;2.4;Cash;Restaurants;Coffee to go
+31.07.2026;2.2;Cash;Restaurants;Coffee to go
+31.07.2026;40.27;Bank Card;Entertainment;Concert tickets
+01.08.2026;25.68;Bank Card;Groceries;Corner Deli
+01.08.2026;650;Bank Card;Housing;Rent
+03.08.2026;39;Bank Card;Transport;Monthly transit pass
+04.08.2026;22.35;Bank Card;Groceries;Fresh Market
+04.08.2026;8.32;Cash;Other;Post office
+05.08.2026;13.99;Bank Card;Subscriptions;StreamFlix
+05.08.2026;39;Bank Card;Health;Gym membership
+05.08.2026;2.6;Cash;Restaurants;Coffee to go
+05.08.2026;47.71;Bank Card;Transport;Fuel
+06.08.2026;6.17;Bank Card;Groceries;Fresh Market
+07.08.2026;2.2;Cash;Restaurants;Coffee to go
+07.08.2026;13.96;Bank Card;Entertainment;Cinema
+08.08.2026;39.54;Bank Card;Groceries;Fresh Market
+09.08.2026;22.83;Bank Card;Restaurants;Bistro 21
+11.08.2026;26.65;Bank Card;Health;Pharmacy
+12.08.2026;10.99;Bank Card;Subscriptions;Music+
+12.08.2026;2.99;Bank Card;Subscriptions;Cloud storage
+13.08.2026;27.4;Bank Card;Groceries;Value Discount
+13.08.2026;15.03;Bank Card;Shopping;Shoes
+14.08.2026;56.84;Bank Card;Shopping;Home decor
+15.08.2026;28.22;Bank Card;Groceries;Corner Deli
+15.08.2026;48.63;Bank Card;Utilities;Electricity
+15.08.2026;27.8;Bank Card;Utilities;Water
+15.08.2026;31.52;Bank Card;Restaurants;Sushi Bar Koi
+17.08.2026;22.59;Bank Card;Restaurants;Pizzeria Napoli
+18.08.2026;21.8;Bank Card;Restaurants;The Burger Joint
+20.08.2026;29.99;Bank Card;Utilities;Internet
+20.08.2026;15;Bank Card;Utilities;Mobile plan
+20.08.2026;53.04;Bank Card;Shopping;Books
+21.08.2026;18.28;Bank Card;Entertainment;Bowling
+22.08.2026;24.89;Bank Card;Groceries;Fresh Market
+22.08.2026;18.45;Cash;Restaurants;Thai Garden
+27.08.2026;11.58;Bank Card;Groceries;Value Discount
+29.08.2026;27.17;Bank Card;Groceries;Value Discount
+29.08.2026;23.78;Cash;Restaurants;Thai Garden
+30.08.2026;16.61;Cash;Other;Charity donation
+31.08.2026;2.6;Cash;Restaurants;Coffee to go
+31.08.2026;30.49;Bank Card;Health;Pharmacy
+01.09.2026;14.57;Bank Card;Groceries;Fresh Market
+01.09.2026;650;Bank Card;Housing;Rent
+01.09.2026;38.98;Cash;Restaurants;The Burger Joint
+01.09.2026;23.64;Bank Card;Health;Pharmacy
+02.09.2026;8.35;Bank Card;Transport;Taxi
+03.09.2026;14.99;Bank Card;Groceries;Fresh Market
+03.09.2026;39;Bank Card;Transport;Monthly transit pass
+03.09.2026;7.49;Bank Card;Restaurants;Café Central
+03.09.2026;22.55;Cash;Other;Charity donation
+04.09.2026;3.1;Cash;Restaurants;Coffee to go
+05.09.2026;12.15;Bank Card;Groceries;Value Discount
+05.09.2026;13.99;Bank Card;Subscriptions;StreamFlix
+05.09.2026;39;Bank Card;Health;Gym membership
+07.09.2026;21.09;Bank Card;Health;Pharmacy
+08.09.2026;46.67;Bank Card;Restaurants;Bistro 21
+08.09.2026;78.67;Bank Card;Shopping;Clothes
+12.09.2026;16.08;Bank Card;Groceries;Corner Deli
+12.09.2026;10.99;Bank Card;Subscriptions;Music+
+12.09.2026;2.99;Bank Card;Subscriptions;Cloud storage
+12.09.2026;29.36;Bank Card;Health;Pharmacy
+12.09.2026;15.49;Bank Card;Entertainment;Bowling
+12.09.2026;72;Bank Card;Shopping;Running shoes
+13.09.2026;39.15;Bank Card;Restaurants;Thai Garden
+14.09.2026;3.1;Cash;Restaurants;Coffee to go
+15.09.2026;53.42;Bank Card;Utilities;Electricity
+15.09.2026;23.03;Bank Card;Utilities;Water
+15.09.2026;27.73;Cash;Restaurants;Thai Garden
+16.09.2026;30.13;Bank Card;Health;Pharmacy
+17.09.2026;2.6;Cash;Restaurants;Coffee to go
+17.09.2026;13.87;Bank Card;Transport;Taxi
+19.09.2026;37.64;Bank Card;Groceries;Fresh Market
+19.09.2026;34.9;Bank Card;Restaurants;Pizzeria Napoli
+19.09.2026;19.98;Bank Card;Entertainment;Bowling
+20.09.2026;29.99;Bank Card;Utilities;Internet
+20.09.2026;15;Bank Card;Utilities;Mobile plan
+21.09.2026;2.6;Cash;Restaurants;Coffee to go
+22.09.2026;2.43;Bank Card;Groceries;Value Discount
+22.09.2026;8.43;Bank Card;Transport;Taxi
+24.09.2026;12.86;Bank Card;Groceries;Value Discount
+24.09.2026;2.4;Cash;Restaurants;Coffee to go
+26.09.2026;13.84;Bank Card;Groceries;Corner Deli
+28.09.2026;53.6;Bank Card;Transport;Fuel
+29.09.2026;14.23;Bank Card;Groceries;Corner Deli
+29.09.2026;2.2;Cash;Restaurants;Coffee to go
+30.09.2026;53.5;Bank Card;Transport;Fuel
+01.10.2026;650;Bank Card;Housing;Rent
+01.10.2026;3.1;Cash;Restaurants;Coffee to go
+03.10.2026;28.66;Bank Card;Groceries;Corner Deli
+03.10.2026;39;Bank Card;Transport;Monthly transit pass
+05.10.2026;13.99;Bank Card;Subscriptions;StreamFlix
+05.10.2026;39;Bank Card;Health;Gym membership
+06.10.2026;24.62;Bank Card;Groceries;Value Discount
+08.10.2026;37.34;Bank Card;Restaurants;Pizzeria Napoli
+08.10.2026;2.2;Cash;Restaurants;Coffee to go
+08.10.2026;5.01;Bank Card;Health;Pharmacy
+09.10.2026;23.22;Cash;Restaurants;The Burger Joint
+10.10.2026;24.15;Cash;Groceries;Corner Deli
+10.10.2026;62.79;Bank Card;Shopping;Home decor
+12.10.2026;10.99;Bank Card;Subscriptions;Music+
+12.10.2026;2.99;Bank Card;Subscriptions;Cloud storage
+13.10.2026;3.1;Cash;Restaurants;Coffee to go
+15.10.2026;42.83;Bank Card;Utilities;Electricity
+15.10.2026;25.48;Bank Card;Utilities;Water
+15.10.2026;72.76;Bank Card;Shopping;Shoes
+16.10.2026;40.81;Cash;Restaurants;The Burger Joint
+17.10.2026;21.37;Bank Card;Groceries;Value Discount
+18.10.2026;19.11;Bank Card;Restaurants;Pizzeria Napoli
+20.10.2026;29.99;Bank Card;Utilities;Internet
+20.10.2026;15;Bank Card;Utilities;Mobile plan
+20.10.2026;2.6;Cash;Restaurants;Coffee to go
+21.10.2026;23.64;Cash;Restaurants;Thai Garden
+22.10.2026;6.41;Bank Card;Groceries;Value Discount
+22.10.2026;3.1;Cash;Restaurants;Coffee to go
+22.10.2026;54.27;Bank Card;Transport;Fuel
+23.10.2026;8.66;Cash;Other;Dry cleaning
+24.10.2026;12.24;Bank Card;Groceries;Corner Deli
+24.10.2026;60.06;Bank Card;Transport;Fuel
+25.10.2026;17.6;Bank Card;Transport;Taxi
+26.10.2026;20.6;Bank Card;Restaurants;Sushi Bar Koi
+29.10.2026;24.41;Bank Card;Groceries;Fresh Market
+29.10.2026;2.6;Cash;Restaurants;Coffee to go

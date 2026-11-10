@@ -1,0 +1,8 @@
+kind;amount;source;destination;category;frequency;interval;start_date;end_date;paused;details
+expense;650;Bank Card;;Housing;monthly;1;01.11.2025;;false;Rent
+expense;13.99;Bank Card;;Subscriptions;monthly;1;05.11.2025;;false;StreamFlix
+expense;39;Bank Card;;Health;monthly;1;05.11.2025;;false;Gym membership
+expense;29.99;Bank Card;;Utilities;monthly;1;20.11.2025;;false;Internet
+expense;420;Bank Card;;Transport;yearly;1;10.02.2026;;false;Car insurance
+income;1940;;Bank Card;Salary;monthly;1;10.04.2026;;false;Monthly salary
+transfer;300;Bank Card;Savings;;monthly;1;11.11.2025;;false;Monthly savings

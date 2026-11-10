@@ -1,12 +1,13 @@
 """Generates the Android launcher icons from the iOS app icon.
 
-Usage (needs Pillow):  python tools/make-icons.py "<path to iOS repo>/ledger/Assets.xcassets/AppIcon.appiconset/Icon-3.png"
+Usage (needs Pillow):  python tools/make-icons.py "<path to iOS repo>/ledger/Assets.xcassets/AppIcon.appiconset/Icon.png"
 
-The iOS icon is a full-bleed 1024 px square: a white mark on a vertical dark gradient. Android adaptive
-icons are 108 dp squares that the launcher masks into its own shape; the middle 72 dp are visible and
-only the middle 66 dp circle always is. So the iOS icon fills the visible 72 dp (the mark then stays
-inside the safe circle, which is checked), its gradient is extended into the bleed area, and a white
-silhouette of the mark is made for themed (monochrome) icons on Android 13+.
+The iOS icon is a full-bleed 1024 px square: a mark on a dark background (since iOS 8a76b5d three
+coloured bars forming an L on black). Android adaptive icons are 108 dp squares that the launcher
+masks into its own shape; the middle 72 dp are visible and only the middle 66 dp circle always is.
+So the iOS icon fills the visible 72 dp, or less if its mark would then reach outside the safe circle,
+its background is extended into the bleed area, and a white silhouette of the mark is made for themed
+(monochrome) icons on Android 13+. The Play listing icon is the iOS icon itself.
 """
 import math
 import sys
@@ -24,19 +25,37 @@ SAFE_RADIUS = CANVAS * 33 / 108
 
 
 def mark_alpha(image):
-    """Opacity of the white mark: bright pixels, so the gradient's light top never counts."""
-    return image.convert("L").point(lambda v: max(0, min(255, (v - 150) * 255 // 80)))
+    """Opacity of the mark: anything clearly lighter than the icon's dark background."""
+    return image.convert("L").point(lambda v: max(0, min(255, (v - 16) * 255 // 32)))
 
 
-def full_bleed(icon):
-    """The iOS icon on the visible 72 dp, its gradient continued to the 108 dp edges."""
-    scaled = icon.resize((VISIBLE, VISIBLE), Image.LANCZOS)
+def mark_reach(image):
+    """How far the mark reaches from the centre, as a share of the image's width."""
+    pixels = mark_alpha(image).load()
+    size = image.width
+    return max(
+        math.hypot(x - size / 2, y - size / 2)
+        for y in range(size)
+        for x in range(size)
+        if pixels[x, y] > 128
+    ) / size
+
+
+def art_size(icon):
+    """The visible 72 dp, or less so the mark stays inside the safe circle with a small margin."""
+    return min(VISIBLE, int(SAFE_RADIUS * 0.97 / mark_reach(icon)))
+
+
+def full_bleed(icon, size):
+    """The iOS icon [size] px wide in the middle, its background continued to the 108 dp edges."""
+    scaled = icon.resize((size, size), Image.LANCZOS)
+    inset = (CANVAS - size) // 2
     canvas = Image.new("RGBA", (CANVAS, CANVAS))
-    # The gradient is vertical, so each row takes the colour of the icon's left edge at that height.
-    edge = [scaled.getpixel((0, min(VISIBLE - 1, max(0, y - INSET)))) for y in range(CANVAS)]
+    # A background gradient would be vertical, so each row takes the colour of the icon's left edge at that height.
+    edge = [scaled.getpixel((0, min(size - 1, max(0, y - inset)))) for y in range(CANVAS)]
     for y, colour in enumerate(edge):
         canvas.paste(colour, (0, y, CANVAS, y + 1))
-    canvas.paste(scaled, (INSET, INSET))
+    canvas.paste(scaled, (inset, inset))
     return canvas
 
 
@@ -85,7 +104,7 @@ def save(image, folder, name, size):
 
 def main():
     icon = Image.open(sys.argv[1]).convert("RGBA")
-    full = full_bleed(icon)
+    full = full_bleed(icon, art_size(icon))
     check_safe_zone(full)
     mono = monochrome(full)
     # Legacy icons show the 72 dp middle of the 108 dp canvas, like a masked adaptive icon.
@@ -99,8 +118,8 @@ def main():
         save(legacy(legacy_art.resize((size, size), Image.LANCZOS), round_mask=False), folder, "ic_launcher", size)
         save(legacy(legacy_art.resize((size, size), Image.LANCZOS), round_mask=True), folder, "ic_launcher_round", size)
 
-    # Google Play listing icon: 512 px, full square (Play applies its own mask).
-    legacy_art.resize((512, 512), Image.LANCZOS).convert("RGB").save(RES.parent / "ic_launcher-playstore.png", optimize=True)
+    # Google Play listing icon: 512 px, full square (Play applies its own mask), like the App Store's.
+    icon.resize((512, 512), Image.LANCZOS).convert("RGB").save(RES.parent / "ic_launcher-playstore.png", optimize=True)
     print("Icons written to", RES)
 
 

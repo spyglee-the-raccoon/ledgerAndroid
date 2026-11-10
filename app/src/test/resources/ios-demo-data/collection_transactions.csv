@@ -1,0 +1,14 @@
+collection;transaction_date;transaction_kind;transaction_amount;transaction_source;transaction_destination;transaction_details
+Home Office;24.01.2026;expense;349;Bank Card;;Standing desk
+Home Office;24.01.2026;expense;219;Bank Card;;Office chair
+Home Office;31.01.2026;expense;179;Bank Card;;Monitor 27 inch
+Home Office;07.02.2026;expense;39.9;Bank Card;;Desk lamp
+Summer Trip;20.05.2026;expense;238;Bank Card;;Flight tickets
+Summer Trip;11.07.2026;expense;412;Bank Card;;Seaside apartment
+Summer Trip;11.07.2026;expense;54;Bank Card;;Ferry
+Summer Trip;12.07.2026;expense;46.8;Bank Card;;Konoba Ribar
+Summer Trip;13.07.2026;expense;35;Bank Card;;Boat tour
+Summer Trip;14.07.2026;expense;61.2;Bank Card;;Seafood dinner
+Summer Trip;15.07.2026;expense;28.5;Bank Card;;Souvenirs
+Summer Trip;16.07.2026;expense;22.4;Bank Card;;Ice cream & drinks
+Summer Trip;17.07.2026;expense;40;Bank Card;;Rental scooter

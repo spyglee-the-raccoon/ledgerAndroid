@@ -50,6 +50,10 @@
                 <data android:mimeType="image/*" />
                 <data android:mimeType="application/pdf" />
             </intent-filter>
+            <!-- Add transaction and Scan when the app icon is long-pressed, like the iOS quick actions. -->
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <receiver

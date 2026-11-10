@@ -159,7 +159,7 @@ fun SettingsScreen(
             }
             SettingsLink(Icons.Outlined.IosShare, CategoryColor.TEAL.toColor(), stringResource(R.string.export_csv)) {
                 scope.launch {
-                    if (viewModel.hasTransactionsToExport()) exportFolderPicker.launch(null) else viewModel.showNothingToExport()
+                    if (viewModel.hasDataToExport()) exportFolderPicker.launch(null) else viewModel.showNothingToExport()
                 }
             }
 

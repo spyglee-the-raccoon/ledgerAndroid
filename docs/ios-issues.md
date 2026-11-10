@@ -135,8 +135,10 @@ the same, to match.
 
 With "lock the app" on, the home screen widgets still show the month's balance, the budget and the last three
 transactions with their notes. Nothing checks the lock setting and nothing is marked `privacySensitive()`, so
-the data also shows on a locked iPhone. Android has no widgets yet; what they should show is decision D5 in
-[platform-decisions.md](platform-decisions.md).
+the data also shows on a locked iPhone. Decision D5 in [platform-decisions.md](platform-decisions.md): with
+the lock on, widgets show no amounts or notes. Android's widgets do that since D4. The chart keeps its ring and
+legend, and a lock replaces the balance. The budget keeps its name and bar. Transactions show their category and
+time or date. iOS should look the same.
 **Fix:** when the lock is on, write a snapshot without amounts (or mark the views `privacySensitive()`).
 
 ## 17. Siri questions refuse whenever the lock setting is on; logging ignores it

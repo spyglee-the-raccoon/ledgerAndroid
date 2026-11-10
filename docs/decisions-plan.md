@@ -181,30 +181,52 @@ The app switcher stays as it is (decided).
 sends strings to translators (D14).
 
 ## 6. Widgets (D4, D5)
-**Changes**
-- Dependencies: Jetpack Glance (`glance-appwidget`, `glance-material3`).
-- New package `widget/` with three widgets, each with an `appwidget-provider` XML and a preview:
-  - month chart: 2×2, plus 4×2 with a legend, as in iOS `fa64623`;
-  - budget: 4×2;
-  - last three transactions: 4×2.
-- `domain/WidgetSnapshot.kt`, ported from iOS's `WidgetSnapshotWriter`:
-  - the month's slices, like the main screen's donut;
-  - the month's balance;
-  - the budget shown: the general limit when it's set and on, else the first active category budget by name;
-  - the three latest transactions.
-- Port iOS's widget snapshot test with it.
-- The donut is drawn into a small bitmap with the colours of `ui/main/DonutChart.kt`, since Glance can't draw arcs.
-- **Refresh after every change:** watch the transaction, budget, category and account tables through Room's
-  invalidation tracker, with a short debounce. Also refresh at the start of each month, and when the app lock
-  setting or the language changes.
-- Tapping a widget opens the app, and the app lock applies as usual.
-- **With the lock on (D5): no amounts and no notes.**
-  - **Open point, to agree with iOS so both look the same (#16).** Proposal: the chart keeps its slices but
-    drops the balance; the budget keeps its bar and name; transactions show their category and date only.
-- Strings: the widget names and descriptions already come from the iOS catalog.
+**Done**, branch `widgets`.
 
-**Tests:** unit tests for the snapshot, with the lock on and off; Glance's testing library for the layouts.
-Check on the emulator: each size, dark mode and every language.
+**What was built** (Jetpack Glance 1.2.0, package `widget/`)
+- The three iOS widgets:
+  - month chart: ring with this month's balance, plus a legend of the top four categories when wide;
+  - budget card;
+  - last three transactions.
+- **Data.**
+  - `domain/WidgetSnapshot.kt` is iOS's `WidgetSnapshot` and `WidgetSnapshotWriter`: largest slices first,
+    the general limit or else the first active category budget by name, and month rollover (`current`).
+  - iOS's `WidgetSnapshotTests` are ported as `WidgetSnapshotTest`.
+  - `WidgetData` builds the snapshot from the database. Widgets run in the app's process, so no snapshot
+    file is written.
+- **Updating.**
+  - A shown widget watches the transaction, budget and category tables and the lock setting.
+  - `Widgets.watch` in `LadgerApp` wakes idle widgets after changes.
+  - An alarm at each month start, boot, time and time-zone changes, and language or theme changes update them
+    too.
+- **Drawing.** Glance can't draw arcs or Compose icons. `WidgetBitmaps` paints the ring (the main donut's
+  proportions) and the category badges into bitmaps. Text, bars and backgrounds follow the system's light and
+  dark theme.
+- **App lock on (D5).** No amounts or notes:
+  - chart: the ring and the legend's names, with a lock instead of the balance;
+  - budget: the name and the bar;
+  - transactions: category and time or date.
+  - The lock icon reads "Hidden while the app lock is on" (a new Android-only string).
+- **Taps** open the app in a fresh task at main, budgets or accounts, as iOS's `ladger://` links. They go
+  through `QuickAction`, so they wait for unlock.
+- `formatMoney` got `wholeUnits` for the chart (iOS rounds there). `CategoryColor.toColor(dark, primary)` and
+  the `internal` color schemes let the widgets use the app's colors.
+- Debug builds: `adb shell am start -S -n work.spyglee.ledger/work.spyglee.ladger.MainActivity --es pin_widget
+  chart` (or `budget`, `transactions`) asks the launcher to add a widget.
+
+**Tested on the Android 14 emulator** with the iOS demo data, its dates moved to reach this month:
+- all three widgets, the chart small and widened;
+- light and dark;
+- a new expense showing up straight away;
+- the app lock on and off;
+- taps opening main, budgets and accounts.
+
+179 unit tests (6 new) and 36 instrumented tests pass.
+
+**Not done:**
+- **Generated previews in the widget picker (Android 15+).** `setWidgetPreviews` is limited to about two calls
+  an hour, which needs some care; the picker shows the app icon meanwhile. A follow-up if wanted.
+- **The lock-on look needs agreeing with iOS (#16)**, so both apps match.
 
 ## 7. Pro subscription (D1)
 **Play Console (needs PR 1)**

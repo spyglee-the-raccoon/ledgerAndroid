@@ -7,6 +7,7 @@ import android.os.Build
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import work.spyglee.ladger.ui.PhoneLocale
+import work.spyglee.ladger.widget.Widgets
 
 class LadgerApp : Application() {
     lateinit var container: AppContainer
@@ -23,12 +24,14 @@ class LadgerApp : Application() {
         }
         container.applicationScope.launch { container.plannedTransactions.reschedule() }
         container.applicationScope.launch { container.receiptFiles.sweepOrphans() }
+        Widgets.watch(this, container.widgetData, container.applicationScope)
     }
 
-    /** The phone's language or region may have changed while the app was running. */
+    /** The phone's language, region or light/dark theme may have changed while the app was running. */
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         updatePhoneLocale()
+        container.applicationScope.launch { Widgets.updateAll(this@LadgerApp) }
     }
 
     /** Amounts keep the phone's region when the app has a language of its own (D8); see [PhoneLocale]. */

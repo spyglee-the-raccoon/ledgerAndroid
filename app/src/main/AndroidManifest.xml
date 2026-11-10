@@ -25,6 +25,11 @@
     -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!--
+        Exact timing for both (decision D10). From Android 14 the user has to allow it; without it the
+        alarms stay inexact. Not USE_EXACT_ALARM, which Play keeps for alarm-clock and calendar apps.
+    -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <!--
         Backup: the user's Google backup (only when encrypted end to end) and phone-to-phone transfer
@@ -76,6 +81,7 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.TIME_SET" />
                 <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
             </intent-filter>
         </receiver>
     </application>

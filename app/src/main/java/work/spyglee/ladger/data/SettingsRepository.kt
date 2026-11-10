@@ -24,6 +24,13 @@ class SettingsRepository(private val dataStore: DataStore<Preferences>) {
         dataStore.edit { it[APP_LOCK_ON] = value }
     }
 
+    /** Whether the app has asked once for exact alarms (Android only, D10); it doesn't ask again. */
+    val didAskExactAlarms: Flow<Boolean> = dataStore.data.map { it[DID_ASK_EXACT_ALARMS] ?: false }
+
+    suspend fun markAskedExactAlarms() {
+        dataStore.edit { it[DID_ASK_EXACT_ALARMS] = true }
+    }
+
     suspend fun didSeedDefaultData(): Boolean = dataStore.data.first()[DID_SEED_DEFAULT_DATA] ?: false
 
     suspend fun markDefaultDataSeeded() {
@@ -35,5 +42,8 @@ class SettingsRepository(private val dataStore: DataStore<Preferences>) {
         val REMINDER_ON = booleanPreferencesKey("isReminderOn")
         val APP_LOCK_ON = booleanPreferencesKey("isBiometricsRequired")
         val DID_SEED_DEFAULT_DATA = booleanPreferencesKey("didSeedDefaultData")
+
+        // Android only.
+        val DID_ASK_EXACT_ALARMS = booleanPreferencesKey("didAskExactAlarms")
     }
 }

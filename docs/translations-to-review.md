@@ -31,3 +31,8 @@ They live in `app/src/main/res/values*/strings_android.xml`. `%1$s` is replaced 
 | `next_month` | Next month | Sljedeći mjesec | Наступний місяць | Następny miesiąc |
 | `increase` | Increase | Povećaj | Збільшити | Zwiększ |
 | `decrease` | Decrease | Smanji | Зменшити | Zmniejsz |
+| `exact_alarms_title` | Exact timing | Točno vrijeme | Точний час | Dokładny czas |
+| `exact_alarms_message` | Allow Ledger to use alarms, so planned transactions are recorded and reminders arrive right on time. Without them, they can come a few minutes late. | Dopustite Ledgeru korištenje alarma kako bi se planirane transakcije bilježile, a podsjetnici stizali točno na vrijeme. Bez toga mogu kasniti nekoliko minuta. | Дозвольте Ledger використовувати будильники, щоб заплановані транзакції записувалися, а нагадування надходили вчасно. Без цього вони можуть запізнюватися на кілька хвилин. | Pozwól aplikacji Ledger używać alarmów, aby zaplanowane transakcje były zapisywane, a przypomnienia przychodziły punktualnie. Bez tego mogą się spóźniać o kilka minut. |
+| `exact_alarms_allow` | Allow | Dopusti | Дозволити | Zezwól |
+| `not_now` | Not now | Ne sada | Не зараз | Nie teraz |
+| `allow_exact_alarms` | Allow exact timing | Dopusti točno vrijeme | Дозволити точний час | Zezwól na dokładny czas |

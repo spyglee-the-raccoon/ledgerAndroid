@@ -15,6 +15,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.TrendingUp
+import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.CreditCard
 import androidx.compose.material.icons.outlined.FileDownload
@@ -38,8 +39,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -49,6 +52,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import work.spyglee.ladger.R
@@ -56,12 +60,15 @@ import work.spyglee.ladger.data.CategoryColor
 import work.spyglee.ladger.data.CsvDocuments
 import work.spyglee.ladger.domain.csv.CsvImportException
 import work.spyglee.ladger.lock.AuthPurpose
+import work.spyglee.ladger.reminder.ExactAlarms
 import work.spyglee.ladger.ui.LocalAppContainer
 import work.spyglee.ladger.ui.LocalAuthenticator
 import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.LadgerTopBar
 import work.spyglee.ladger.ui.components.ListRow
 import work.spyglee.ladger.ui.components.SectionHeader
+import work.spyglee.ladger.ui.components.openExactAlarmSettings
+import work.spyglee.ladger.ui.components.rememberExactAlarmPrompt
 import work.spyglee.ladger.ui.theme.toColor
 
 @Composable
@@ -83,9 +90,10 @@ fun SettingsScreen(
     val dialog by viewModel.dialog.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
-    val reminder = LocalAppContainer.current.reminder
+    val container = LocalAppContainer.current
+    val reminder = container.reminder
     // The pickers and settings pages below are the app's own, so coming back doesn't lock it (D5).
-    val appLock = LocalAppContainer.current.appLock
+    val appLock = container.appLock
     val authenticator = LocalAuthenticator.current
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
@@ -103,8 +111,16 @@ fun SettingsScreen(
             }
         }
     }
+    // After notifications, Android asks once for exact alarms (D10), so the reminder comes on time.
+    val askForExactAlarmsAndTurnReminderOn = rememberExactAlarmPrompt { viewModel.setReminderOn(true) }
     val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) viewModel.setReminderOn(true) else showNotificationsDenied()
+        if (granted) askForExactAlarmsAndTurnReminderOn() else showNotificationsDenied()
+    }
+    // The user can allow or take back exact alarms in system settings, so this is checked on every return.
+    var exactAlarmsAllowed by remember { mutableStateOf(ExactAlarms.allowed(context)) }
+    LifecycleResumeEffect(Unit) {
+        exactAlarmsAllowed = ExactAlarms.allowed(context)
+        onPauseOrDispose { }
     }
     val importPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments(), viewModel::import)
     val exportFolderPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { folder ->
@@ -119,7 +135,7 @@ fun SettingsScreen(
             !on -> viewModel.setReminderOn(false)
             needsPermission -> notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
             !reminder.canNotify() -> showNotificationsDenied()
-            else -> viewModel.setReminderOn(true)
+            else -> askForExactAlarmsAndTurnReminderOn()
         }
     }
 
@@ -145,6 +161,12 @@ fun SettingsScreen(
                 checked = isReminderOn,
                 onCheckedChange = onReminderChange,
             )
+            // Android 14+ only, until the user allows exact alarms (D10).
+            if (!exactAlarmsAllowed) {
+                SettingsLink(Icons.Outlined.Alarm, CategoryColor.RED.toColor(), stringResource(R.string.allow_exact_alarms)) {
+                    openExactAlarmSettings(context, container)
+                }
+            }
             // The switch flips only after the user authenticates (MainActivity saves the setting).
             SettingsToggle(
                 Icons.Outlined.Fingerprint,

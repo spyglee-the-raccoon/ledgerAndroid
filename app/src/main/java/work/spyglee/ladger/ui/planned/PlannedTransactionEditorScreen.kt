@@ -76,6 +76,7 @@ import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.LadgerTopBar
 import work.spyglee.ladger.ui.components.SegmentedSelector
 import work.spyglee.ladger.ui.components.SwitchRow
+import work.spyglee.ladger.ui.components.rememberExactAlarmPrompt
 import work.spyglee.ladger.ui.formatDate
 import work.spyglee.ladger.ui.localDecimalSeparator
 import work.spyglee.ladger.ui.theme.iconFor
@@ -161,15 +162,17 @@ fun PlannedTransactionEditorScreen(plannedId: Long?, onDone: () -> Unit) {
     val available = categories.filter { it.kind == draft.kind.categoryKind }
     val sourceOptions = sources.map { PickerOption(it.id, it.name, iconFor(it.systemImage), it.color.toColor()) }
 
-    // As on iOS, saving asks to allow notifications, and saves whatever the answer.
+    // As on iOS, saving asks to allow notifications, and saves whatever the answer. Android then asks once
+    // for exact alarms (D10), so the plan is recorded on time; that doesn't hold up saving either.
     val context = LocalContext.current
+    val askForExactAlarmsAndSave = rememberExactAlarmPrompt { viewModel.save(onDone) }
     val notificationPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-        viewModel.save(onDone)
+        askForExactAlarmsAndSave()
     }
     val save = {
         val needsPermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-        if (needsPermission) notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS) else viewModel.save(onDone)
+        if (needsPermission) notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS) else askForExactAlarmsAndSave()
     }
 
     Scaffold(

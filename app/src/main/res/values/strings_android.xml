@@ -22,4 +22,10 @@
     <string name="next_month">Next month</string>
     <string name="increase">Increase</string>
     <string name="decrease">Decrease</string>
+    <!-- Exact alarms for planned transactions and the reminder (D10). -->
+    <string name="exact_alarms_title">Exact timing</string>
+    <string name="exact_alarms_message">Allow Ledger to use alarms, so planned transactions are recorded and reminders arrive right on time. Without them, they can come a few minutes late.</string>
+    <string name="exact_alarms_allow">Allow</string>
+    <string name="not_now">Not now</string>
+    <string name="allow_exact_alarms">Allow exact timing</string>
 </resources>

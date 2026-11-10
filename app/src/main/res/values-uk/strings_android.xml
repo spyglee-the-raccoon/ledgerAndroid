@@ -22,4 +22,10 @@
     <string name="next_month">Наступний місяць</string>
     <string name="increase">Збільшити</string>
     <string name="decrease">Зменшити</string>
+    <!-- Exact alarms for planned transactions and the reminder (D10). -->
+    <string name="exact_alarms_title">Точний час</string>
+    <string name="exact_alarms_message">Дозвольте Ledger використовувати будильники, щоб заплановані транзакції записувалися, а нагадування надходили вчасно. Без цього вони можуть запізнюватися на кілька хвилин.</string>
+    <string name="exact_alarms_allow">Дозволити</string>
+    <string name="not_now">Не зараз</string>
+    <string name="allow_exact_alarms">Дозволити точний час</string>
 </resources>

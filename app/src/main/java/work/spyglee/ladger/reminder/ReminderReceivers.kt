@@ -1,5 +1,6 @@
 package work.spyglee.ladger.reminder
 
+import android.app.AlarmManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -45,6 +46,7 @@ class PlannedTransactionReceiver : BroadcastReceiver() {
  * Alarms are cleared on reboot and app updates, and a clock or time zone change moves 20:30,
  * so the reminder is scheduled again in all of these cases if it's on. The planned transactions
  * alarm is set again too; occurrences missed while the phone was off are recorded right away.
+ * When the user allows exact alarms, both are set again so they become exact (D10).
  */
 class ReminderRescheduleReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -67,6 +69,7 @@ class ReminderRescheduleReceiver : BroadcastReceiver() {
             Intent.ACTION_MY_PACKAGE_REPLACED,
             Intent.ACTION_TIME_CHANGED,
             Intent.ACTION_TIMEZONE_CHANGED,
+            AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED,
         )
     }
 }

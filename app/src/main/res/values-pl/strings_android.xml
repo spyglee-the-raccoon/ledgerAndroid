@@ -22,4 +22,10 @@
     <string name="next_month">Następny miesiąc</string>
     <string name="increase">Zwiększ</string>
     <string name="decrease">Zmniejsz</string>
+    <!-- Exact alarms for planned transactions and the reminder (D10). -->
+    <string name="exact_alarms_title">Dokładny czas</string>
+    <string name="exact_alarms_message">Pozwól aplikacji Ledger używać alarmów, aby zaplanowane transakcje były zapisywane, a przypomnienia przychodziły punktualnie. Bez tego mogą się spóźniać o kilka minut.</string>
+    <string name="exact_alarms_allow">Zezwól</string>
+    <string name="not_now">Nie teraz</string>
+    <string name="allow_exact_alarms">Zezwól na dokładny czas</string>
 </resources>

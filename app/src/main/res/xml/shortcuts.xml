@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Long-pressing the app icon offers these, as the iOS quick actions since 8a76b5d. The intents go to
-    MainActivity, which handles them as QuickAction. targetPackage is the applicationId.
+    MainActivity, which handles them as QuickAction. targetPackage is the applicationId ("ledger"), while
+    targetClass and the actions keep the code's "ladger" package.
 -->
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
@@ -12,7 +13,7 @@
         <intent
             android:action="work.spyglee.ladger.action.ADD_TRANSACTION"
             android:targetClass="work.spyglee.ladger.MainActivity"
-            android:targetPackage="work.spyglee.ladger" />
+            android:targetPackage="work.spyglee.ledger" />
     </shortcut>
     <shortcut
         android:enabled="true"
@@ -22,6 +23,6 @@
         <intent
             android:action="work.spyglee.ladger.action.SCAN"
             android:targetClass="work.spyglee.ladger.MainActivity"
-            android:targetPackage="work.spyglee.ladger" />
+            android:targetPackage="work.spyglee.ledger" />
     </shortcut>
 </shortcuts>

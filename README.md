@@ -29,8 +29,8 @@ keep the app's data, install and run the tests directly:
 
 ```sh
 ./gradlew installDebug installDebugAndroidTest
-adb shell pm grant work.spyglee.ladger android.permission.POST_NOTIFICATIONS
-adb shell am instrument -w work.spyglee.ladger.test/androidx.test.runner.AndroidJUnitRunner
+adb shell pm grant work.spyglee.ledger android.permission.POST_NOTIFICATIONS
+adb shell am instrument -w work.spyglee.ledger.test/androidx.test.runner.AndroidJUnitRunner
 ```
 
 Releasing, signing and the Play Data safety answers: [docs/RELEASE.md](docs/RELEASE.md).
@@ -55,5 +55,6 @@ Releasing, signing and the Play Data safety answers: [docs/RELEASE.md](docs/RELE
 
 ## Debugging receipts
 In debug builds the recognized receipt text is logged (`adb logcat -s TransactionEditor`) and the last
-photo is kept: `adb exec-out run-as work.spyglee.ladger cat cache/last-receipt.jpg > last-receipt.jpg`.
-`adb shell am start -S -n work.spyglee.ladger/.MainActivity --ez show_reminder true` shows the reminder.
+photo is kept: `adb exec-out run-as work.spyglee.ledger cat cache/last-receipt.jpg > last-receipt.jpg`.
+`adb shell am start -S -n work.spyglee.ledger/work.spyglee.ladger.MainActivity --ez show_reminder true` shows the
+reminder.

@@ -29,7 +29,7 @@ class ReceiptScanner(context: Context) {
 
     /**
      * Debug builds only: keeps the last photo in app-private storage, so a misread receipt can be
-     * pulled with `adb exec-out run-as work.spyglee.ladger cat cache/last-receipt.jpg > last-receipt.jpg`.
+     * pulled with `adb exec-out run-as work.spyglee.ledger cat cache/last-receipt.jpg > last-receipt.jpg`.
      */
     private suspend fun saveForDebugging(bitmap: Bitmap) = withContext(Dispatchers.IO) {
         File(cacheDir, "last-receipt.jpg").outputStream().use { bitmap.compress(Bitmap.CompressFormat.JPEG, 90, it) }

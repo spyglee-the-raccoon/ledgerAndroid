@@ -136,9 +136,9 @@ budgets) on and off separately in system settings.
 | Database | SwiftData. iCloud sync is prepared but off (`LedgerStore.swift`). | Room, version 3, with tested migrations |
 | While the phone is locked | Data can't be read (`NSFileProtectionComplete`) | Readable after the first unlock since boot, which is what lets alarms record planned transactions |
 | Receipt photos | Inside the database | JPEG files in the app's private folder |
-| Backup | **Included** in iCloud/computer backups and iPhone-to-iPhone transfer | **Off**: no Google backup, no phone-to-phone transfer |
-| Moving to a new phone | Automatic | CSV export and import only, which loses receipt photos and learned merchant categories |
-| Network | None (purchases go through the App Store) | **No INTERNET permission at all.** The README and the Play listing promise "nothing leaves the device". |
+| Backup | **Included** in iCloud/computer backups and iPhone-to-iPhone transfer | **Included** since D2: in Google backup, only when encrypted end to end with the screen lock (Android 9+), and in phone-to-phone transfer. Google backup stops above 25 MB. Android 8: none. |
+| Moving to a new phone | Automatic | Automatic with Android's phone-to-phone transfer or a Google backup, photos included. CSV still works but loses photos and learned merchant categories. |
+| Network | None (purchases go through the App Store) | **No INTERNET permission at all**, so the app itself sends nothing. Android's backup and transfer (D2) are the only way data leaves the phone. |
 
 ### CSV
 - The format is identical, and files go both ways. Since part 1, Android reads and writes all 11 files like iOS

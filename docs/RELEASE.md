@@ -44,13 +44,17 @@ The app is local-only and has **no INTERNET permission** (libraries that request
 `AndroidManifest.xml`; check with `aapt dump permissions` on the APK before each release). So:
 
 - **Does your app collect or share any of the required user data types?** No.
-- Data stays on the device: transactions in the app's database, settings in DataStore. Android backup
-  is turned off (`allowBackup="false"`, data extraction rules exclude everything). This includes
-  phone-to-phone transfer, so moving to a new phone means Settings → Export to CSV, then Import.
+- Data stays with the user: transactions in the app's database, settings in DataStore. Since decision D2,
+  Android's backup is on (`res/xml/data_extraction_rules.xml`, `backup_rules.xml`):
+  - The database, receipt photos and settings go into the user's Google backup. That only happens when the
+    phone can encrypt the backup end to end with its screen lock (Android 9+; Android 8 has no backup).
+  - They also move to a new phone with Android's phone-to-phone transfer.
+  - The data only goes to the user's own Google account or phone, never to us, so we answer that it isn't
+    collected. **Check before submitting** that Play's Data safety help agrees about Android backup.
 - Receipt photos and PDFs are read on the device (ML Kit's bundled text recognizer, and Gemini Nano in
   Android's AICore service where available). Since iOS `46702e5` a photo taken with "Scan your receipt" is
-  kept with its transaction (a 1600 px JPEG in the app's private `files/receipts`, excluded from backup like
-  everything else), with the products read from it; nothing leaves the device, so it still isn't "collected".
+  kept with its transaction (a 1600 px JPEG in the app's private `files/receipts`, backed up with the
+  database), with the products read from it; nothing is sent to us, so it still isn't "collected".
   Shared images and PDFs are only read, not stored.
 
 ## 5. Permissions (for review questions)

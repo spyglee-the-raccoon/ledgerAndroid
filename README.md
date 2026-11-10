@@ -7,8 +7,9 @@ items, budget alerts once a month, the quick actions, Polish and the new icon. T
 subscription follow the plan in [docs/decisions-plan.md](docs/decisions-plan.md); Siri has no Android equivalent
 for now (decision D3). Kotlin, Jetpack Compose, Room, CameraX and ML Kit; minSdk 26.
 
-Nothing leaves the device: the app has no INTERNET permission, receipts are read on the device, and
-backups are turned off. CSV files are compatible with the iOS app in both directions: as on iOS, the export
+The app has no INTERNET permission and reads receipts on the device. Android's own backup is on (decision
+D2): the database, receipt photos and settings go into the user's Google backup when the phone can encrypt it
+end to end, and move to a new phone with Android's phone-to-phone transfer. CSV files are compatible with the iOS app in both directions: as on iOS, the export
 writes transactions, accounts, planned transactions, categories, budgets, collections and receipt items, and
 the import recognizes each file by its header. Receipt photos aren't exported, as on iOS. Scanned receipt pages
 are kept as JPEGs in the app's `files/receipts` folder.

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Android 8.0 and 8.1: no backup at all. Their Google backup isn't encrypted end to end, and they
+    can't tell a cloud backup from a phone-to-phone transfer (requireFlags needs Android 9), so
+    moving from them stays CSV only. Android 9 and later: xml-v28/backup_rules.xml and
+    data_extraction_rules.xml.
+-->
+<full-backup-content>
+    <exclude domain="root" path="." />
+    <exclude domain="file" path="." />
+    <exclude domain="database" path="." />
+    <exclude domain="sharedpref" path="." />
+    <exclude domain="external" path="." />
+</full-backup-content>

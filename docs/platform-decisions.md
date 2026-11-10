@@ -177,7 +177,7 @@ budgets) on and off separately in system settings.
 
 | | iOS | Android |
 |---|---|---|
-| ID | `work.spyglee.ledger` | `work.spyglee.ladger` (spelled with an **a**) |
+| ID | `work.spyglee.ledger` | The same since D6 (was `work.spyglee.ladger`). The Kotlin code keeps its `work.spyglee.ladger` package. |
 | Version | 1.0 (since `fa64623`) | 0.1 |
 | Runs on | iOS 26.5, iPhone and iPad | Android 8.0 and later, phones and tablets |
 | URL scheme | `ladger://` (also with an a) | none; Android uses intents |

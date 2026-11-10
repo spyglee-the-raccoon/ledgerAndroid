@@ -8,11 +8,13 @@ plugins {
 }
 
 android {
+    // The code keeps its "ladger" package; only the app ID, which users and Google Play see, matches iOS (D6).
     namespace = "work.spyglee.ladger"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "work.spyglee.ladger"
+        // Can never change once the app is on Google Play.
+        applicationId = "work.spyglee.ledger"
         minSdk = 26
         targetSdk = 36
         versionCode = 1

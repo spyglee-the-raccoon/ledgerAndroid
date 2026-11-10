@@ -24,6 +24,7 @@ import work.spyglee.ladger.reminder.BudgetNotifier
 import work.spyglee.ladger.reminder.DailyReminder
 import work.spyglee.ladger.reminder.PlannedTransactionNotifier
 import work.spyglee.ladger.scan.ReceiptScanner
+import work.spyglee.ladger.widget.WidgetData
 
 /** App-wide dependencies, created once in [LadgerApp]. Tests can pass their own [database] and [settingsStore]. */
 class AppContainer(
@@ -47,4 +48,5 @@ class AppContainer(
     val appLock = AppLock()
     val receipts = ReceiptScanner(context)
     val saveSound = SaveSound(context)
+    val widgetData = WidgetData(database, settings) { context.getString(R.string.uncategorized) }
 }

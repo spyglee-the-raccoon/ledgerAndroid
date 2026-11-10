@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -28,6 +29,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -40,6 +42,9 @@ import work.spyglee.ladger.ui.LocalAppContainer
 import work.spyglee.ladger.ui.LocalAuthenticator
 import work.spyglee.ladger.ui.lock.LockScreen
 import work.spyglee.ladger.ui.theme.LadgerTheme
+import work.spyglee.ladger.widget.BudgetWidgetReceiver
+import work.spyglee.ladger.widget.MonthChartWidgetReceiver
+import work.spyglee.ladger.widget.RecentTransactionsWidgetReceiver
 
 /** A [FragmentActivity] because the system authentication prompt is shown as a fragment. */
 class MainActivity : FragmentActivity() {
@@ -212,8 +217,22 @@ class MainActivity : FragmentActivity() {
      * Without `-S` a running app is just brought to the front and the extra never arrives.
      */
     private fun handleDebugIntent(intent: Intent?) {
-        if (BuildConfig.DEBUG && intent?.getBooleanExtra(EXTRA_SHOW_REMINDER, false) == true) {
+        if (!BuildConfig.DEBUG || intent == null) return
+        if (intent.getBooleanExtra(EXTRA_SHOW_REMINDER, false)) {
             container.applicationScope.launch { container.reminder.show(container.budgets.generalUsage()) }
+        }
+        // `--es pin_widget chart|budget|transactions` asks the launcher to add that widget, for testing.
+        val receiver = when (intent.getStringExtra(EXTRA_PIN_WIDGET)) {
+            "chart" -> MonthChartWidgetReceiver::class.java
+            "budget" -> BudgetWidgetReceiver::class.java
+            "transactions" -> RecentTransactionsWidgetReceiver::class.java
+            else -> null
+        }
+        if (receiver != null) {
+            lifecycleScope.launch {
+                val requested = GlanceAppWidgetManager(this@MainActivity).requestPinGlanceAppWidget(receiver)
+                Log.d("Widgets", "pin ${receiver.simpleName}: $requested")
+            }
         }
     }
 
@@ -221,5 +240,6 @@ class MainActivity : FragmentActivity() {
         /** Biometrics or the device credential. BIOMETRIC_WEAK is the only biometric class that combines with DEVICE_CREDENTIAL on Android 8-10. */
         const val AUTHENTICATORS = BIOMETRIC_WEAK or DEVICE_CREDENTIAL
         const val EXTRA_SHOW_REMINDER = "show_reminder"
+        const val EXTRA_PIN_WIDGET = "pin_widget"
     }
 }

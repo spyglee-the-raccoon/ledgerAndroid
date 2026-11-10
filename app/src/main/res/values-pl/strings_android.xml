@@ -28,4 +28,6 @@
     <string name="exact_alarms_allow">Zezwól</string>
     <string name="not_now">Nie teraz</string>
     <string name="allow_exact_alarms">Zezwól na dokładny czas</string>
+    <!-- Widgets with the app lock on (D5): read out instead of the hidden amounts. -->
+    <string name="widget_locked">Ukryte, gdy blokada aplikacji jest włączona</string>
 </resources>

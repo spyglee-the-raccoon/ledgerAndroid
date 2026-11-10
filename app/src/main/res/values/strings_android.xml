@@ -28,4 +28,6 @@
     <string name="exact_alarms_allow">Allow</string>
     <string name="not_now">Not now</string>
     <string name="allow_exact_alarms">Allow exact timing</string>
+    <!-- Widgets with the app lock on (D5): read out instead of the hidden amounts. -->
+    <string name="widget_locked">Hidden while the app lock is on</string>
 </resources>

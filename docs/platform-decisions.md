@@ -35,7 +35,7 @@ that wait for a decision: widgets, Siri, the Pro subscription and version 1.0.
 
 | Feature (iOS) | Size | Decision | Android |
 |---|---|---|---|
-| **Widgets**: month chart (small + medium), budget (medium), 3 latest transactions (medium) | L | D4, D5 | waiting |
+| **Widgets**: month chart (small + medium), budget (medium), 3 latest transactions (medium) | L | D4, D5 | **done** since D4 |
 | **Siri and Shortcuts**: log a transaction; ask what's left of the budget, the month's spending, an account balance | L | D3 | waiting |
 | **Pro subscription**: the four statistics screens need Pro (€2.99 a month or €29.99 a year, 1-week free trial) | L | D1 | waiting |
 | **CSV for all data**: categories, budgets, collections and receipt items are now exported; the importer works out the file type from its header and also imports accounts and planned transactions | L | (D12) | **done** in part 1 |
@@ -148,6 +148,19 @@ budgets) on and off separately in system settings.
   overwritten.
 - **Dates:** Android reads them strictly (`d.M.yyyy`); iOS is more lenient.
 - **Import:** all or nothing on both.
+
+### Widgets
+The same three as iOS (since D4).
+
+| | iOS | Android |
+|---|---|---|
+| Data | The app writes a snapshot when it's left; the widgets can't open the database | The widgets read the database themselves, so they update after every change |
+| New month | A timeline entry at the start of the month | An alarm at the start of the month |
+| Sizes | Chart small and medium; budget and transactions medium | The same, resizable. The chart lists the top categories once it is half again as wide as it is tall. |
+| Look | SwiftUI charts | Glance; the ring and the category icons are drawn as pictures, in the main donut's style |
+| With the app lock on | Everything shows (#16) | No amounts or notes (D5): a lock instead of the balance, budget name and bar only, transactions without amount and note |
+| Tapping | `ladger://` links to main, budgeting, accounts | The same screens, after unlocking, like the app icon shortcuts |
+| In the widget picker | Previews with sample data | The app icon, name and description; no preview yet |
 
 ### Look and navigation
 - **Material 3, not an iOS look-alike.**

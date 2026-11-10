@@ -22,10 +22,33 @@ import work.spyglee.ladger.domain.DayGrouping
 import work.spyglee.ladger.domain.RelativeDay
 
 /**
- * Formats an amount in the device locale's currency. Locales without a region have no currency,
- * so those fall back to EUR, as the iOS app does.
+ * The phone's own locale, which a language chosen for this app (Android 13+) doesn't change. [LadgerApp]
+ * keeps it current; within the app's process, `Resources.getSystem()` already has the app's language.
+ * Android 12 and lower have no per-app language, so there the default locale is the phone's.
  */
-fun formatMoney(amount: BigDecimal, locale: Locale = Locale.getDefault()): String {
+object PhoneLocale {
+    @Volatile
+    var current: Locale? = null
+
+    fun get(): Locale = current ?: Locale.getDefault()
+}
+
+/**
+ * [locale] with the phone's region added when it has none. A language chosen for this app only
+ * (Android 13+, decision D8) comes without a region, but the currency and the number and date styles
+ * depend on it. iOS keeps the phone's region in `Locale.current` with a per-app language, so this keeps
+ * amounts in the phone's currency on both.
+ */
+fun withPhoneRegion(locale: Locale, phoneLocale: Locale = PhoneLocale.get()): Locale {
+    if (locale.country.isNotEmpty() || phoneLocale.country.isEmpty()) return locale
+    return runCatching { Locale.Builder().setLocale(locale).setRegion(phoneLocale.country).build() }.getOrDefault(locale)
+}
+
+/**
+ * Formats an amount in the currency of the app's locale, with the phone's region ([withPhoneRegion]).
+ * Locales without a region have no currency, so those fall back to EUR, as the iOS app does.
+ */
+fun formatMoney(amount: BigDecimal, locale: Locale = withPhoneRegion(Locale.getDefault())): String {
     val format = NumberFormat.getCurrencyInstance(locale)
     if (locale.country.isEmpty()) {
         format.currency = Currency.getInstance("EUR")
@@ -34,11 +57,11 @@ fun formatMoney(amount: BigDecimal, locale: Locale = Locale.getDefault()): Strin
 }
 
 /** The decimal separator users type in amount fields. */
-fun localDecimalSeparator(locale: Locale = Locale.getDefault()): Char = DecimalFormatSymbols.getInstance(locale).decimalSeparator
+fun localDecimalSeparator(locale: Locale = withPhoneRegion(Locale.getDefault())): Char = DecimalFormatSymbols.getInstance(locale).decimalSeparator
 
 @Composable
 @ReadOnlyComposable
-private fun currentLocale(): Locale = LocalConfiguration.current.locales[0]
+private fun currentLocale(): Locale = withPhoneRegion(LocalConfiguration.current.locales[0])
 
 /** "Today", "Yesterday" or the full date, as the headers of day-grouped lists. */
 @Composable

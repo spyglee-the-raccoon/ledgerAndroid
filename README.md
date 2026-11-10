@@ -3,9 +3,9 @@
 The Android version of Ledger, a local-only budgeting app; the iOS app (SwiftUI, in the
 `spyglee-the-raccoon/ledgerIos` repository) is the reference for features and behaviour. Android is up to date
 with iOS commit `46702e5`, plus the parts of `8a76b5d` that need no decision: CSV for all data, editing receipt
-items, budget alerts once a month, the quick actions, Polish and the new icon. Widgets, Siri and the Pro
-subscription wait for the decisions in [docs/platform-decisions.md](docs/platform-decisions.md). Kotlin, Jetpack
-Compose, Room, CameraX and ML Kit; minSdk 26.
+items, budget alerts once a month, the quick actions, Polish and the new icon. The widgets and the Pro
+subscription follow the plan in [docs/decisions-plan.md](docs/decisions-plan.md); Siri has no Android equivalent
+for now (decision D3). Kotlin, Jetpack Compose, Room, CameraX and ML Kit; minSdk 26.
 
 Nothing leaves the device: the app has no INTERNET permission, receipts are read on the device, and
 backups are turned off. CSV files are compatible with the iOS app in both directions: as on iOS, the export
@@ -48,7 +48,8 @@ Releasing, signing and the Play Data safety answers: [docs/RELEASE.md](docs/RELE
 
 ## Docs
 - [docs/platform-decisions.md](docs/platform-decisions.md): how far Android is behind iOS, how the apps differ, and
-  decisions to make together.
+  the decisions made together.
+- [docs/decisions-plan.md](docs/decisions-plan.md): how Android implements those decisions, in order.
 - [docs/ios-issues.md](docs/ios-issues.md): problems found in the iOS app during the port.
 - [docs/translations-to-review.md](docs/translations-to-review.md): Android-only strings to check with native speakers.
 

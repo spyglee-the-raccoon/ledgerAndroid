@@ -155,16 +155,29 @@ The app switcher stays as it is (decided).
 **Before release:** check the Play Console rules for exact-alarm permissions (help article 12253906).
 
 ## 5. Per-app language (D8)
-**Changes**
-- `app/build.gradle.kts`: `androidResources { generateLocaleConfig = true }`, and
-  `res/resources.properties` with `unqualifiedResLocale=en`. Android 13+ then lists the four languages under
-  the app in system settings.
-- The activity isn't an AppCompat activity, and nothing is needed below Android 13 (the decision is 13+).
+**Done**, branch `per-app-language`.
 
-**Check:** texts made outside an activity follow the app language: notifications from alarms, the widgets (PR 6)
-and money and date formatting.
+**What was built**
+- `app/build.gradle.kts`: `androidResources { generateLocaleConfig = true }`, and `res/resources.properties`
+  with `unqualifiedResLocale=en`. Android 13+ lists English, Croatian, Polish and Ukrainian under Ledger in
+  system settings.
+- No language row in the app: iOS has none either.
+- **Currency.** iOS takes the currency from `Locale.current`, which keeps the phone's region with a per-app
+  language.
+  - Android's per-app language can come without a region. `withPhoneRegion` in `ui/Formatting.kt` adds the
+    phone's region before formatting amounts, decimal separators and dates.
+  - The phone's own locale comes from `LocaleManager.getSystemLocales()`, kept in `PhoneLocale` by
+    `LadgerApp`. Within the app's process, `Resources.getSystem()` already reports the app's language.
+  - Android 14's picker asks for a region with the language. Then that region is used, which iOS can't do.
 
-**Translations:** send the Android-only strings in `docs/translations-to-review.md` to the iOS developer, who
+**Tested on the Android 14 emulator**
+- The system "App language" page lists all four. Choosing Hrvatski → Hrvatska turned the whole app
+  Croatian, dates included, with amounts as "0,00 €".
+- A reminder notification built from a fresh process (as from an alarm) was in Croatian too.
+- Ukrainian without a region on an en-US phone shows "0,00 USD", the phone's currency, as iOS would.
+- 173 unit tests (4 new in `PhoneRegionTest`) and 36 instrumented tests pass.
+
+**Translations:** the Android-only strings in `docs/translations-to-review.md` go to the iOS developer, who
 sends strings to translators (D14).
 
 ## 6. Widgets (D4, D5)

@@ -42,7 +42,7 @@ that wait for a decision: widgets, Siri, the Pro subscription and version 1.0.
 | **Editing receipt items**: tap an item to fix it, add or remove items; total = quantity × unit price unless changed | M | none | **done** in part 1 |
 | **Budget alert at most once a month**: it no longer comes back when spending drops under the limit and rises again; editing a budget re-arms it | S | none | **done** in part 1 |
 | **Quick actions** on the app icon: Add transaction, Scan | S | none | **done** in part 1 |
-| **Polish** translation | M | (D8) | **done** in part 1; per-app language still open |
+| **Polish** translation | M | (D8) | **done** in part 1; per-app language done since D8 |
 | **New app icon** | S | none | **done** in part 1 (`tools/make-icons.py`) |
 | **Version 1.0** | S | D7 | waiting |
 | **Privacy manifest** ("no data collected"), which on Android means the Play Data safety form | S | D1 | waiting |
@@ -169,7 +169,10 @@ budgets) on and off separately in system settings.
 ### Languages
 - iOS: English, Croatian, Ukrainian and (since `8a76b5d`) **Polish**. Users can pick a language per app.
 - Android: the same four (Polish since part 1), generated from the iOS catalog by `tools/sync-ios-strings.ps1`.
-  - Android follows the phone's language; there is no per-app language choice yet (D8).
+  - Since D8, users can pick a language for Ledger alone on Android 13+, in system settings, as on iOS.
+    Before Android 13, Ledger follows the phone's language.
+  - Amounts keep the phone's region, and so its currency, when Ledger has a language without a region,
+    as iOS does. Android 14's picker usually asks for a region too, and then that region's currency is used.
   - 26 Android-only strings were translated without a native speaker, in all three languages besides English
     ([translations-to-review.md](translations-to-review.md)).
   - The Siri texts in the catalog are generated too but unused, since Android has no Siri (D3).

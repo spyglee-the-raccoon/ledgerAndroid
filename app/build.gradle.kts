@@ -55,6 +55,11 @@ android {
         compose = true
         buildConfig = true
     }
+    androidResources {
+        // Lists the app's languages (values-hr, -uk, -pl, and English from res/resources.properties) so
+        // Android 13+ lets users pick one for this app only in system settings, as iOS does (decision D8).
+        generateLocaleConfig = true
+    }
     testOptions {
         unitTests.isReturnDefaultValues = true
     }

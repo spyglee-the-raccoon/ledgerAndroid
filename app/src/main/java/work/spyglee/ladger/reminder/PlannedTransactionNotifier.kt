@@ -27,7 +27,10 @@ import work.spyglee.ladger.ui.formatMoney
  * "Planned transaction performed". iOS schedules only the notifications and records the transactions
  * the next time the app opens.
  */
-class PlannedTransactionNotifier(context: Context) : PlannedTransactionAlarm {
+class PlannedTransactionNotifier(
+    context: Context,
+    private val isAppLockOn: suspend () -> Boolean,
+) : PlannedTransactionAlarm {
     private val context = context.applicationContext
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
@@ -39,8 +42,8 @@ class PlannedTransactionNotifier(context: Context) : PlannedTransactionAlarm {
         alarmManager.cancel(alarmIntent())
     }
 
-    /** One notification per plan, replacing its previous one. */
-    fun showRecorded(planned: PlannedTransaction, category: Category?) {
+    /** One notification per plan, replacing its previous one. It shows the amount, so with the app lock on it stays off the lock screen (D5). */
+    suspend fun showRecorded(planned: PlannedTransaction, category: Category?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -59,6 +62,7 @@ class PlannedTransactionNotifier(context: Context) : PlannedTransactionAlarm {
             .setContentText(context.getString(R.string.planned_transaction_performed_body, title(planned, category), formatMoney(planned.amount)))
             .setContentIntent(openApp)
             .setAutoCancel(true)
+            .keepOffLockScreenIf(isAppLockOn())
             .build()
         manager.notify(NOTIFICATION_TAG, planned.id.toInt(), notification)
     }

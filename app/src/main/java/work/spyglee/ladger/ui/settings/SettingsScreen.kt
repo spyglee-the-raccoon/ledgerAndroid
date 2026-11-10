@@ -84,6 +84,8 @@ fun SettingsScreen(
 
     val context = LocalContext.current
     val reminder = LocalAppContainer.current.reminder
+    // The pickers and settings pages below are the app's own, so coming back doesn't lock it (D5).
+    val appLock = LocalAppContainer.current.appLock
     val authenticator = LocalAuthenticator.current
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
@@ -94,6 +96,7 @@ fun SettingsScreen(
     val showNotificationsDenied: () -> Unit = {
         scope.launch {
             if (snackbar.showSnackbar(notificationsDenied, actionLabel = openSettings) == SnackbarResult.ActionPerformed) {
+                appLock.expectReturn()
                 context.startActivity(
                     Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
                 )
@@ -155,11 +158,17 @@ fun SettingsScreen(
                 },
             )
             SettingsLink(Icons.Outlined.FileDownload, CategoryColor.ORANGE.toColor(), stringResource(R.string.import_csv)) {
+                appLock.expectReturn()
                 importPicker.launch(CsvDocuments.IMPORT_MIME_TYPES)
             }
             SettingsLink(Icons.Outlined.IosShare, CategoryColor.TEAL.toColor(), stringResource(R.string.export_csv)) {
                 scope.launch {
-                    if (viewModel.hasDataToExport()) exportFolderPicker.launch(null) else viewModel.showNothingToExport()
+                    if (viewModel.hasDataToExport()) {
+                        appLock.expectReturn()
+                        exportFolderPicker.launch(null)
+                    } else {
+                        viewModel.showNothingToExport()
+                    }
                 }
             }
 

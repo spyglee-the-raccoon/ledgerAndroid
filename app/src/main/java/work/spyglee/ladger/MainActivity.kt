@@ -107,6 +107,8 @@ class MainActivity : FragmentActivity() {
 
     override fun onStart() {
         super.onStart()
+        // Back from one of the app's own pages (a file picker, settings): locks only after a long trip.
+        container.appLock.onForeground(appLockOn)
         // Records planned transactions that fell due while the alarm couldn't and checks the budgets
         // (a new month, deleted expenses), as iOS does when the app opens.
         container.applicationScope.launch {

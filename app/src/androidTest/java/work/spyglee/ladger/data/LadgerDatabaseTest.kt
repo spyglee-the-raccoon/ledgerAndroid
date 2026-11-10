@@ -23,6 +23,7 @@ import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import work.spyglee.ladger.domain.BudgetUsage
 import work.spyglee.ladger.domain.PlannedTransactionDraft
 import work.spyglee.ladger.domain.csv.CsvImportException
 import work.spyglee.ladger.domain.csv.CsvImporter
@@ -298,7 +299,12 @@ class LadgerDatabaseTest {
     @Test
     fun budgetAlertsOncePerMonthUntilEdited() = runTest {
         val alerts = mutableListOf<String>()
-        val budgets = BudgetRepository(db, { _, category -> alerts += category?.name ?: "general" }) { ZoneOffset.UTC }
+        val recorder = object : BudgetAlerts {
+            override suspend fun showReached(usage: BudgetUsage, category: Category?) {
+                alerts += category?.name ?: "general"
+            }
+        }
+        val budgets = BudgetRepository(db, recorder) { ZoneOffset.UTC }
         val food = db.categoryDao().insert(Category(name = "Food"))
         budgets.ensureGeneral()
         budgets.ensureGeneral()

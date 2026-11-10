@@ -6,7 +6,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AppLockTest {
-    private val lock = AppLock()
+    private var now = 1_000_000L
+    private val lock = AppLock { now }
 
     private fun unlock() {
         lock.onAuthenticationStarted(AuthPurpose.Unlock)
@@ -64,5 +65,56 @@ class AppLockTest {
         lock.onAuthenticationStarted(AuthPurpose.SetAppLock(on = true))
         lock.onAuthenticationFinished(success = true)
         assertFalse(lock.shouldPromptOnForeground(appLockOn = true))
+    }
+
+    @Test
+    fun comingBackFromAnOwnPageDoesNotRelock() {
+        unlock()
+        lock.expectReturn()
+        now += 1_000
+        lock.onBackground(appLockOn = true)
+        now += 60_000
+        lock.onForeground(appLockOn = true)
+        assertFalse(lock.isLocked.value)
+        assertFalse(lock.shouldPromptOnForeground(appLockOn = true))
+    }
+
+    @Test
+    fun comingBackFromAnOwnPageAfterTheLimitLocks() {
+        unlock()
+        lock.expectReturn()
+        lock.onBackground(appLockOn = true)
+        now += AppLock.OWN_PAGE_LIMIT_MS + 1
+        lock.onForeground(appLockOn = true)
+        assertTrue(lock.isLocked.value)
+        assertTrue(lock.shouldPromptOnForeground(appLockOn = true))
+    }
+
+    @Test
+    fun anOwnPageCoversOnlyOneTrip() {
+        unlock()
+        lock.expectReturn()
+        lock.onBackground(appLockOn = true)
+        lock.onForeground(appLockOn = true)
+        lock.onBackground(appLockOn = true)
+        assertTrue(lock.isLocked.value)
+    }
+
+    @Test
+    fun anOwnPageThatNeverSentTheAppAwayDoesNotCoverALaterTrip() {
+        unlock()
+        lock.expectReturn()
+        now += AppLock.LEAVE_WINDOW_MS + 1
+        lock.onBackground(appLockOn = true)
+        assertTrue(lock.isLocked.value)
+    }
+
+    @Test
+    fun comingBackWithoutLeavingClearsTheExpectedReturn() {
+        unlock()
+        lock.expectReturn()
+        lock.onForeground(appLockOn = true)
+        lock.onBackground(appLockOn = true)
+        assertTrue(lock.isLocked.value)
     }
 }

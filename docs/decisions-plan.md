@@ -81,31 +81,38 @@ the old app and an import into the new one; this loses receipt photos. Then unin
 `BackupAgent` gets `onQuotaExceeded`. That isn't decided, so it isn't part of this PR.
 
 ## 3. App lock (D5, Android part)
-**No re-lock after our own pages.**
-- `lock/AppLock.kt`: add `expectReturn()`, called right before the app opens one of its own outside pages.
-  `onBackground` then doesn't lock, and the next `onStart` clears the flag.
-- Callers:
-  - the CSV import picker and the export folder picker (`ui/settings/SettingsScreen.kt`),
-  - notification settings (`SettingsScreen.kt`),
-  - app details when the camera permission is denied (`ui/transactions/TransactionEditorScreen.kt`),
-  - later, the exact-alarm page (PR 4) and "Manage subscription" (PR 7).
-- **Open point:** Android can't tell whether the user went from the picker to another app. Proposal: lock anyway
-  if they are away more than 5 minutes.
-- Test in `AppLockTest`: returning from an expected page stays unlocked; any other trip to the background still
-  locks.
+**Done**, branch `app-lock-d5`.
 
-**Notifications without amounts on the lock screen.**
-- With the lock on, the planned-transaction (`reminder/PlannedTransactionNotifier.kt`) and budget
-  (`reminder/BudgetNotifier.kt`) notifications must not show amounts on the lock screen. The daily reminder's
-  hint has no amounts.
-- **Open point, Android limit:** a notification's public version only replaces the full text on the lock screen
-  when the user has turned off "sensitive content" in system settings, and it's on by default. That leaves two
-  ways:
-  - **`VISIBILITY_SECRET` while the lock is on (recommended).** The notification isn't shown on the lock screen
-    at all, and shows in full once the phone is unlocked. This is the only way to be sure no amount shows.
-  - `VISIBILITY_PRIVATE` with a public version that leaves out the amount. Amounts then still show with the
-    default system setting.
-- With the lock off, nothing changes.
+**No re-lock after our own pages**
+- `lock/AppLock.kt`: `expectReturn()` is called right before the app opens one of its own outside pages:
+  - the CSV import picker and the export folder picker;
+  - notification settings (Settings);
+  - app details when the camera permission is refused (transaction editor).
+- The next trip to the background then doesn't lock, and coming back within 5 minutes stays unlocked.
+  - After 5 minutes it locks, since Android can't tell whether the user went somewhere else from there.
+  - If the app doesn't go to the background within 10 seconds, the expectation lapses.
+- `MainActivity.onStart` calls `onForeground`, before the unlock prompt in `onResume`.
+- If Android ends the app's process while the user is in the picker, the app starts locked, as any new
+  process does.
+- PR 4 (the exact-alarm page) and PR 7 (Manage subscription) must call `expectReturn()` too.
+
+**Notifications off the lock screen while the app lock is on**
+- The planned-transaction and budget notifications show amounts. With the lock on, they get
+  `VISIBILITY_SECRET`: nothing on the lock screen, and the full notification once the phone is unlocked.
+  With the lock off, they keep the default (`VISIBILITY_PRIVATE`).
+- A public version without the amounts wasn't enough. Android only shows it when the user has hidden
+  sensitive content on the lock screen, and that isn't the default.
+- The notifiers read the lock setting when they post (`showRecorded` and `BudgetAlerts.showReached` suspend
+  now), so a notification from an alarm while the app was closed follows it too.
+- The daily reminder has no amounts and is unchanged.
+
+**Tested**
+- Unit tests: 5 new `AppLockTest` cases (own page within and after the limit, one trip only, a lapsed
+  expectation, coming back without leaving).
+- On the emulator:
+  - The new `LockScreenNotificationTest` checks both notifications with the lock on and off.
+  - By hand with the lock on: the import picker stops the app, and coming back doesn't ask to unlock. Going
+    home and coming back does ask.
 
 The app switcher stays as it is (decided).
 

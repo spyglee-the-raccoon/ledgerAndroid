@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Backup and phone-to-phone transfer on Android 9-11 (decision D2); Android 12+ use
+    data_extraction_rules.xml, which explains what is included and why.
+
+    Android 9-11 have no separate rules for the two, so each path is listed twice: once for a cloud
+    backup encrypted end to end with the screen lock, once for a direct transfer to a new phone.
+    Android checks each <include> on its own, so either one is enough; flags written in one element
+    would all be required at once.
+-->
+<full-backup-content>
+    <include domain="database" path="ladger.db" requireFlags="clientSideEncryption" />
+    <include domain="database" path="ladger.db" requireFlags="deviceToDeviceTransfer" />
+    <include domain="database" path="ladger.db-wal" requireFlags="clientSideEncryption" />
+    <include domain="database" path="ladger.db-wal" requireFlags="deviceToDeviceTransfer" />
+    <include domain="database" path="ladger.db-shm" requireFlags="clientSideEncryption" />
+    <include domain="database" path="ladger.db-shm" requireFlags="deviceToDeviceTransfer" />
+    <include domain="database" path="ladger.db-journal" requireFlags="clientSideEncryption" />
+    <include domain="database" path="ladger.db-journal" requireFlags="deviceToDeviceTransfer" />
+    <include domain="file" path="receipts" requireFlags="clientSideEncryption" />
+    <include domain="file" path="receipts" requireFlags="deviceToDeviceTransfer" />
+    <include domain="file" path="datastore" requireFlags="clientSideEncryption" />
+    <include domain="file" path="datastore" requireFlags="deviceToDeviceTransfer" />
+</full-backup-content>

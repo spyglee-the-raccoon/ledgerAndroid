@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Financial data stays on the device: exclude everything from cloud backup and device transfer. -->
+<!--
+    Backup and phone-to-phone transfer on Android 12 and later (decision D2); Android 9-11 use
+    xml-v28/backup_rules.xml, Android 8 xml/backup_rules.xml.
+
+    Both carry the app's own data, receipt photos included:
+    - the Room database, with its WAL file, which holds the latest changes until SQLite copies them
+      into ladger.db (the app is stopped during a backup, so the files are consistent);
+    - files/receipts (scanned receipt pages) and files/datastore (settings).
+    Files that libraries keep in the same folders (ML Kit's logging database and preferences) stay
+    behind, so nothing of theirs moves to another phone.
+
+    The cloud backup only runs when the phone can encrypt it end to end with its screen lock. Above
+    25 MB Android skips the cloud backup altogether (accepted in D2); phone-to-phone transfer has no
+    such limit.
+-->
 <data-extraction-rules>
-    <cloud-backup>
-        <exclude domain="root" />
-        <exclude domain="file" />
-        <exclude domain="database" />
-        <exclude domain="sharedpref" />
-        <exclude domain="external" />
+    <cloud-backup disableIfNoEncryptionCapabilities="true">
+        <include domain="database" path="ladger.db" />
+        <include domain="database" path="ladger.db-wal" />
+        <include domain="database" path="ladger.db-shm" />
+        <include domain="database" path="ladger.db-journal" />
+        <include domain="file" path="receipts" />
+        <include domain="file" path="datastore" />
     </cloud-backup>
     <device-transfer>
-        <exclude domain="root" />
-        <exclude domain="file" />
-        <exclude domain="database" />
-        <exclude domain="sharedpref" />
-        <exclude domain="external" />
+        <include domain="database" path="ladger.db" />
+        <include domain="database" path="ladger.db-wal" />
+        <include domain="database" path="ladger.db-shm" />
+        <include domain="database" path="ladger.db-journal" />
+        <include domain="file" path="receipts" />
+        <include domain="file" path="datastore" />
     </device-transfer>
 </data-extraction-rules>

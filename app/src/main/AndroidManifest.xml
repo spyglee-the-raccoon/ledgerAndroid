@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Privacy: this app is local-only and intentionally declares no INTERNET permission,
-    so nothing it handles (transactions, receipt photos, OCR text) can leave the device.
+    Privacy: this app is local-only and intentionally declares no INTERNET permission, so the app
+    itself can't send anything it handles (transactions, receipt photos, OCR text). Only Android's own
+    backup and phone-to-phone transfer take its data off the device (see <application>).
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
@@ -25,11 +26,16 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
+    <!--
+        Backup: the user's Google backup (only when encrypted end to end) and phone-to-phone transfer
+        carry the database, receipt photos and settings (decision D2). Rules for Android 12+ in
+        data_extraction_rules.xml, for Android 8-11 in backup_rules.xml.
+    -->
     <application
         android:name=".LadgerApp"
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="false"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"

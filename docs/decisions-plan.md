@@ -46,27 +46,38 @@ the old app and an import into the new one; this loses receipt photos. Then unin
 **Check:** the quick actions open the right screens; the instrumented tests run on the emulator.
 
 ## 2. Backup and phone-to-phone transfer (D2)
-**Changes**
-- Manifest: `allowBackup="true"`. Keep `dataExtractionRules` (Android 12+), and replace
-  `fullBackupContent="false"` with rules for Android 8–11 (`res/xml/backup_rules.xml`).
-- `res/xml/data_extraction_rules.xml`: remove the exclusions from both `<cloud-backup>` and
-  `<device-transfer>`. That covers the Room database (with its `-wal` and `-shm` files), `files/receipts`,
-  DataStore (`files/datastore`) and the merchant learning. The cache, which holds the debug `last-receipt.jpg`,
-  is never backed up.
-- After a restore, the alarms are set again on the first start: `LadgerApp.onCreate` already schedules the
-  reminder and the planned transactions. The notification and exact-alarm permissions don't move with the data,
-  so after a restore they have to be granted again.
-- Docs: the README ("backups are turned off"), `docs/RELEASE.md` (the Data safety section) and part 2 of the
-  decisions doc.
+**Done**, branch `backup-transfer`.
 
-**To check:** whether Google's Data safety guidance counts Android backup as "collected". The data goes to
-Google's backup, not to us.
+**What was built**
+- Manifest: `allowBackup="true"`. Rules in `res/xml/data_extraction_rules.xml` (Android 12+),
+  `res/xml-v28/backup_rules.xml` (Android 9–11) and `res/xml/backup_rules.xml` (Android 8).
+- Only the app's own data is included:
+  - `ladger.db` with its `-wal`, `-shm` and `-journal` files. Most recent changes live in the WAL file.
+  - `files/receipts` and `files/datastore`. The merchant learning is in the database.
+  - Files that libraries keep in the same folders stay behind: ML Kit's logging database and its preferences.
+- **Google backup only when it is encrypted end to end** with the screen lock.
+  - Android 12+: `disableIfNoEncryptionCapabilities`.
+  - Android 9–11: `requireFlags`, with each path listed once for encrypted backup and once for
+    phone-to-phone transfer. Android checks each `<include>` on its own (`BackupAgent`, Android 11 source).
+  - Android 8 can't do either, so it has no backup at all; moving from it stays CSV only. **Not discussed
+    in D2; say if Android 8 should back up anyway.**
+- Phone-to-phone transfer works without encryption, since it goes directly to the new phone.
+- After a restore, `LadgerApp.onCreate` sets the alarms again on the first start (from the code). The
+  notification permission doesn't move with the data.
 
-**Test:** back up and restore with `bmgr` as in Android's backup testing guide, cloud and device-to-device.
-Afterwards the transactions, photos, budgets, settings and the app lock setting are back, and the reminder and
-the planned-transaction alarm are set again.
+**Tested on the emulator (Android 14)** with Android's local test transport:
+- Encrypted backup, then uninstall and reinstall: the database, settings and a receipt file came back byte for
+  byte. The libraries' files didn't. The app opened with the transaction, and the default categories weren't
+  added a second time.
+- Unencrypted backup of the same data: refused. Encrypted before and after: accepted.
+- Simulated phone-to-phone transfer, unencrypted: everything came back byte for byte.
+- Google's own transfer transport backs up fine but can't restore on the same device. A real transfer needs two
+  phones.
+- The Android 8–11 rules couldn't be tried; there is no emulator image for them here.
 
-**Accepted risk:** above 25 MB Android skips the cloud backup completely. If we want to tell the user, a custom
+**Still to check:** whether Google's Data safety guidance counts Android backup as "collected" (RELEASE.md).
+
+**Accepted risk:** above 25 MB Android skips the Google backup completely. If we want to tell the user, a custom
 `BackupAgent` gets `onQuotaExceeded`. That isn't decided, so it isn't part of this PR.
 
 ## 3. App lock (D5, Android part)

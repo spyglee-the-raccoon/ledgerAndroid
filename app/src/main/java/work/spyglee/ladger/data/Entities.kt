@@ -114,6 +114,63 @@ data class CollectionTransaction(
     val transactionId: Long,
 )
 
+/**
+ * A monthly spending limit. Without a category it is the general limit and covers every expense;
+ * otherwise it covers one expense category, and deleting the category deletes it, as on iOS.
+ * [lastAlertDate] is when the "limit reached" notification was last shown, so it is shown once a month.
+ */
+@Entity(
+    tableName = "budgets",
+    foreignKeys = [ForeignKey(Category::class, ["id"], ["categoryId"], onDelete = ForeignKey.CASCADE)],
+    indices = [Index("categoryId", unique = true)],
+)
+data class Budget(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val monthlyLimit: BigDecimal = BigDecimal.ZERO,
+    val isActive: Boolean = true,
+    val categoryId: Long? = null,
+    val lastAlertDate: Instant? = null,
+) {
+    val isGeneral: Boolean get() = categoryId == null
+}
+
+/**
+ * A product line recognized on a scanned receipt, in receipt order ([position]). Date and store come
+ * from the transaction, so editing the transaction keeps the price history right. [normalizedName]
+ * groups the same product for price comparison. Deleting the transaction deletes its items.
+ */
+@Entity(
+    tableName = "receipt_items",
+    foreignKeys = [ForeignKey(Transaction::class, ["id"], ["transactionId"], onDelete = ForeignKey.CASCADE)],
+    indices = [Index("transactionId"), Index("normalizedName")],
+)
+data class ReceiptItem(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val transactionId: Long,
+    val name: String,
+    val normalizedName: String,
+    val quantity: BigDecimal = BigDecimal.ONE,
+    val unitPrice: BigDecimal,
+    val totalPrice: BigDecimal,
+    val position: Int = 0,
+)
+
+/**
+ * A scanned receipt page of a transaction. The JPEG is [fileName] in the app's receipts folder
+ * (see `ReceiptRepository`); deleting the transaction deletes the row and the next sweep the file.
+ */
+@Entity(
+    tableName = "receipt_photos",
+    foreignKeys = [ForeignKey(Transaction::class, ["id"], ["transactionId"], onDelete = ForeignKey.CASCADE)],
+    indices = [Index("transactionId")],
+)
+data class ReceiptPhoto(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val transactionId: Long,
+    val fileName: String,
+    val pageIndex: Int = 0,
+)
+
 /** Category and source the user picked for a scanned merchant, used to prefill the next scan. */
 @Entity(
     tableName = "merchant_categories",

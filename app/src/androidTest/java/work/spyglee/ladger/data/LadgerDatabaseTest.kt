@@ -1,6 +1,7 @@
 package work.spyglee.ladger.data
 
 import android.content.Context
+import android.database.sqlite.SQLiteConstraintException
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
@@ -24,6 +26,7 @@ import org.junit.runner.RunWith
 import work.spyglee.ladger.domain.PlannedTransactionDraft
 import work.spyglee.ladger.domain.csv.CsvImportException
 import work.spyglee.ladger.domain.csv.CsvImporter
+import work.spyglee.ladger.domain.receipt.ParsedReceiptItem
 
 @RunWith(AndroidJUnit4::class)
 class LadgerDatabaseTest {
@@ -170,7 +173,7 @@ class LadgerDatabaseTest {
         val result = csv.import(listOf(CsvImporter.Input("expenses.csv", "date;amount;source;category\n01.10.2026;1;Cash;Food\n")))
         assertEquals(1, result.importedCount)
         val export = csv.export()
-        assertEquals(listOf("expenses.csv", "sources.csv"), export.files.map { it.fileName })
+        assertEquals(listOf("expenses.csv", "accounts.csv"), export.files.map { it.fileName })
         assertEquals(1, export.transactionCount)
     }
 
@@ -229,6 +232,100 @@ class LadgerDatabaseTest {
         assertEquals(1, plan.occurrencesGenerated)
         assertEquals("Raise", plan.note)
         assertEquals(1, db.transactionDao().count())
+    }
+
+    @Test
+    fun budgetsBelongToTheirCategory() = runTest {
+        val food = db.categoryDao().insert(Category(name = "Food"))
+        db.budgetDao().insert(Budget(monthlyLimit = BigDecimal("100")))
+        db.budgetDao().insert(Budget(monthlyLimit = BigDecimal("30"), categoryId = food))
+        try {
+            db.budgetDao().insert(Budget(monthlyLimit = BigDecimal("50"), categoryId = food))
+            fail("A category has one budget")
+        } catch (_: SQLiteConstraintException) {
+        }
+
+        db.categoryDao().delete(db.categoryDao().getAll().single())
+        assertTrue(db.budgetDao().getAll().single().isGeneral)
+    }
+
+    @Test
+    fun budgetAlertsOncePerMonthAndAgainAfterDroppingBelow() = runTest {
+        val alerts = mutableListOf<String>()
+        val budgets = BudgetRepository(db, { _, category -> alerts += category?.name ?: "general" }) { ZoneOffset.UTC }
+        val food = db.categoryDao().insert(Category(name = "Food"))
+        budgets.ensureGeneral()
+        budgets.ensureGeneral()
+        val general = db.budgetDao().getAll().single()
+        assertEquals(false, general.isActive)
+        budgets.save(general.id, BigDecimal("100"), isActive = true, categoryId = null)
+        budgets.save(null, BigDecimal("20"), isActive = true, categoryId = food)
+
+        val now = Instant.parse("2026-10-20T12:00:00Z")
+        val lunch = db.transactionDao().insert(
+            Transaction(amount = BigDecimal("25"), kind = TransactionKind.EXPENSE, categoryId = food, date = now.minus(Duration.ofDays(1)))
+        )
+        budgets.check(now)
+        assertEquals(listOf("Food"), alerts)
+        budgets.check(now)
+        assertEquals(listOf("Food"), alerts)
+
+        db.transactionDao().delete(db.transactionDao().getById(lunch)!!)
+        budgets.check(now)
+        assertNull(db.budgetDao().getAll().single { !it.isGeneral }.lastAlertDate)
+        db.transactionDao().insert(Transaction(amount = BigDecimal("120"), kind = TransactionKind.EXPENSE, categoryId = food, date = now))
+        budgets.check(now)
+        assertEquals(listOf("Food", "general", "Food"), alerts)
+
+        val usage = budgets.generalUsage(now)!!
+        assertEquals(0, BigDecimal("120").compareTo(usage.spent))
+    }
+
+    @Test
+    fun recordingPlannedTransactionsChecksBudgets() = runTest {
+        var checks = 0
+        val planned = PlannedTransactionRepository(db, RecordingAlarm(), onRecorded = { checks++ }) { ZoneOffset.UTC }
+        planned.save(null, PlannedTransactionDraft(amount = BigDecimal("9.99"), startDate = Instant.now().minus(Duration.ofMinutes(1))))
+        assertEquals(1, checks)
+        planned.recordDue()
+        assertEquals(1, checks)
+    }
+
+    @Test
+    fun receiptsAreKeptWithTheirTransactionAndFilesSweptAfterDelete() = runTest {
+        val directory = File(context.cacheDir, "receipts-test").apply { deleteRecursively() }
+        val receipts = ReceiptRepository(db, directory)
+        val id = db.transactionDao().insert(Transaction(amount = BigDecimal("3.07"), kind = TransactionKind.EXPENSE, note = "Konzum"))
+        receipts.attach(
+            id,
+            photos = listOf(byteArrayOf(1, 2, 3)),
+            items = listOf(
+                ParsedReceiptItem("MLIJEKO  1L", BigDecimal("2"), BigDecimal("1.29"), BigDecimal("2.58")),
+                ParsedReceiptItem("KRUH", BigDecimal.ONE, BigDecimal("0.49"), BigDecimal("0.49")),
+            ),
+        )
+
+        val items = receipts.observeItems(id).first()
+        assertEquals(listOf("MLIJEKO  1L", "KRUH"), items.map { it.name })
+        assertEquals("mlijeko 1l", items.first().normalizedName)
+        val photo = receipts.observePhotos(id).first().single()
+        assertTrue(photo.exists())
+        assertEquals(listOf("Konzum", "Konzum"), receipts.observeDatedItems().first().map { it.store })
+        assertEquals(listOf(ReceiptItemName(id, "MLIJEKO  1L"), ReceiptItemName(id, "KRUH")), db.receiptItemDao().observeNames().first())
+
+        receipts.deleteItem(items.last())
+        assertEquals(1, receipts.observeItems(id).first().size)
+
+        // A referenced file stays; once the transaction is gone the sweep deletes it, but only when it's old enough.
+        receipts.sweepOrphans(Instant.now().plus(Duration.ofDays(1)))
+        assertTrue(photo.exists())
+        db.transactionDao().delete(db.transactionDao().getById(id)!!)
+        assertTrue(receipts.observeItems(id).first().isEmpty())
+        receipts.sweepOrphans()
+        assertTrue(photo.exists())
+        receipts.sweepOrphans(Instant.now().plus(Duration.ofDays(1)))
+        assertFalse(photo.exists())
+        directory.deleteRecursively()
     }
 
     private class RecordingAlarm : PlannedTransactionAlarm {

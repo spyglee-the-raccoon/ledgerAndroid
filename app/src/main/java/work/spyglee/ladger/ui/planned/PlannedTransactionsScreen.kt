@@ -1,6 +1,5 @@
 package work.spyglee.ladger.ui.planned
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,23 +12,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Pause
-import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material.icons.outlined.QuestionMark
 import androidx.compose.material.icons.outlined.SyncAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -59,6 +50,7 @@ import work.spyglee.ladger.domain.Recurrence
 import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.CategoryIcon
 import work.spyglee.ladger.ui.components.LadgerTopBar
+import work.spyglee.ladger.ui.components.ToggleOrDeleteSwipe
 import work.spyglee.ladger.ui.formatDate
 import work.spyglee.ladger.ui.formatMoney
 import work.spyglee.ladger.ui.theme.ExpenseColor
@@ -109,60 +101,17 @@ fun PlannedTransactionsScreen(onBack: () -> Unit, onAdd: () -> Unit, onEdit: (Lo
         }
         LazyColumn(Modifier.fillMaxSize().padding(padding)) {
             items(state.planned, key = { it.id }) { planned ->
-                PauseOrDeleteSwipe(
-                    isPaused = planned.isPaused,
-                    onTogglePause = { viewModel.togglePause(planned) },
+                ToggleOrDeleteSwipe(
+                    isOn = !planned.isPaused,
+                    turnOnLabel = stringResource(R.string.resume),
+                    turnOffLabel = stringResource(R.string.pause),
+                    onToggle = { viewModel.togglePause(planned) },
                     onDelete = { viewModel.delete(planned) },
                 ) {
                     PlannedTransactionRow(planned, planned.categoryId?.let(state.categories::get), onClick = { onEdit(planned.id) })
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun PauseOrDeleteSwipe(isPaused: Boolean, onTogglePause: () -> Unit, onDelete: () -> Unit, content: @Composable () -> Unit) {
-    val currentOnTogglePause by rememberUpdatedState(onTogglePause)
-    val currentOnDelete by rememberUpdatedState(onDelete)
-    val state = rememberSwipeToDismissBoxState()
-    val scope = rememberCoroutineScope()
-    SwipeToDismissBox(
-        state = state,
-        onDismiss = { value ->
-            when (value) {
-                SwipeToDismissBoxValue.EndToStart -> currentOnDelete()
-                SwipeToDismissBoxValue.StartToEnd -> {
-                    currentOnTogglePause()
-                    scope.launch { state.reset() }
-                }
-                SwipeToDismissBoxValue.Settled -> Unit
-            }
-        },
-        backgroundContent = {
-            val toDelete = state.dismissDirection == SwipeToDismissBoxValue.EndToStart
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .background(
-                        when {
-                            toDelete -> MaterialTheme.colorScheme.errorContainer
-                            isPaused -> CategoryColor.GREEN.toColor()
-                            else -> CategoryColor.ORANGE.toColor()
-                        }
-                    )
-                    .padding(horizontal = 20.dp),
-                contentAlignment = if (toDelete) Alignment.CenterEnd else Alignment.CenterStart,
-            ) {
-                when {
-                    toDelete -> Icon(Icons.Outlined.Delete, stringResource(R.string.delete), tint = MaterialTheme.colorScheme.onErrorContainer)
-                    isPaused -> Icon(Icons.Outlined.PlayArrow, stringResource(R.string.resume), tint = MaterialTheme.colorScheme.surface)
-                    else -> Icon(Icons.Outlined.Pause, stringResource(R.string.pause), tint = MaterialTheme.colorScheme.surface)
-                }
-            }
-        },
-    ) {
-        Box(Modifier.background(MaterialTheme.colorScheme.surface)) { content() }
     }
 }
 

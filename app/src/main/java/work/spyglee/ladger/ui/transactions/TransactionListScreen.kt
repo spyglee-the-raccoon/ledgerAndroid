@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import work.spyglee.ladger.R
+import work.spyglee.ladger.data.BudgetRepository
 import work.spyglee.ladger.data.Category
 import work.spyglee.ladger.data.LadgerDatabase
 import work.spyglee.ladger.data.Transaction
@@ -36,12 +37,13 @@ import work.spyglee.ladger.data.TransactionKind
 import work.spyglee.ladger.domain.Balances
 import work.spyglee.ladger.domain.DayGrouping
 import work.spyglee.ladger.domain.DaySection
+import work.spyglee.ladger.domain.byTransaction
+import work.spyglee.ladger.domain.matches
 import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.LadgerTopBar
 import work.spyglee.ladger.ui.components.SearchField
 import work.spyglee.ladger.ui.components.rememberAddToCollection
 import work.spyglee.ladger.ui.components.transactionSections
-import work.spyglee.ladger.ui.sources.matches
 
 /** Which transactions a list shows. */
 sealed interface TransactionFilter {
@@ -62,7 +64,11 @@ data class TransactionListState(
     val sourceName: String? = null,
 )
 
-class TransactionListViewModel(private val database: LadgerDatabase, val filter: TransactionFilter) : ViewModel() {
+class TransactionListViewModel(
+    private val database: LadgerDatabase,
+    private val budgets: BudgetRepository,
+    val filter: TransactionFilter,
+) : ViewModel() {
     private val dao = database.transactionDao()
     val query = MutableStateFlow("")
 
@@ -77,18 +83,23 @@ class TransactionListViewModel(private val database: LadgerDatabase, val filter:
         transactions,
         database.categoryDao().observeAll(),
         database.sourceDao().observeAll(),
+        database.receiptItemDao().observeNames(),
         query,
-    ) { items, categories, sources, query ->
+    ) { items, categories, sources, itemNames, query ->
         val byId = categories.associateBy { it.id }
+        val names = itemNames.byTransaction()
         TransactionListState(
-            sections = DayGrouping.groupByDay(items.filter { it.matches(query, byId) }, ZoneId.systemDefault()),
+            sections = DayGrouping.groupByDay(items.filter { it.matches(query, byId, names) }, ZoneId.systemDefault()),
             categories = byId,
             sourceName = (filter as? TransactionFilter.Source)?.let { f -> sources.firstOrNull { it.id == f.sourceId }?.name },
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), TransactionListState())
 
     fun delete(transaction: Transaction) {
-        viewModelScope.launch { dao.delete(transaction) }
+        viewModelScope.launch {
+            dao.delete(transaction)
+            budgets.check()
+        }
     }
 }
 
@@ -100,7 +111,7 @@ fun TransactionListScreen(
     onAddTransaction: (TransactionKind) -> Unit,
     onOpenCollection: (Long) -> Unit,
 ) {
-    val viewModel = appViewModel { TransactionListViewModel(it.database, filter) }
+    val viewModel = appViewModel { TransactionListViewModel(it.database, it.budgets, filter) }
     val state by viewModel.state.collectAsStateWithLifecycle()
     val query by viewModel.query.collectAsStateWithLifecycle()
     val addToCollection = rememberAddToCollection(onAdded = onOpenCollection)

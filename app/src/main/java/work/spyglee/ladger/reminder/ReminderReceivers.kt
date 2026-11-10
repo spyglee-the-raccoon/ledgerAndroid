@@ -7,16 +7,23 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import work.spyglee.ladger.LadgerApp
 
-/** The reminder alarm went off: show the notification and schedule tomorrow's. */
+/** The reminder alarm went off: schedule tomorrow's and show the notification with the budget hint. */
 class ReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        val reminder = (context.applicationContext as LadgerApp).container.reminder
-        reminder.show()
-        reminder.schedule()
+        val container = (context.applicationContext as LadgerApp).container
+        container.reminder.schedule()
+        val pending = goAsync()
+        container.applicationScope.launch {
+            try {
+                container.reminder.show(container.budgets.generalUsage())
+            } finally {
+                pending.finish()
+            }
+        }
     }
 }
 
-/** A planned transaction fell due: record it (and any others due) and show what was recorded. */
+/** A planned transaction fell due: record it (and any others due) and show what was recorded; recording also checks the budgets. */
 class PlannedTransactionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val container = (context.applicationContext as LadgerApp).container

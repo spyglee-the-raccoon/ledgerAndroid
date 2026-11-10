@@ -21,6 +21,8 @@ import work.spyglee.ladger.ui.collections.CollectionEditorScreen
 import work.spyglee.ladger.ui.collections.CollectionsScreen
 import work.spyglee.ladger.ui.components.ReadableWidth
 import work.spyglee.ladger.ui.main.MainScreen
+import work.spyglee.ladger.ui.budgets.BudgetEditorScreen
+import work.spyglee.ladger.ui.budgets.BudgetsScreen
 import work.spyglee.ladger.ui.planned.PlannedTransactionEditorScreen
 import work.spyglee.ladger.ui.planned.PlannedTransactionsScreen
 import work.spyglee.ladger.ui.settings.CategoriesScreen
@@ -30,6 +32,8 @@ import work.spyglee.ladger.ui.settings.SourceEditorScreen
 import work.spyglee.ladger.ui.settings.SourcesScreen
 import work.spyglee.ladger.ui.sources.SourcesOverviewScreen
 import work.spyglee.ladger.ui.stats.IncomeExpenseScreen
+import work.spyglee.ladger.ui.stats.PriceComparisonScreen
+import work.spyglee.ladger.ui.stats.PriceHistoryScreen
 import work.spyglee.ladger.ui.stats.SavingsScreen
 import work.spyglee.ladger.ui.stats.TopCategoriesScreen
 import work.spyglee.ladger.ui.transactions.TransactionEditorScreen
@@ -44,9 +48,12 @@ private object Routes {
     const val SOURCES_OVERVIEW = "sources_overview"
     const val COLLECTIONS = "collections"
     const val PLANNED_TRANSACTIONS = "planned_transactions"
+    const val BUDGETS = "budgets"
     const val INCOME_EXPENSE = "stats/income_expense"
     const val SAVINGS = "stats/savings"
     const val TOP_CATEGORIES = "stats/top_categories"
+    const val PRICE_COMPARISON = "stats/price_comparison"
+    const val PRICE_HISTORY = "stats/price_history/{key}"
     const val TRANSACTION_EDITOR = "transaction?id={id}&kind={kind}&receipt={receipt}"
     const val TRANSACTION_LIST = "transactions/{filter}?sourceId={sourceId}"
     const val CATEGORY_EDITOR = "category?id={id}"
@@ -54,6 +61,7 @@ private object Routes {
     const val COLLECTION = "collection/{id}"
     const val COLLECTION_EDITOR = "collection_editor?id={id}"
     const val PLANNED_TRANSACTION_EDITOR = "planned_transaction?id={id}"
+    const val BUDGET_EDITOR = "budget?id={id}"
 
     fun transactionEditor(id: Long? = null, kind: TransactionKind = TransactionKind.EXPENSE, receipt: Uri? = null) =
         "transaction?id=${id ?: NO_ID}&kind=${kind.raw}" + (receipt?.let { "&receipt=${Uri.encode(it.toString())}" } ?: "")
@@ -70,6 +78,10 @@ private object Routes {
     fun collection(id: Long) = "collection/$id"
     fun collectionEditor(id: Long? = null) = "collection_editor?id=${id ?: NO_ID}"
     fun plannedTransactionEditor(id: Long? = null) = "planned_transaction?id=${id ?: NO_ID}"
+    fun budgetEditor(id: Long? = null) = "budget?id=${id ?: NO_ID}"
+
+    /** [key] is a product's normalized name, which may contain any character. */
+    fun priceHistory(key: String) = "stats/price_history/${Uri.encode(key)}"
 }
 
 private const val NO_ID = -1L
@@ -165,9 +177,11 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
                 onOpenSources = { navController.navigate(Routes.SOURCES) },
                 onOpenCollections = { navController.navigate(Routes.COLLECTIONS) },
                 onOpenPlannedTransactions = { navController.navigate(Routes.PLANNED_TRANSACTIONS) },
+                onOpenBudgets = { navController.navigate(Routes.BUDGETS) },
                 onOpenIncomeExpense = { navController.navigate(Routes.INCOME_EXPENSE) },
                 onOpenSavings = { navController.navigate(Routes.SAVINGS) },
                 onOpenTopCategories = { navController.navigate(Routes.TOP_CATEGORIES) },
+                onOpenPriceComparison = { navController.navigate(Routes.PRICE_COMPARISON) },
             )
         }
         readableComposable(Routes.INCOME_EXPENSE) {
@@ -228,6 +242,22 @@ fun LadgerNavHost(navController: NavHostController = rememberNavController(), sh
         }
         readableComposable(Routes.PLANNED_TRANSACTION_EDITOR, arguments = listOf(optionalId)) { entry ->
             PlannedTransactionEditorScreen(plannedId = entry.optionalId(), onDone = back)
+        }
+        readableComposable(Routes.BUDGETS) {
+            BudgetsScreen(
+                onBack = back,
+                onAdd = { navController.navigate(Routes.budgetEditor()) },
+                onEdit = { navController.navigate(Routes.budgetEditor(it)) },
+            )
+        }
+        readableComposable(Routes.BUDGET_EDITOR, arguments = listOf(optionalId)) { entry ->
+            BudgetEditorScreen(budgetId = entry.optionalId(), onDone = back)
+        }
+        readableComposable(Routes.PRICE_COMPARISON) {
+            PriceComparisonScreen(onBack = back, onOpenHistory = { navController.navigate(Routes.priceHistory(it)) })
+        }
+        readableComposable(Routes.PRICE_HISTORY, arguments = listOf(navArgument("key") { type = NavType.StringType })) { entry ->
+            PriceHistoryScreen(key = entry.arguments?.getString("key").orEmpty(), onBack = back)
         }
     }
 }

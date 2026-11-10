@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -34,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SelectableDates
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
@@ -47,7 +45,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -78,6 +75,7 @@ import work.spyglee.ladger.domain.categoryKind
 import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.LadgerTopBar
 import work.spyglee.ladger.ui.components.SegmentedSelector
+import work.spyglee.ladger.ui.components.SwitchRow
 import work.spyglee.ladger.ui.formatDate
 import work.spyglee.ladger.ui.localDecimalSeparator
 import work.spyglee.ladger.ui.theme.iconFor
@@ -295,17 +293,6 @@ private fun IntervalStepper(frequency: RecurrenceFrequency, interval: Int, onCha
         IconButton(onClick = { onChange(interval + 1) }, enabled = interval < Recurrence.INTERVALS.last) {
             Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.increase))
         }
-    }
-}
-
-@Composable
-private fun SwitchRow(title: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Row(
-        Modifier.fillMaxWidth().toggleable(value = checked, role = Role.Switch, onValueChange = onCheckedChange).padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(title, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-        Switch(checked = checked, onCheckedChange = null)
     }
 }
 

@@ -44,7 +44,7 @@ object CsvExporter {
             CsvFile("${kind.raw}s.csv", (listOf(header(kind)) + rows).toCsv())
         }
         return transactionFiles + listOfNotNull(
-            sources.takeIf { it.isNotEmpty() }?.let { CsvFile("sources.csv", sourcesCsv(it)) },
+            sources.takeIf { it.isNotEmpty() }?.let { CsvFile("accounts.csv", sourcesCsv(it)) },
             plannedTransactions.takeIf { it.isNotEmpty() }?.let {
                 CsvFile("planned_transactions.csv", plannedCsv(it, sourceNames, categoryNames, zone))
             },

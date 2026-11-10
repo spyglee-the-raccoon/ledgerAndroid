@@ -1,74 +1,70 @@
 """Generates the Android launcher icons from the iOS app icon.
 
-Usage (needs Pillow):  python tools/make-icons.py "<path to iOS repo>/ledger/Assets.xcassets/AppIcon.appiconset/Ladger Logo.png"
+Usage (needs Pillow):  python tools/make-icons.py "<path to iOS repo>/ledger/Assets.xcassets/AppIcon.appiconset/Icon-3.png"
 
-The iOS icon is a 1024 px rounded square with the artwork on a dark background. Android adaptive
-icons are 108 dp squares that the launcher masks into its own shape; only the middle 66 dp circle
-is always visible. So the artwork is scaled to fit that circle and blended into a full-bleed
-background, and a white silhouette is made for themed (monochrome) icons on Android 13+.
+The iOS icon is a full-bleed 1024 px square: a white mark on a vertical dark gradient. Android adaptive
+icons are 108 dp squares that the launcher masks into its own shape; the middle 72 dp are visible and
+only the middle 66 dp circle always is. So the iOS icon fills the visible 72 dp (the mark then stays
+inside the safe circle, which is checked), its gradient is extended into the bleed area, and a white
+silhouette of the mark is made for themed (monochrome) icons on Android 13+.
 """
 import math
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageChops, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw
 
 RES = Path(__file__).resolve().parent.parent / "app" / "src" / "main" / "res"
 DENSITIES = {"mdpi": 1, "hdpi": 1.5, "xhdpi": 2, "xxhdpi": 3, "xxxhdpi": 4}
-BACKGROUND = (11, 13, 17, 255)  # the iOS icon's background, sampled
 
 CANVAS = 1080  # 108 dp at 10 px per dp; scaled down per density
-SAFE_DIAMETER = CANVAS * 66 / 108
+VISIBLE = CANVAS * 72 // 108
+INSET = (CANVAS - VISIBLE) // 2
+SAFE_RADIUS = CANVAS * 33 / 108
 
 
-def content_box(icon):
-    """Bounding box of the artwork: pixels clearly brighter than the dark background."""
-    lum = icon.convert("L").point(lambda v: 255 if v > 70 else 0)
-    alpha = icon.getchannel("A").point(lambda v: 255 if v > 200 else 0)
-    return ImageChops.multiply(lum, alpha).getbbox()
+def mark_alpha(image):
+    """Opacity of the white mark: bright pixels, so the gradient's light top never counts."""
+    return image.convert("L").point(lambda v: max(0, min(255, (v - 150) * 255 // 80)))
 
 
 def full_bleed(icon):
-    """The artwork centered on a 108 dp canvas, fitting the safe circle, faded into the background."""
-    left, top, right, bottom = content_box(icon)
-    diagonal = math.hypot(right - left, bottom - top)
-    scale = SAFE_DIAMETER * 0.96 / diagonal
-    scaled = icon.resize((round(icon.width * scale), round(icon.height * scale)), Image.LANCZOS)
-    cx, cy = (left + right) / 2 * scale, (top + bottom) / 2 * scale
-
-    # Fade the scaled icon out before its rounded corners, so no edge shows on the background.
-    inner, outer = diagonal * scale / 2 * 1.02, min(scaled.width, scaled.height) / 2 * 0.98
-    mask = Image.new("L", scaled.size, 0)
-    for r in range(int(outer), int(inner) - 1, -1):
-        level = 255 if r <= inner else round(255 * (outer - r) / (outer - inner))
-        ImageDraw.Draw(mask).ellipse((cx - r, cy - r, cx + r, cy + r), fill=level)
-    mask = ImageChops.multiply(mask, scaled.getchannel("A"))
-
-    canvas = Image.new("RGBA", (CANVAS, CANVAS), BACKGROUND)
-    offset = (round(CANVAS / 2 - cx), round(CANVAS / 2 - cy))
-    canvas.paste(scaled, offset, mask)
-    return canvas, scale, offset, mask
+    """The iOS icon on the visible 72 dp, its gradient continued to the 108 dp edges."""
+    scaled = icon.resize((VISIBLE, VISIBLE), Image.LANCZOS)
+    canvas = Image.new("RGBA", (CANVAS, CANVAS))
+    # The gradient is vertical, so each row takes the colour of the icon's left edge at that height.
+    edge = [scaled.getpixel((0, min(VISIBLE - 1, max(0, y - INSET)))) for y in range(CANVAS)]
+    for y, colour in enumerate(edge):
+        canvas.paste(colour, (0, y, CANVAS, y + 1))
+    canvas.paste(scaled, (INSET, INSET))
+    return canvas
 
 
-def monochrome(icon, scale, offset, fade):
-    """White silhouette of the artwork on transparent, for themed icons."""
-    scaled = icon.resize((round(icon.width * scale), round(icon.height * scale)), Image.LANCZOS)
-    # Distance from the background colour rather than brightness, so the dark green of the mark counts too.
-    background = Image.new("RGB", scaled.size, BACKGROUND[:3])
-    distance = ImageChops.difference(scaled.convert("RGB"), background).split()
-    strongest = ImageChops.lighter(ImageChops.lighter(distance[0], distance[1]), distance[2])
-    shape = strongest.point(lambda v: max(0, min(255, (v - 22) * 255 // 14)))
-    alpha = Image.new("L", (CANVAS, CANVAS), 0)
-    # The same fade as the colour layer, so the iOS icon's rounded border never shows.
-    alpha.paste(ImageChops.multiply(shape, fade), offset)
+def check_safe_zone(full):
+    """Fails if any part of the mark could be cut off by a launcher's mask."""
+    alpha = mark_alpha(full)
+    pixels = alpha.load()
+    left, top, right, bottom = alpha.getbbox()
+    furthest = max(
+        math.hypot(x - CANVAS / 2, y - CANVAS / 2)
+        for y in range(top, bottom)
+        for x in range(left, right)
+        if pixels[x, y] > 128
+    )
+    if furthest > SAFE_RADIUS:
+        sys.exit(f"The mark reaches {furthest / 10:.1f} dp from the centre, outside the 33 dp safe zone")
+
+
+def monochrome(full):
+    """White silhouette of the mark on transparent, for themed icons."""
     silhouette = Image.new("RGBA", (CANVAS, CANVAS), (255, 255, 255, 0))
-    silhouette.putalpha(alpha)
+    silhouette.putalpha(mark_alpha(full))
     return silhouette
 
 
-def legacy(full, round_mask):
-    """48 dp icon for Android 7 and older launchers: the full-bleed art in a rounded square or circle."""
-    size = full.width
+def legacy(art, round_mask):
+    """48 dp icon for Android 7 and older launchers: the art in a rounded square or circle."""
+    size = art.width
     mask = Image.new("L", (size * 4, size * 4), 0)
     draw = ImageDraw.Draw(mask)
     if round_mask:
@@ -77,7 +73,7 @@ def legacy(full, round_mask):
         draw.rounded_rectangle((0, 0, size * 4 - 1, size * 4 - 1), radius=size * 4 * 0.22, fill=255)
     mask = mask.resize((size, size), Image.LANCZOS)
     out = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    out.paste(full, (0, 0), mask)
+    out.paste(art, (0, 0), mask)
     return out
 
 
@@ -89,11 +85,11 @@ def save(image, folder, name, size):
 
 def main():
     icon = Image.open(sys.argv[1]).convert("RGBA")
-    full, scale, offset, fade = full_bleed(icon)
-    mono = monochrome(icon, scale, offset, fade)
+    full = full_bleed(icon)
+    check_safe_zone(full)
+    mono = monochrome(full)
     # Legacy icons show the 72 dp middle of the 108 dp canvas, like a masked adaptive icon.
-    crop = (CANVAS - CANVAS * 72 // 108) // 2
-    legacy_art = full.crop((crop, crop, CANVAS - crop, CANVAS - crop))
+    legacy_art = full.crop((INSET, INSET, CANVAS - INSET, CANVAS - INSET))
 
     for density, factor in DENSITIES.items():
         folder = f"mipmap-{density}"

@@ -96,8 +96,12 @@ class MainActivity : FragmentActivity() {
 
     override fun onStart() {
         super.onStart()
-        // Records planned transactions that fell due while the alarm couldn't, as iOS does when the app opens.
-        container.applicationScope.launch { container.plannedTransactions.recordDue() }
+        // Records planned transactions that fell due while the alarm couldn't and checks the budgets
+        // (a new month, deleted expenses), as iOS does when the app opens.
+        container.applicationScope.launch {
+            container.plannedTransactions.recordDue()
+            container.budgets.check()
+        }
     }
 
     override fun onResume() {
@@ -172,7 +176,7 @@ class MainActivity : FragmentActivity() {
      */
     private fun handleDebugIntent(intent: Intent?) {
         if (BuildConfig.DEBUG && intent?.getBooleanExtra(EXTRA_SHOW_REMINDER, false) == true) {
-            container.reminder.show()
+            container.applicationScope.launch { container.reminder.show(container.budgets.generalUsage()) }
         }
     }
 

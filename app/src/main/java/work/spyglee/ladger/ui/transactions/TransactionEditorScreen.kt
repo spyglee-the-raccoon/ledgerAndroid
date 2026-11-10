@@ -33,6 +33,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -45,6 +46,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -75,7 +77,11 @@ import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.CategoryIcon
 import work.spyglee.ladger.ui.components.LadgerTopBar
 import work.spyglee.ladger.ui.components.ReadableWidth
+import work.spyglee.ladger.ui.components.ReceiptItemRow
+import work.spyglee.ladger.ui.components.ReceiptPage
+import work.spyglee.ladger.ui.components.ReceiptPhotos
 import work.spyglee.ladger.ui.components.SegmentedSelector
+import work.spyglee.ladger.ui.components.SwipeToDelete
 import work.spyglee.ladger.ui.formatDateTime
 import work.spyglee.ladger.ui.localDecimalSeparator
 import work.spyglee.ladger.ui.theme.iconFor
@@ -101,6 +107,7 @@ fun TransactionEditorScreen(transactionId: Long?, initialKind: TransactionKind, 
     val draft by viewModel.draft.collectAsStateWithLifecycle()
     val amountText by viewModel.amountText.collectAsStateWithLifecycle()
     val isParsing by viewModel.isParsing.collectAsStateWithLifecycle()
+    val isRecognizingItems by viewModel.isRecognizingItems.collectAsStateWithLifecycle()
     val categories by viewModel.categories.collectAsStateWithLifecycle()
     val sources by viewModel.sources.collectAsStateWithLifecycle()
     val available = categories.filter { it.kind == draft.kind.categoryKind }
@@ -147,7 +154,8 @@ fun TransactionEditorScreen(transactionId: Long?, initialKind: TransactionKind, 
                     title = stringResource(if (viewModel.isEditing) R.string.edit_transaction else R.string.add_transaction),
                     onBack = onDone,
                 ) {
-                    IconButton(onClick = { viewModel.save(onDone) }, enabled = draft.isValid) {
+                    // Saving while the items are read would drop them.
+                    IconButton(onClick = { viewModel.save(onDone) }, enabled = draft.isValid && !isRecognizingItems) {
                         Icon(Icons.Filled.Check, contentDescription = stringResource(R.string.save))
                     }
                 }
@@ -223,9 +231,88 @@ fun TransactionEditorScreen(transactionId: Long?, initialKind: TransactionKind, 
                     label = { Text(stringResource(R.string.note)) },
                     modifier = Modifier.fillMaxWidth(),
                 )
+                ReceiptSections(viewModel, draft.kind)
             }
         }
     }
+}
+
+/**
+ * The scanned receipt page and, for expenses, the products read from it: while adding, what the
+ * scan found (items can be swiped away); while editing, what was saved with the transaction.
+ */
+@Composable
+private fun ReceiptSections(viewModel: TransactionEditorViewModel, kind: TransactionKind) {
+    val scannedPhotos by viewModel.scannedPhotos.collectAsStateWithLifecycle()
+    val savedPhotos by viewModel.savedPhotos.collectAsStateWithLifecycle()
+    val scannedItems by viewModel.scannedItems.collectAsStateWithLifecycle()
+    val savedItems by viewModel.savedItems.collectAsStateWithLifecycle()
+    val isRecognizingItems by viewModel.isRecognizingItems.collectAsStateWithLifecycle()
+
+    val pages = remember(viewModel.isEditing, scannedPhotos, savedPhotos) {
+        if (viewModel.isEditing) savedPhotos.map { ReceiptPage.Saved(it) } else scannedPhotos.map { ReceiptPage.Scanned(it) }
+    }
+    if (pages.isNotEmpty()) {
+        Column {
+            SectionTitle(stringResource(R.string.receipt))
+            ReceiptPhotos(pages)
+        }
+    }
+
+    if (kind != TransactionKind.EXPENSE) return
+    if (viewModel.isEditing && savedItems.isNotEmpty()) {
+        Column {
+            SectionTitle(stringResource(R.string.receipt_items))
+            savedItems.forEach { item ->
+                key(item.id) {
+                    SwipeToDelete(onDelete = { viewModel.deleteSavedItem(item) }) {
+                        ReceiptItemRow(item.name, item.quantity, item.unitPrice, item.totalPrice)
+                    }
+                }
+            }
+        }
+    } else if (isRecognizingItems || scannedItems.isNotEmpty()) {
+        Column {
+            SectionTitle(stringResource(R.string.receipt_items))
+            if (isRecognizingItems) {
+                Row(Modifier.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                    Text(
+                        stringResource(R.string.recognizing_items),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 12.dp),
+                    )
+                }
+            }
+            scannedItems.forEachIndexed { index, item ->
+                // By identity: equal lines can repeat, and a removed row must not pass its swipe state on.
+                key(System.identityHashCode(item)) {
+                    SwipeToDelete(onDelete = { viewModel.removeScannedItem(index) }) {
+                        ReceiptItemRow(item.name, item.quantity, item.unitPrice, item.totalPrice)
+                    }
+                }
+            }
+            if (scannedItems.isNotEmpty()) {
+                Text(
+                    stringResource(R.string.receipt_items_footer),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 4.dp),
+                )
+            }
+        }
+    }
+}
+
+/** A section title aligned with the form's fields, which already have the screen's padding. */
+@Composable
+private fun SectionTitle(text: String) {
+    Text(
+        text,
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(bottom = 8.dp),
+    )
 }
 
 data class PickerOption(val id: Long, val name: String, val icon: ImageVector, val color: Color)

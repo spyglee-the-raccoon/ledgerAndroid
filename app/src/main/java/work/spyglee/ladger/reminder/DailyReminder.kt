@@ -15,6 +15,10 @@ import androidx.core.content.ContextCompat
 import java.time.Duration
 import java.time.ZonedDateTime
 import work.spyglee.ladger.R
+import work.spyglee.ladger.domain.BudgetHint
+import work.spyglee.ladger.domain.BudgetUsage
+import work.spyglee.ladger.domain.Budgets
+import work.spyglee.ladger.ui.formatMoney
 
 /**
  * The daily reminder notification. It is scheduled one day at a time with an inexact alarm, which
@@ -37,7 +41,8 @@ class DailyReminder(context: Context) {
     /** False when the user has turned off notifications for the app (or not yet allowed them on Android 13+). */
     fun canNotify(): Boolean = NotificationManagerCompat.from(context).areNotificationsEnabled()
 
-    fun show() {
+    /** Shows the reminder; with an active general limit ([general]) it adds how much of it is used, as on iOS. */
+    fun show(general: BudgetUsage?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -50,14 +55,31 @@ class DailyReminder(context: Context) {
         val openApp = context.packageManager.getLaunchIntentForPackage(context.packageName)?.let {
             PendingIntent.getActivity(context, 0, it, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
+        val reminder = context.getString(R.string.reminder_body)
+        val body = general?.let { "$reminder\n${budgetHint(it)}" } ?: reminder
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(context.getString(R.string.reminder_title))
-            .setContentText(context.getString(R.string.reminder_body))
+            .setContentText(body)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setContentIntent(openApp)
             .setAutoCancel(true)
             .build()
         manager.notify(NOTIFICATION_ID, notification)
+    }
+
+    /**
+     * One of seven lines by how much of the general limit is used. Unlike iOS, which fixes the text when
+     * it schedules the repeating reminder, it is worked out when the reminder goes off, so it is current.
+     */
+    private fun budgetHint(usage: BudgetUsage): String = when (Budgets.hint(usage.ratio)) {
+        BudgetHint.WELL_UNDER -> context.getString(R.string.budget_hint_well_under)
+        BudgetHint.UNDER_HALF -> context.getString(R.string.budget_hint_under_half)
+        BudgetHint.OVER_HALF -> context.getString(R.string.budget_hint_over_half)
+        BudgetHint.GETTING_CLOSE -> context.getString(R.string.budget_hint_getting_close)
+        BudgetHint.ALMOST -> context.getString(R.string.budget_hint_almost, formatMoney(usage.remaining))
+        BudgetHint.REACHED -> context.getString(R.string.budget_hint_reached)
+        BudgetHint.OVER -> context.getString(R.string.budget_hint_over, formatMoney(usage.remaining.negate()))
     }
 
     private fun alarmIntent(): PendingIntent = PendingIntent.getBroadcast(

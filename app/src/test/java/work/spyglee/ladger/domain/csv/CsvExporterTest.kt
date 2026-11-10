@@ -53,7 +53,7 @@ class CsvExporterTest {
             listOf(transfer("5", 1, 2), income("100", destinationId = 2, categoryId = 11)),
             sources, categories, UTC,
         )
-        assertEquals(listOf("incomes.csv", "transfers.csv", "sources.csv"), files.map { it.fileName })
+        assertEquals(listOf("incomes.csv", "transfers.csv", "accounts.csv"), files.map { it.fileName })
         assertEquals("date;amount;source;target;details\n01.10.2026;5;Cash;Bank Card;\n", files[1].text)
     }
 
@@ -89,7 +89,7 @@ class CsvExporterTest {
             categories, UTC,
         )
         assertEquals(
-            listOf(CsvFile("sources.csv", "name;initial_value;icon;color\nCash, wallet;12.5;creditcard;blue\nSavings;1000;building.columns;indigo\n")),
+            listOf(CsvFile("accounts.csv", "name;initial_value;icon;color\nCash, wallet;12.5;creditcard;blue\nSavings;1000;building.columns;indigo\n")),
             files,
         )
     }

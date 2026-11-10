@@ -17,5 +17,6 @@ class LadgerApp : Application() {
             if (container.settings.isReminderOn.first()) container.reminder.schedule()
         }
         container.applicationScope.launch { container.plannedTransactions.reschedule() }
+        container.applicationScope.launch { container.receiptFiles.sweepOrphans() }
     }
 }

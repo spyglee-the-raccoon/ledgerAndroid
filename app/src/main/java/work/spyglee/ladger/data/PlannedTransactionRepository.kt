@@ -19,10 +19,12 @@ interface PlannedTransactionAlarm {
 /**
  * Saves planned transactions and records their occurrences as transactions once due, as iOS's
  * `RecurrenceEngine`. After every change the alarm is set for the earliest occurrence still to record.
+ * [onRecorded] runs after occurrences were recorded, to check the budgets as iOS does.
  */
 class PlannedTransactionRepository(
     private val database: LadgerDatabase,
     private val alarm: PlannedTransactionAlarm,
+    private val onRecorded: suspend () -> Unit = {},
     private val zone: () -> ZoneId = ZoneId::systemDefault,
 ) {
     private val dao = database.plannedTransactionDao()
@@ -35,14 +37,15 @@ class PlannedTransactionRepository(
     suspend fun get(id: Long): PlannedTransaction? = dao.getById(id)
 
     /** Records every occurrence due by [now]; returns the plans that recorded any. */
-    suspend fun recordDue(now: Instant = Instant.now()): List<PlannedTransaction> = mutex.withLock { recordDueLocked(now) }
+    suspend fun recordDue(now: Instant = Instant.now()): List<PlannedTransaction> =
+        mutex.withLock { recordDueLocked(now) }.also { if (it.isNotEmpty()) onRecorded() }
 
     /**
      * Inserts or updates the plan from [draft] (only call when it is valid), then records what is
      * due, so a plan starting today is recorded straight away, as on iOS.
      */
     suspend fun save(id: Long?, draft: PlannedTransactionDraft) {
-        mutex.withLock {
+        val recorded = mutex.withLock {
             if (id == null) {
                 dao.insert(draft.toPlanned(existing = null))
             } else {
@@ -52,6 +55,7 @@ class PlannedTransactionRepository(
             }
             recordDueLocked(Instant.now())
         }
+        if (recorded.isNotEmpty()) onRecorded()
     }
 
     /** Transactions the plan recorded stay, unlinked. */
@@ -64,11 +68,17 @@ class PlannedTransactionRepository(
 
     /** Resuming records the occurrences missed while paused, as on iOS. */
     suspend fun setPaused(id: Long, paused: Boolean) {
-        mutex.withLock {
+        val recorded = mutex.withLock {
             val planned = dao.getById(id) ?: return
             dao.update(planned.copy(isPaused = paused))
-            if (paused) rescheduleLocked() else recordDueLocked(Instant.now())
+            if (paused) {
+                rescheduleLocked()
+                emptyList()
+            } else {
+                recordDueLocked(Instant.now())
+            }
         }
+        if (recorded.isNotEmpty()) onRecorded()
     }
 
     /** Sets the alarm again, e.g. after a reboot or force stop cleared it. */

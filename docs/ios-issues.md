@@ -5,6 +5,8 @@ important first. Android avoids or fixes each of these; file references are to t
 
 Checked again at iOS `6f46e7b`: issues 2–6 are fixed there; 1, 7 and 8 and the typo in 9 are still open.
 Checked again at iOS `f909b82`: no change to those; 10–13 are new, from planned transactions.
+Checked again at iOS `46702e5`: 13 is fixed and the app icon no longer says "Ladger" (9); 1, 7, 8, 10–12 and the
+typo in 9 are still open; 14 and 15 are new, from budgets and receipt items.
 
 ## 1. Dark mode: the lock screen probably lets balances show through
 `views/LockView.swift`, `components/BackgroundView.swift`, `ContentView.swift`
@@ -69,9 +71,8 @@ matches names ignoring case, so an import may attach transactions to either one.
 - `unlock_reason` (English): "Unlock app to see the **blance** and manipulate transactions" — typo.
 - `reminder_title` was "Budget Tracker" while the app is called Ladger. Since `6f46e7b` it is "Ledger", matching the
   iOS app's new display name; Android followed and is now called Ledger too.
-- The app icon (`AppIcon.appiconset/Ladger Logo.png`) still has "Ladger" written under the logo, while the app is
-  now called Ledger. Android's launcher and Play icons are generated from it, so they say "Ladger" too until the
-  iOS icon changes (then rerun `tools/make-icons.py`).
+- ~~The app icon still had "Ladger" written under the logo.~~ **Fixed in iOS `46702e5`** (`Icon-3.png`, a script L);
+  Android's icons are regenerated from it.
 
 ## 10. "Planned transaction performed" arrives before anything is recorded
 `models/PlannedTransactionNotifier.swift`, `components/RecurranceEngine.swift`, `ContentView.swift`
@@ -85,7 +86,7 @@ than "recorded". Android sets an alarm for the due time that records the transac
 ## 11. Exported sources and planned transactions can't be imported
 `models/CSVExporter.swift`, `models/CSVImporter.swift`
 
-The export now also writes `sources.csv` and `planned_transactions.csv`, but the importer only reads
+The export now also writes `accounts.csv` (`sources.csv` before `46702e5`) and `planned_transactions.csv`, but the importer only reads
 transaction files and rejects the whole import ("unknown format") if either is selected. Selecting every
 file in an export folder, the obvious way to restore a backup, imports nothing. Android does the same, to match.
 **Fix:** skip these files when importing, or import them (sources with initial value, icon and colour; plans).
@@ -100,9 +101,27 @@ Changing the frequency or interval shifts the next date the same way. Android do
 **Fix:** when the schedule changes, count only the new occurrences up to the last recorded one.
 
 ## 13. `no_categories` has no text
-`Localizable.xcstrings`: the key was added without any localization, so an empty categories list shows
-"no_categories". Android has its own text for now (`strings_android.xml`, listed in
-translations-to-review.md); once iOS adds it, the Android build fails on the duplicate until that copy is removed.
+**Fixed in iOS `46702e5`**; Android's own copy is removed.
+`Localizable.xcstrings`: the key was added without any localization, so an empty categories list showed
+"no_categories".
+
+## 14. The daily reminder's budget hint is out of date
+`models/DailyReminder.swift`, `models/BudgetNotifier.swift`
+
+The hint ("Over half of your general limit is used…") is baked into the repeating notification when it is
+scheduled, and only rescheduled when the app checks the budgets (saving a transaction or budget, opening
+the app). An expense recorded by a planned transaction while the app stays closed, or a new month, isn't
+reflected: on 1 November the reminder can still say the limit is reached.
+**Fix:** schedule the reminder without the hint and refresh it daily (e.g. a `BGAppRefreshTask`), or drop the
+hint when the scheduled text is from an earlier month. Android works the text out when the reminder goes off.
+
+## 15. Budgets and receipts aren't in the CSV export
+`models/CSVExporter.swift`
+
+The export writes transactions, accounts and planned transactions, but not budgets, receipt items or
+photos. Restoring a backup on a new phone loses every limit and the whole price history. Android does
+the same, to match.
+**Fix:** export `budgets.csv` and `receipt_items.csv` (and import them, see 11).
 
 ## Optional: receipt OCR that reads O as zero
 On a monospace receipt font, Android's OCR read "UKUPNO" as "UKUPN0". The Android parser now treats

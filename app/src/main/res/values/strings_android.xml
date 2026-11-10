@@ -20,7 +20,6 @@
     <string name="zoom_level">Zoom %1$s</string>
     <string name="previous_month">Previous month</string>
     <string name="next_month">Next month</string>
-    <string name="no_categories">No categories</string>
     <string name="increase">Increase</string>
     <string name="decrease">Decrease</string>
 </resources>

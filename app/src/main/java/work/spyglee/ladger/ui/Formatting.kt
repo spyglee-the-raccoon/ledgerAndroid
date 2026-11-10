@@ -90,3 +90,26 @@ fun formatCompactSigned(amount: BigDecimal): String {
     val text = CompactDecimalFormat.getInstance(currentLocale(), CompactDecimalFormat.CompactStyle.SHORT).format(amount)
     return if (amount.signum() > 0) "+$text" else text
 }
+
+/** A plain number such as a quantity, e.g. "0,456" or "2". */
+@Composable
+fun formatNumber(value: BigDecimal): String = NumberFormat.getNumberInstance(currentLocale()).apply { maximumFractionDigits = 3 }.format(value)
+
+/**
+ * A share as a percentage, e.g. 0.845 as "85 %" with no [fractionDigits]. With [signed] a rise gets a
+ * plus sign, as iOS's `.sign(strategy: .always())` for price changes.
+ */
+@Composable
+fun formatPercent(ratio: Double, fractionDigits: Int = 0, signed: Boolean = false): String {
+    val format = NumberFormat.getPercentInstance(currentLocale()).apply {
+        minimumFractionDigits = fractionDigits
+        maximumFractionDigits = fractionDigits
+    }
+    val text = format.format(ratio)
+    return if (signed && ratio >= 0) "+$text" else text
+}
+
+/** Month and year, e.g. "Oct 2026", for "purchases since". */
+@Composable
+fun formatMonthYear(instant: Instant, zone: ZoneId = ZoneId.systemDefault()): String =
+    formatMonth(YearMonth.from(instant.atZone(zone)), "MMMy")

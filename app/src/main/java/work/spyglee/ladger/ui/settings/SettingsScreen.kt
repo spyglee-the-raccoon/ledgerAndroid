@@ -15,6 +15,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.TrendingUp
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.CreditCard
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.Fingerprint
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.IosShare
 import androidx.compose.material.icons.outlined.MoveToInbox
 import androidx.compose.material.icons.outlined.NotificationsActive
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.outlined.SwapVert
 import androidx.compose.material.icons.outlined.Update
 import androidx.compose.material3.AlertDialog
@@ -69,9 +71,11 @@ fun SettingsScreen(
     onOpenSources: () -> Unit,
     onOpenCollections: () -> Unit,
     onOpenPlannedTransactions: () -> Unit,
+    onOpenBudgets: () -> Unit,
     onOpenIncomeExpense: () -> Unit,
     onOpenSavings: () -> Unit,
     onOpenTopCategories: () -> Unit,
+    onOpenPriceComparison: () -> Unit,
 ) {
     val viewModel = appViewModel { SettingsViewModel(it) }
     val isReminderOn by viewModel.isReminderOn.collectAsStateWithLifecycle()
@@ -130,6 +134,7 @@ fun SettingsScreen(
                 stringResource(R.string.planned_transactions),
                 onOpenPlannedTransactions,
             )
+            SettingsLink(Icons.Outlined.BookmarkBorder, CategoryColor.PURPLE.toColor(), stringResource(R.string.budgeting), onOpenBudgets)
             SettingsToggle(
                 Icons.Outlined.NotificationsActive,
                 CategoryColor.RED.toColor(),
@@ -162,6 +167,7 @@ fun SettingsScreen(
             SettingsLink(Icons.Outlined.SwapVert, CategoryColor.GREEN.toColor(), stringResource(R.string.income_expense), onOpenIncomeExpense)
             SettingsLink(Icons.Outlined.MoveToInbox, CategoryColor.ORANGE.toColor(), stringResource(R.string.savings), onOpenSavings)
             SettingsLink(Icons.AutoMirrored.Outlined.TrendingUp, CategoryColor.PURPLE.toColor(), stringResource(R.string.top_categories), onOpenTopCategories)
+            SettingsLink(Icons.Outlined.ShoppingCart, CategoryColor.TEAL.toColor(), stringResource(R.string.price_comparison), onOpenPriceComparison)
         }
     }
 

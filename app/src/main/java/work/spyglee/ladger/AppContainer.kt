@@ -5,6 +5,7 @@ import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.first
 import work.spyglee.ladger.data.BudgetRepository
 import work.spyglee.ladger.data.CollectionRepository
 import work.spyglee.ladger.data.CsvDocuments
@@ -33,8 +34,8 @@ class AppContainer(context: Context, val database: LadgerDatabase = LadgerDataba
     val csvDocuments = CsvDocuments(context.contentResolver)
     val seeder = DefaultDataSeeder(database, settings, context::getString)
     val reminder = DailyReminder(context)
-    val plannedNotifier = PlannedTransactionNotifier(context)
-    val budgets = BudgetRepository(database, BudgetNotifier(context))
+    val plannedNotifier = PlannedTransactionNotifier(context) { settings.isAppLockOn.first() }
+    val budgets = BudgetRepository(database, BudgetNotifier(context) { settings.isAppLockOn.first() })
     val plannedTransactions = PlannedTransactionRepository(database, plannedNotifier, onRecorded = budgets::check)
     val receiptFiles = ReceiptRepository(database, File(context.filesDir, "receipts"))
     val appLock = AppLock()

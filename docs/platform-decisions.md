@@ -111,7 +111,8 @@ won't notice them, but anyone comparing the two apps will.
 | | iOS | Android |
 |---|---|---|
 | Unlock with | Face ID / Touch ID or the passcode | Fingerprint or face (any strength) or the screen lock PIN/pattern |
-| Locks when | The app goes to the background | The app is no longer visible. That includes our own file picker for CSV import/export and system settings opened from the app, so coming back asks to unlock again (from the code; not yet checked on a device). |
+| Locks when | The app goes to the background | The app is no longer visible, except while the user is in a file picker or settings page the app opened (D5). Coming back from one of those after more than 5 minutes, or after the screen turned off, locks anyway. |
+| Notifications on the lock screen | The system default shows previews only after Face ID | With the lock on, the planned-transaction and budget notifications (which show amounts) stay off the lock screen and show once the phone is unlocked (D5). |
 | App switcher | Always blurred, lock on or off | Hidden only while the lock is on. This also blocks screenshots and screen recording. |
 | No screen lock on the device | The lock toggle doesn't change | "Set up a screen lock…" message |
 

@@ -11,9 +11,9 @@ import work.spyglee.ladger.domain.Budgets
 import work.spyglee.ladger.domain.MonthRange
 import work.spyglee.ladger.domain.withEdits
 
-/** Tells the user a budget reached its limit. */
-fun interface BudgetAlerts {
-    fun showReached(usage: BudgetUsage, category: Category?)
+/** Tells the user a budget reached its limit. Suspends so the notifier can read the app lock setting (D5). */
+interface BudgetAlerts {
+    suspend fun showReached(usage: BudgetUsage, category: Category?)
 }
 
 /**

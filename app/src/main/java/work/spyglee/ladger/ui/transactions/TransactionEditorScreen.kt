@@ -83,6 +83,7 @@ import work.spyglee.ladger.domain.categoryKind
 import work.spyglee.ladger.domain.receipt.ParsedReceiptItem
 import work.spyglee.ladger.domain.receipt.ReceiptItemDraft
 import work.spyglee.ladger.scan.ReceiptCameraScreen
+import work.spyglee.ladger.ui.LocalAppContainer
 import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.CategoryIcon
 import work.spyglee.ladger.ui.components.LadgerTopBar
@@ -130,6 +131,7 @@ fun TransactionEditorScreen(
     val available = categories.filter { it.kind == draft.kind.categoryKind }
 
     val context = LocalContext.current
+    val appLock = LocalAppContainer.current.appLock
     val scope = rememberCoroutineScope()
     val snackbar = remember { SnackbarHostState() }
     var showCamera by rememberSaveable { mutableStateOf(false) }
@@ -146,6 +148,8 @@ fun TransactionEditorScreen(
         } else {
             scope.launch {
                 if (snackbar.showSnackbar(cameraDenied, actionLabel = openSettings) == SnackbarResult.ActionPerformed) {
+                    // The app's own settings page, so coming back doesn't lock the app (D5).
+                    appLock.expectReturn()
                     context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null)))
                 }
             }

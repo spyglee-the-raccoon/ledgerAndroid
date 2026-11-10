@@ -19,12 +19,13 @@ import work.spyglee.ladger.ui.formatMoney
 /**
  * "Budget limit reached" notifications. The channel is high importance so the alert also pops up while
  * the app is open, like the iOS banner: the limit is usually reached right after adding an expense.
+ * They show the limit, so with the app lock on ([isAppLockOn]) they stay off the lock screen (D5).
  */
-class BudgetNotifier(context: Context) : BudgetAlerts {
+class BudgetNotifier(context: Context, private val isAppLockOn: suspend () -> Boolean) : BudgetAlerts {
     private val context = context.applicationContext
 
     /** One notification per budget, replacing its previous one. */
-    override fun showReached(usage: BudgetUsage, category: Category?) {
+    override suspend fun showReached(usage: BudgetUsage, category: Category?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -50,11 +51,12 @@ class BudgetNotifier(context: Context) : BudgetAlerts {
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setContentIntent(openApp)
             .setAutoCancel(true)
+            .keepOffLockScreenIf(isAppLockOn())
             .build()
         manager.notify(NOTIFICATION_TAG, usage.budget.id.toInt(), notification)
     }
 
-    private companion object {
+    internal companion object {
         const val CHANNEL_ID = "budgets"
         const val NOTIFICATION_TAG = "budget"
     }

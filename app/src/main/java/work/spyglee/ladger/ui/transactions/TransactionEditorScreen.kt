@@ -7,7 +7,9 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,9 +21,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -45,6 +49,7 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
@@ -58,6 +63,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -72,6 +80,8 @@ import kotlinx.coroutines.launch
 import work.spyglee.ladger.R
 import work.spyglee.ladger.data.TransactionKind
 import work.spyglee.ladger.domain.categoryKind
+import work.spyglee.ladger.domain.receipt.ParsedReceiptItem
+import work.spyglee.ladger.domain.receipt.ReceiptItemDraft
 import work.spyglee.ladger.scan.ReceiptCameraScreen
 import work.spyglee.ladger.ui.appViewModel
 import work.spyglee.ladger.ui.components.CategoryIcon
@@ -98,10 +108,17 @@ fun kindLabel(kind: TransactionKind): String = stringResource(
 
 /**
  * Adds or edits a transaction. New transactions can be filled from a receipt photo; a receipt
- * shared from another app ([sharedReceipt]) is read as soon as the screen opens.
+ * shared from another app ([sharedReceipt]) is read as soon as the screen opens, and
+ * [startsScanning] (the Scan quick action) opens the camera straight away.
  */
 @Composable
-fun TransactionEditorScreen(transactionId: Long?, initialKind: TransactionKind, onDone: () -> Unit, sharedReceipt: Uri? = null) {
+fun TransactionEditorScreen(
+    transactionId: Long?,
+    initialKind: TransactionKind,
+    onDone: () -> Unit,
+    sharedReceipt: Uri? = null,
+    startsScanning: Boolean = false,
+) {
     val decimalSeparator = localDecimalSeparator()
     val viewModel = appViewModel { TransactionEditorViewModel(it, transactionId, initialKind, decimalSeparator, sharedReceipt) }
     val draft by viewModel.draft.collectAsStateWithLifecycle()
@@ -132,6 +149,21 @@ fun TransactionEditorScreen(transactionId: Long?, initialKind: TransactionKind, 
                     context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", context.packageName, null)))
                 }
             }
+        }
+    }
+    val scanReceipt = {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            openCamera()
+        } else {
+            cameraPermission.launch(Manifest.permission.CAMERA)
+        }
+    }
+    // Once, so coming back from the camera or rotating doesn't open it again; as iOS, only when adding.
+    var startedScanning by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (startsScanning && !startedScanning && !viewModel.isEditing && hasCamera) {
+            startedScanning = true
+            scanReceipt()
         }
     }
 
@@ -167,19 +199,14 @@ fun TransactionEditorScreen(transactionId: Long?, initialKind: TransactionKind, 
             ) {
                 DateTimeField(draft.date, viewModel::setDate)
                 if (isParsing) {
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                        CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                        Text(stringResource(R.string.parsing), modifier = Modifier.padding(start = 12.dp))
+                    // A spinner alone, as on iOS since 8a76b5d; TalkBack still says "parsing".
+                    val parsing = stringResource(R.string.parsing)
+                    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(Modifier.size(24.dp).semantics { contentDescription = parsing }, strokeWidth = 2.dp)
                     }
                 } else if (!viewModel.isEditing) {
                     FilledTonalButton(
-                        onClick = {
-                            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                                openCamera()
-                            } else {
-                                cameraPermission.launch(Manifest.permission.CAMERA)
-                            }
-                        },
+                        onClick = scanReceipt,
                         enabled = hasCamera,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
@@ -238,16 +265,16 @@ fun TransactionEditorScreen(transactionId: Long?, initialKind: TransactionKind, 
 }
 
 /**
- * The scanned receipt page and, for expenses, the products read from it: while adding, what the
- * scan found (items can be swiped away); while editing, what was saved with the transaction.
+ * The scanned or saved receipt page and, for expenses, the products: read from the scan or saved
+ * with the transaction. Tapping an item fixes it, swiping removes it, and items can be added by hand.
  */
 @Composable
 private fun ReceiptSections(viewModel: TransactionEditorViewModel, kind: TransactionKind) {
     val scannedPhotos by viewModel.scannedPhotos.collectAsStateWithLifecycle()
     val savedPhotos by viewModel.savedPhotos.collectAsStateWithLifecycle()
-    val scannedItems by viewModel.scannedItems.collectAsStateWithLifecycle()
-    val savedItems by viewModel.savedItems.collectAsStateWithLifecycle()
+    val items by viewModel.items.collectAsStateWithLifecycle()
     val isRecognizingItems by viewModel.isRecognizingItems.collectAsStateWithLifecycle()
+    val decimalSeparator = localDecimalSeparator()
 
     val pages = remember(viewModel.isEditing, scannedPhotos, savedPhotos) {
         if (viewModel.isEditing) savedPhotos.map { ReceiptPage.Saved(it) } else scannedPhotos.map { ReceiptPage.Scanned(it) }
@@ -260,48 +287,124 @@ private fun ReceiptSections(viewModel: TransactionEditorViewModel, kind: Transac
     }
 
     if (kind != TransactionKind.EXPENSE) return
-    if (viewModel.isEditing && savedItems.isNotEmpty()) {
-        Column {
-            SectionTitle(stringResource(R.string.receipt_items))
-            savedItems.forEach { item ->
-                key(item.id) {
-                    SwipeToDelete(onDelete = { viewModel.deleteSavedItem(item) }) {
-                        ReceiptItemRow(item.name, item.quantity, item.unitPrice, item.totalPrice)
-                    }
-                }
-            }
-        }
-    } else if (isRecognizingItems || scannedItems.isNotEmpty()) {
-        Column {
-            SectionTitle(stringResource(R.string.receipt_items))
-            if (isRecognizingItems) {
-                Row(Modifier.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                    Text(
-                        stringResource(R.string.recognizing_items),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(start = 12.dp),
-                    )
-                }
-            }
-            scannedItems.forEachIndexed { index, item ->
-                // By identity: equal lines can repeat, and a removed row must not pass its swipe state on.
-                key(System.identityHashCode(item)) {
-                    SwipeToDelete(onDelete = { viewModel.removeScannedItem(index) }) {
-                        ReceiptItemRow(item.name, item.quantity, item.unitPrice, item.totalPrice)
-                    }
-                }
-            }
-            if (scannedItems.isNotEmpty()) {
+    var editing by remember { mutableStateOf<ItemEdit?>(null) }
+    Column {
+        SectionTitle(stringResource(R.string.receipt_items))
+        if (isRecognizingItems) {
+            Row(Modifier.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
                 Text(
-                    stringResource(R.string.receipt_items_footer),
-                    style = MaterialTheme.typography.bodySmall,
+                    stringResource(R.string.recognizing_items),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(top = 4.dp),
+                    modifier = Modifier.padding(start = 12.dp),
                 )
             }
         }
+        items.forEach { editable ->
+            // By key: equal lines can repeat, and a removed row must not pass its swipe state on.
+            key(editable.key) {
+                SwipeToDelete(onDelete = { viewModel.removeItem(editable.key) }) {
+                    val item = editable.item
+                    ReceiptItemRow(
+                        item.name, item.quantity, item.unitPrice, item.totalPrice,
+                        modifier = Modifier.clickable(onClickLabel = stringResource(R.string.edit_item)) {
+                            editing = ItemEdit(editable.key, ReceiptItemDraft.from(item, decimalSeparator))
+                        },
+                    )
+                }
+            }
+        }
+        if (!isRecognizingItems) {
+            TextButton(onClick = { editing = ItemEdit(null, ReceiptItemDraft()) }) {
+                Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
+                Text(stringResource(R.string.add_item))
+            }
+        }
+        if (items.isNotEmpty()) {
+            Text(
+                stringResource(R.string.receipt_items_footer),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp),
+            )
+        }
     }
+    editing?.let { edit ->
+        ReceiptItemEditor(
+            initial = edit.draft,
+            isNew = edit.key == null,
+            decimalSeparator = decimalSeparator,
+            onSave = { item ->
+                viewModel.saveItem(edit.key, item)
+                editing = null
+            },
+            onDismiss = { editing = null },
+        )
+    }
+}
+
+/** The item being edited in [ReceiptItemEditor]; a null [key] adds a new one. */
+private data class ItemEdit(val key: Long?, val draft: ReceiptItemDraft)
+
+/** Adds a product line or fixes one that was recognized incorrectly, as iOS's `ReceiptItemEditorView`. */
+@Composable
+private fun ReceiptItemEditor(
+    initial: ReceiptItemDraft,
+    isNew: Boolean,
+    decimalSeparator: Char,
+    onSave: (ParsedReceiptItem) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    var draft by remember { mutableStateOf(initial) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(if (isNew) R.string.add_item else R.string.edit_item)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = draft.name,
+                    onValueChange = { draft = draft.copy(name = it) },
+                    label = { Text(stringResource(R.string.name)) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                val numberKeyboard = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                OutlinedTextField(
+                    value = draft.quantityText,
+                    onValueChange = { draft = draft.withQuantity(it, decimalSeparator) },
+                    label = { Text(stringResource(R.string.quantity)) },
+                    singleLine = true,
+                    keyboardOptions = numberKeyboard,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                OutlinedTextField(
+                    value = draft.unitPriceText,
+                    onValueChange = { draft = draft.withUnitPrice(it, decimalSeparator) },
+                    label = { Text(stringResource(R.string.unit_price)) },
+                    singleLine = true,
+                    keyboardOptions = numberKeyboard,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                OutlinedTextField(
+                    value = draft.totalText,
+                    onValueChange = { draft = draft.copy(totalText = it) },
+                    label = { Text(stringResource(R.string.total_price)) },
+                    singleLine = true,
+                    keyboardOptions = numberKeyboard,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { draft.toItem()?.let(onSave) }, enabled = draft.isValid) {
+                Text(stringResource(R.string.save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
+        },
+    )
 }
 
 /** A section title aligned with the form's fields, which already have the screen's padding. */

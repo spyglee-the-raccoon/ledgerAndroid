@@ -8,6 +8,7 @@ enum class TransactionKind(val raw: String) {
 
     companion object {
         fun fromRaw(raw: String): TransactionKind = entries.first { it.raw == raw }
+        fun fromRawOrNull(raw: String): TransactionKind? = entries.firstOrNull { it.raw == raw }
     }
 }
 
@@ -17,6 +18,7 @@ enum class CategoryKind(val raw: String) {
 
     companion object {
         fun fromRaw(raw: String): CategoryKind = entries.first { it.raw == raw }
+        fun fromRawOrNull(raw: String): CategoryKind? = entries.firstOrNull { it.raw == raw }
     }
 }
 
@@ -29,6 +31,7 @@ enum class RecurrenceFrequency(val raw: String) {
 
     companion object {
         fun fromRaw(raw: String): RecurrenceFrequency = entries.first { it.raw == raw }
+        fun fromRawOrNull(raw: String): RecurrenceFrequency? = entries.firstOrNull { it.raw == raw }
     }
 }
 
@@ -50,6 +53,7 @@ enum class CategoryColor(val raw: String) {
     GRAY("gray");
 
     companion object {
-        fun fromRaw(raw: String): CategoryColor = entries.firstOrNull { it.raw == raw } ?: PRIMARY
+        fun fromRaw(raw: String): CategoryColor = fromRawOrNull(raw) ?: PRIMARY
+        fun fromRawOrNull(raw: String): CategoryColor? = entries.firstOrNull { it.raw == raw }
     }
 }

@@ -7,8 +7,10 @@ can't work the same way on Android, and some already work differently. This docu
 2. how the two apps already behave differently, and why,
 3. the decisions we need to make together before porting the rest.
 
-Compared on 10 November 2026: iOS `main` at `fa64623` and Android at branch `sync-ios-46702e5`. File references
-without a repo name are to the iOS repo when they are Swift files, and to this repo when they are Kotlin files.
+Compared on 10 November 2026: iOS `main` at `fa64623` and Android at branch `sync-ios-46702e5`. Updated the same
+day for branch `sync-ios-8a76b5d-part1` ("part 1" below), which ports everything from `8a76b5d` that needs no
+decision. File references without a repo name are to the iOS repo when they are Swift files, and to this repo when
+they are Kotlin files.
 
 Each decision in part 3 has the options, an **Android proposal** (a starting point, not a conclusion) and an
 empty **Decision** line to fill in when we have talked it through.
@@ -21,30 +23,33 @@ empty **Decision** line to fill in when we have talked it through.
 |---|---|---|---|
 | up to `f909b82` | until 21 Oct | everything up to planned transactions and list search | **done**, on `main` |
 | `46702e5` | 28 Oct | budgets, receipt items and photos, price comparison, Sources renamed to Accounts | **ported**, branch `sync-ios-46702e5`; tested on the emulator and a phone; pull request not opened yet |
-| `8a76b5d` | 30 Oct | "Bells and whistles": widgets, Siri, quick actions, Pro subscription, CSV for all data, editing receipt items, Polish | **not started** |
-| `fa64623` | 3 Nov | cleanup: StoreKit test setup, privacy manifest, login stubs removed, version 1.0, medium chart widget | **not started** |
+| `8a76b5d` | 30 Oct | "Bells and whistles": widgets, Siri, quick actions, Pro subscription, CSV for all data, editing receipt items, Polish | **part 1 done**, branch `sync-ios-8a76b5d-part1`: everything that needs no decision |
+| `fa64623` | 3 Nov | cleanup: StoreKit test setup, privacy manifest, login stubs removed, version 1.0, medium chart widget | **not started**: everything in it waits for a decision, except the login removal, which Android doesn't need |
 
-So Android is two iOS commits behind, plus one finished port waiting for review. Those two commits change 74
-files (+8,300 lines). About 1,600 lines are demo CSV data and 2,600 are the string catalog, which leaves
-about 4,000 lines of code, 1,400 of them tests.
+Those two commits change 74 files (+8,300 lines). About 1,600 lines are demo CSV data and 2,600 are the string
+catalog, which leaves about 4,000 lines of code, 1,400 of them tests. After part 1, what's left are the features
+that wait for a decision: widgets, Siri, the Pro subscription and version 1.0.
 
-### Still to port
+### What the two commits add, and where Android is
 
-| Feature (iOS) | Size | Needs decision |
-|---|---|---|
-| **Widgets**: month chart (small + medium), budget (medium), 3 latest transactions (medium) | L | D4, D5 |
-| **Siri and Shortcuts**: log a transaction; ask what's left of the budget, the month's spending, an account balance | L | D3 |
-| **Pro subscription**: the four statistics screens need Pro (€2.99 a month or €29.99 a year, 1-week free trial) | L | D1 |
-| **CSV for all data**: categories, budgets, collections and receipt items are now exported; the importer works out the file type from its header and also imports accounts and planned transactions | L | D12 |
-| **Editing receipt items**: tap an item to fix it, add or remove items; total = quantity × unit price unless changed | M | none |
-| **Budget alert at most once a month**: it no longer comes back when spending drops under the limit and rises again; editing a budget re-arms it | S | none (Android now does the old behaviour) |
-| **Quick actions** on the app icon: Add transaction, Scan | S | none |
-| **Polish** translation | M | D8 |
-| **New app icon** | S | none (`tools/make-icons.py`) |
-| **Version 1.0** | S | D7 |
-| **Privacy manifest** ("no data collected"), which on Android means the Play Data safety form | S | D1 |
-| **Demo data**: `DemoData/generate.py` writes a year of data as CSV files | S | none; useful as shared test data (D12) |
-| Login and sign-up screens removed | none | Android never had them |
+| Feature (iOS) | Size | Decision | Android |
+|---|---|---|---|
+| **Widgets**: month chart (small + medium), budget (medium), 3 latest transactions (medium) | L | D4, D5 | waiting |
+| **Siri and Shortcuts**: log a transaction; ask what's left of the budget, the month's spending, an account balance | L | D3 | waiting |
+| **Pro subscription**: the four statistics screens need Pro (€2.99 a month or €29.99 a year, 1-week free trial) | L | D1 | waiting |
+| **CSV for all data**: categories, budgets, collections and receipt items are now exported; the importer works out the file type from its header and also imports accounts and planned transactions | L | (D12) | **done** in part 1 |
+| **Editing receipt items**: tap an item to fix it, add or remove items; total = quantity × unit price unless changed | M | none | **done** in part 1 |
+| **Budget alert at most once a month**: it no longer comes back when spending drops under the limit and rises again; editing a budget re-arms it | S | none | **done** in part 1 |
+| **Quick actions** on the app icon: Add transaction, Scan | S | none | **done** in part 1 |
+| **Polish** translation | M | (D8) | **done** in part 1; per-app language still open |
+| **New app icon** | S | none | **done** in part 1 (`tools/make-icons.py`) |
+| **Version 1.0** | S | D7 | waiting |
+| **Privacy manifest** ("no data collected"), which on Android means the Play Data safety form | S | D1 | waiting |
+| **Demo data**: `DemoData/generate.py` writes a year of data as CSV files | S | (D12) | **done** in part 1, as Android test data |
+| **New iOS tests** (budgets, CSV, model logic, recurrence) | M | none | **done** in part 1, ported to Android tests |
+| Login and sign-up screens removed | none | none | nothing to do; Android never had them |
+
+A decision in brackets is related, but the port didn't have to wait for it.
 
 ### Known iOS issues, checked again at `fa64623`
 [ios-issues.md](ios-issues.md) lists problems found during the port. At `fa64623`:
@@ -65,15 +70,18 @@ about 4,000 lines of code, 1,400 of them tests.
     unlocked. Logging a transaction through Siri ignores the lock altogether. See `intents/LedgerEntities.swift`,
     `ensureAppUnlocked`.
   - The on/off toggle in the budget list doesn't re-arm the budget alert; editing the budget does.
+  - Restoring a backup loses the general limit when the budgets screen was ever opened, because that screen
+    creates an empty one, which the import then keeps.
 
-These will be added to ios-issues.md with the next sync.
+These are #16–#19 in ios-issues.md.
 
 ---
 
 ## 2. How the apps already behave differently
 
-Android at `46702e5` has the same features as iOS at `46702e5`. The differences below come from the platform, or
-are places where Android had to choose. Most users won't notice them, but anyone comparing the two apps will.
+Android at `46702e5` has the same features as iOS at `46702e5`, and part 1 adds the decision-free features of
+`8a76b5d`. The differences below come from the platform, or are places where Android had to choose. Most users
+won't notice them, but anyone comparing the two apps will.
 
 ### Scanning and reading receipts
 
@@ -93,6 +101,9 @@ are places where Android had to choose. Most users won't notice them, but anyone
   - It reads a 0 touching letters as "O" ("UKUPN0").
   - It knows a few more tax words.
 - On both, a shared file is only read and isn't stored; a scanned photo is kept with its transaction.
+- Editing receipt items (part 1) works the same, with one small difference: iOS starts a new item at a total of 0,
+  so it can be saved with just a name. Android leaves the total empty until a unit price or total is typed, and
+  Save waits for it.
 
 ### App lock and privacy
 
@@ -129,7 +140,8 @@ budgets) on and off separately in system settings.
 | Network | None (purchases go through the App Store) | **No INTERNET permission at all.** The README and the Play listing promise "nothing leaves the device". |
 
 ### CSV
-- The format is identical, and files go both ways.
+- The format is identical, and files go both ways. Since part 1, Android reads and writes all 11 files like iOS
+  `8a76b5d`. A test imports a copy of iOS's `DemoData` (about 1,200 rows) and exports the same lines back.
 - **Exporting:** iOS shows a save dialog. On Android you pick a folder, and files with the same name are
   overwritten.
 - **Dates:** Android reads them strictly (`d.M.yyyy`); iOS is more lenient.
@@ -141,7 +153,9 @@ budgets) on and off separately in system settings.
   - Material You wallpaper colours are off.
   - SF Symbol names are kept as icon keys in the data and shown as Material icons.
 - **Full screens instead of sheets:** what is a sheet on iOS (Add, lists, editors) is a full screen with a
-  back arrow on Android.
+  back arrow on Android. The receipt item editor (part 1) is a small dialog instead of a half-height sheet.
+- **App icon shortcuts:** iOS adds its quick actions when the app starts; Android lists them in the app's
+  manifest, so they work before the app is first opened. On both, they wait until the app is unlocked.
 - **Swipe and long press:**
   - Swiping a row acts as soon as the swipe completes, with no button to tap: swipe left deletes, swipe right
     pauses or resumes (budgets, planned transactions).
@@ -152,10 +166,11 @@ budgets) on and off separately in system settings.
 
 ### Languages
 - iOS: English, Croatian, Ukrainian and (since `8a76b5d`) **Polish**. Users can pick a language per app.
-- Android: English, Croatian, Ukrainian, generated from the iOS catalog by `tools/sync-ios-strings.ps1`.
-  - Android follows the phone's language; there is no per-app language choice yet.
-  - 21 Android-only strings were translated without a native speaker
+- Android: the same four (Polish since part 1), generated from the iOS catalog by `tools/sync-ios-strings.ps1`.
+  - Android follows the phone's language; there is no per-app language choice yet (D8).
+  - 21 Android-only strings were translated without a native speaker, in all three languages besides English
     ([translations-to-review.md](translations-to-review.md)).
+  - The Siri texts in the catalog are generated too but unused, since Android has no Siri (D3).
 
 ### App identity
 
@@ -165,18 +180,22 @@ budgets) on and off separately in system settings.
 | Version | 1.0 (since `fa64623`) | 0.1 |
 | Runs on | iOS 26.5, iPhone and iPad | Android 8.0 and later, phones and tablets |
 | URL scheme | `ladger://` (also with an a) | none; Android uses intents |
+| Icon | Three bars forming an L on black (since `8a76b5d`) | The same artwork (part 1), drawn a little smaller so the round and squircle masks of Android launchers don't cut off the bars; also a one-colour version for themed icons |
 
 ### Tests
 - **iOS:** 7 test files (receipt parser, budgets, CSV, Siri logging, model logic, recurrence, widget snapshot).
-- **Android:** 130 unit tests and 30 on-device tests.
-  - Covered: the business rules, database, migrations, real OCR, main screens.
-  - Not covered: live Gemini Nano, alarms, fingerprint, camera, sharing.
+- **Android:** 162 unit tests and 31 on-device tests with part 1 (130 and 30 before).
+  - Covered: the business rules, database, migrations, real OCR, main screens, and the iOS test cases and demo
+    data from `8a76b5d`.
+  - Not covered: live Gemini Nano, alarms, fingerprint, camera, sharing, quick actions with the app lock on.
 
 ### Where Android copies iOS on purpose, and where it doesn't
 - **Copied, so both apps match:**
   - #8: case-sensitive names.
   - #12: changing a plan's start date.
-  - #11 and #15: export gaps, both fixed on iOS now, so Android will follow.
+  - #18 and #19 (part 1): the budget list switch doesn't re-arm the alert, and restoring a backup keeps the empty
+    general limit.
+  - #11 and #15, the export gaps, were copied too. iOS fixed them in `8a76b5d`, and Android followed in part 1.
 - **Not copied:**
   - #1: Android's lock screen is opaque.
   - #10 and #14: background recording, and the hint is worked out when the reminder goes off.
@@ -189,16 +208,16 @@ budgets) on and off separately in system settings.
 |---|---|---|---|
 | D1 | Pro subscription on Android, and the "no internet" promise | Google Play Billing; network permission used only for billing | paywall port, first release |
 | D2 | Backup and moving to a new phone; iCloud sync later? | Allow phone-to-phone transfer, no cloud backup; decide sync before iOS turns it on | first release |
-| D3 | What replaces Siri and Shortcuts | Nothing for now; quick actions only | Siri port |
+| D3 | What replaces Siri and Shortcuts | Nothing for now; the quick actions (done in part 1) | Siri port |
 | D4 | Widgets | Port all three | widget port |
 | D5 | What the app lock covers | Widgets and lock-screen notifications hide amounts when the lock is on | widgets, D3 |
 | D6 | Android app ID spelled "ladger" | Change to `work.spyglee.ledger` before the first upload | first release |
 | D7 | Version numbers | Same marketing version on both | first release |
-| D8 | Polish and per-app language | Add both | next sync |
+| D8 | Per-app language (Polish is done in part 1) | Turn it on | none |
 | D9 | Receipt camera and Cyrillic | Keep our camera, add multi-page; accept the Cyrillic gap | none |
 | D10 | Background work for planned transactions | Keep Android's way; iOS words the notification "due" or records in the background | none |
 | D11 | Fix shared bugs together or keep matching | Agree on the right behaviour; both apps fix together | none |
-| D12 | CSV as the shared contract | A short shared spec plus the demo data as shared test files | CSV port |
+| D12 | CSV as the shared contract | A short shared spec; keep `DemoData` as the shared test files (Android uses a copy since part 1) | none |
 | D13 | Android-native look or iOS look-alike | Stay Android-native | none |
 | D14 | How we sync from now on | One Android PR per iOS commit; a few lines on behaviour changes per iOS commit | none |
 
@@ -267,7 +286,8 @@ that's a backend project, not a port.
   the Wallet trigger.
 
 **Options.**
-1. **None for now.** Port only the quick actions (Add transaction, Scan), which work the same on Android.
+1. **None for now.** Only the quick actions (Add transaction, Scan), which work the same on Android and are done
+   in part 1.
 2. Google Assistant "App Actions". Assistant is being replaced by Gemini, so it's not worth building for.
 3. **AppFunctions**: lets Gemini call into the app. It needs Android 16 or later and is still an early library.
    Also, the answer then goes through Google's assistant, which sits awkwardly with "nothing leaves the device".
@@ -306,6 +326,7 @@ already disagree on the details:
 | Widgets | Show amounts and notes while the lock is on | none yet |
 | Siri questions | All refused while the lock setting is on, even when unlocked | none |
 | Siri logging | Works regardless of the lock | none |
+| App icon quick actions | Wait until the app is unlocked | The same (part 1) |
 | Notifications on the lock screen (amounts) | The system default shows previews only after Face ID | The system default shows the full text |
 | App switcher | Always blurred | Hidden only with the lock on, and screenshots are blocked |
 | Leaving for a file picker or settings | No lock (pickers are inside the app) | Locks, asks again on return |
@@ -351,16 +372,15 @@ commit it's synced to.
 
 **Decision:**
 
-### D8. Polish, and choosing a language per app
+### D8. Choosing a language per app
 **Context.**
-- iOS added Polish in `8a76b5d`.
-- Android needs:
-  - `values-pl`, by extending `tools/sync-ios-strings.ps1`;
-  - Polish for the 21 Android-only strings, with nobody to check them yet.
+- iOS added Polish in `8a76b5d`. Android has it since part 1: `tools/sync-ios-strings.ps1` now also writes
+  `values-pl`, and the 21 Android-only strings were translated, with nobody to check them yet.
 - On Android 13+ the app can also offer its own language in system settings (`localeConfig`), as iOS does.
+  Android doesn't do this yet.
 
-**Android proposal:** add Polish in the next sync and turn on the per-app language. We need a native speaker for
-Polish (and the Croatian and Ukrainian list in translations-to-review.md).
+**Android proposal:** turn on the per-app language. We need a native speaker for Polish (and the Croatian and
+Ukrainian list in translations-to-review.md).
 
 **Decision:**
 
@@ -399,7 +419,8 @@ tell the user the same thing.
 **Context.** Android copies some iOS bugs so both apps behave the same:
 - #8: "Food" and "food" are different names.
 - #12: changing a plan's start date can record an occurrence twice.
-- The budget list toggle doesn't re-arm the alert.
+- The budget list toggle doesn't re-arm the alert (#18).
+- Restoring a backup keeps the empty general limit instead of the backup's (#19).
 
 **Android proposal:** agree on the correct behaviour for each one now. iOS fixes first, Android follows in the same
 sync, and neither app fixes a shared behaviour alone.
@@ -409,15 +430,20 @@ sync, and neither app fixes a shared behaviour alone.
 ### D12. CSV as the shared contract
 **Context.**
 - CSV is the only way to move data between the apps and, on Android, to a new phone (D2).
-- `8a76b5d` adds five file types and a new importer. Android must port it, or importing an iOS export on Android
-  fails ("unknown format").
+- `8a76b5d` adds five file types and a new importer. Android ported both in part 1, so an iOS export imports on
+  Android again (before, Android refused it with "unknown format").
+- Android's tests import a copy of iOS's `DemoData/` (in `app/src/test/resources/ios-demo-data`), check that every
+  line is read, and check that exporting gives the same lines back.
 
 **To agree on:**
 - **A short written spec**, e.g. `docs/csv-format.md` in both repos. It would cover the 11 files, their headers,
   number and date formats, and how rows are matched to transactions on import.
-- Use `DemoData/` as **shared test files** that both apps must import identically.
+- Keep `DemoData/` as the **shared test files** both apps must import identically. When iOS changes the format,
+  it updates `DemoData`, and Android copies it again.
 - **Icons are stored as SF Symbol names.** Android maps them to its own icons, so a new icon on iOS needs a mapping
-  on Android.
+  on Android. Names outside iOS's icon list (`models/Icons.swift`) work on iOS but show as a placeholder on Android.
+  For example, the demo data's "Home Office" collection uses `desktopcomputer`, which only `generate.py` uses.
+  Proposal: CSV files only use names from `Icons.swift`.
 - Receipt photos and merchant learning are not exported. Should a full backup (e.g. a zip with the photos) be a
   feature on both?
 
@@ -443,7 +469,8 @@ Users of each platform expect their own conventions, but screenshots of the two 
 ### D14. How we sync from now on
 **Context.**
 - One Android pull request per iOS commit works well for small commits.
-- `8a76b5d` mixes eight features in one commit, which makes it hard to port and review in steps.
+- `8a76b5d` mixes eight features in one commit, which makes it hard to port and review in steps. Android had to
+  split it: part 1 has the features that need no decision; the rest follows once the decisions are made.
 
 **Android proposal:**
 - **Smaller iOS commits, one feature each where possible**, with a few lines on any behaviour change (e.g. "budget
@@ -459,17 +486,19 @@ Users of each platform expect their own conventions, but screenshots of the two 
 - **The sound after saving** is loaded from a private system path, which App Review may flag.
 - **The share extension** opens the app by walking the responder chain. Apple doesn't support that, so it could
   stop working in a future iOS.
-- **Android housekeeping:**
-  - Comments in `ReceiptRulesParser.kt` and its test still say iOS skips totals on lines with "Hrvatska", which iOS
-    fixed in `6f46e7b`.
-  - ios-issues.md says Android avoids every listed issue, but it copies #8.
+- **Android housekeeping, done in part 1:** comments in `ReceiptRulesParser.kt` and its test said iOS skips totals on
+  lines with "Hrvatska", which iOS fixed in `6f46e7b`; and ios-issues.md said Android avoids every listed issue,
+  though it copies some to match.
 
 ---
 
-## 4. No decision needed (straight ports)
-- Quick actions (Add transaction, Scan)
+## 4. No decision needed: done in part 1
+On branch `sync-ios-8a76b5d-part1`:
+- CSV for all data
 - Editing receipt items
 - Budget alerts once a month
+- Quick actions (Add transaction, Scan)
+- Polish
 - The new app icon
 - The new tests from `ledgerTests/` as Android tests
 - The demo data as test input

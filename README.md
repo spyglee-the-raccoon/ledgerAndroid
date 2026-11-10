@@ -2,12 +2,16 @@
 
 The Android version of Ledger, a local-only budgeting app; the iOS app (SwiftUI, in the
 `spyglee-the-raccoon/ledgerIos` repository) is the reference for features and behaviour. Android is up to date
-with iOS commit `46702e5`. Kotlin, Jetpack Compose, Room, CameraX and ML Kit; minSdk 26.
+with iOS commit `46702e5`, plus the parts of `8a76b5d` that need no decision: CSV for all data, editing receipt
+items, budget alerts once a month, the quick actions, Polish and the new icon. Widgets, Siri and the Pro
+subscription wait for the decisions in [docs/platform-decisions.md](docs/platform-decisions.md). Kotlin, Jetpack
+Compose, Room, CameraX and ML Kit; minSdk 26.
 
 Nothing leaves the device: the app has no INTERNET permission, receipts are read on the device, and
-backups are turned off. CSV files are compatible with the iOS app in both directions. Like iOS, the export
-also writes `accounts.csv` and `planned_transactions.csv`, which neither app can import; budgets and receipts
-aren't exported, as on iOS. Scanned receipt pages are kept as JPEGs in the app's `files/receipts` folder.
+backups are turned off. CSV files are compatible with the iOS app in both directions: as on iOS, the export
+writes transactions, accounts, planned transactions, categories, budgets, collections and receipt items, and
+the import recognizes each file by its header. Receipt photos aren't exported, as on iOS. Scanned receipt pages
+are kept as JPEGs in the app's `files/receipts` folder.
 
 ## Build and test
 Open in Android Studio, or:
@@ -38,7 +42,7 @@ Releasing, signing and the Play Data safety answers: [docs/RELEASE.md](docs/RELE
   budget alerts and the alarm that records planned transactions when they fall due
 
 ## Tools
-- `tools/sync-ios-strings.ps1`: regenerates `strings.xml` (en/hr/uk) from the iOS string catalog.
+- `tools/sync-ios-strings.ps1`: regenerates `strings.xml` (en/hr/uk/pl) from the iOS string catalog.
 - `tools/make-icons.py`: regenerates the launcher and Play icons from the iOS app icon (needs Pillow).
 - `tools/make-ka-ching.py`: regenerates the sound played after adding a transaction.
 

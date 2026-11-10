@@ -6,6 +6,7 @@ import android.graphics.Color
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -13,6 +14,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
 import androidx.room.Room
@@ -121,9 +123,35 @@ class ReceiptFlowTest {
         compose.onNodeWithContentDescription(page).performClick()
         compose.onNodeWithContentDescription(context.getString(R.string.close)).performClick()
 
-        // Swiping an item away deletes it.
+        // Swiping an item away removes it from the list; nothing is saved yet.
         compose.onNodeWithText("KRUH").performTouchInput { swipeLeft() }
-        compose.waitUntil(5_000) { runBlocking { container.receiptFiles.observeItems(transactionId).first() }.size == 1 }
-        assertEquals("MLIJEKO 1L", runBlocking { container.receiptFiles.observeItems(transactionId).first() }.single().name)
+        compose.waitUntil(5_000) { count("KRUH") == 0 }
+        assertEquals(2, savedItems().size)
+
+        // Tapping an item fixes it (iOS 8a76b5d).
+        compose.onNodeWithText("MLIJEKO 1L").performClick()
+        compose.onNodeWithText(context.getString(R.string.edit_item)).assertExists()
+        compose.onNode(hasSetTextAction() and hasText(context.getString(R.string.name))).performTextReplacement("MLIJEKO 2L")
+        compose.onNodeWithText(context.getString(R.string.save)).performClick()
+        compose.waitUntil(5_000) { count("MLIJEKO 2L") > 0 }
+
+        // An item can be added by hand; its total follows quantity × unit price.
+        compose.onNodeWithText(context.getString(R.string.add_item)).performClick()
+        compose.onNode(hasSetTextAction() and hasText(context.getString(R.string.name))).performTextInput("JAJA")
+        compose.onNode(hasSetTextAction() and hasText(context.getString(R.string.quantity))).performTextReplacement("2")
+        compose.onNode(hasSetTextAction() and hasText(context.getString(R.string.unit_price))).performTextInput("1.25")
+        compose.onNode(hasSetTextAction() and hasText("2.5")).assertExists()
+        compose.onNodeWithText(context.getString(R.string.save)).performClick()
+        compose.waitUntil(5_000) { count("JAJA") > 0 }
+
+        // Saving the transaction replaces its items. The editor closes once everything is saved, budgets checked
+        // included, so the database is only closed after that.
+        compose.onNodeWithContentDescription(context.getString(R.string.save)).performClick()
+        compose.waitUntil(5_000) { count(context.getString(R.string.edit_transaction)) == 0 }
+        assertEquals(listOf("MLIJEKO 2L", "JAJA"), savedItems().map { it.name })
+        assertEquals(listOf(0, 1), savedItems().map { it.position })
+        assertEquals(0, BigDecimal("2.5").compareTo(savedItems().last().totalPrice))
     }
+
+    private fun savedItems() = runBlocking { container.receiptFiles.items(transactionId) }
 }

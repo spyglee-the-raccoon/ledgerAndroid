@@ -17,6 +17,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.core.content.ContextCompat
@@ -61,8 +64,10 @@ class MainActivity : FragmentActivity() {
             }
         }
         handleDebugIntent(intent)
-        // Only on a fresh start: after rotation the editor for this receipt is already open.
+        // Only on a fresh start: after rotation the editor for this receipt is already open. Launchers
+        // start app shortcuts in a fresh task, so they arrive here too.
         val sharedReceipt = if (savedInstanceState == null) sharedReceiptUri(intent) else null
+        val quickAction = if (savedInstanceState == null) QuickAction.from(intent) else null
 
         setContent {
             CompositionLocalProvider(
@@ -72,6 +77,7 @@ class MainActivity : FragmentActivity() {
                 LadgerTheme {
                     val lockOn by container.settings.isAppLockOn.collectAsStateWithLifecycle(initialValue = null)
                     val locked by container.appLock.isLocked.collectAsStateWithLifecycle()
+                    var pendingQuickAction by rememberSaveable { mutableStateOf(quickAction) }
                     when (lockOn) {
                         // Shows nothing until the setting has loaded, so locked content never flashes up.
                         null -> Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface))
@@ -79,7 +85,12 @@ class MainActivity : FragmentActivity() {
                             val showLock = lockOn == true && locked
                             // The screens stay composed under the lock so navigation survives locking, but are hidden from accessibility services.
                             Box(if (showLock) Modifier.clearAndSetSemantics { } else Modifier) {
-                                LadgerNavHost(sharedReceipt = sharedReceipt)
+                                LadgerNavHost(
+                                    sharedReceipt = sharedReceipt,
+                                    // Waits for the unlock, as on iOS, so the camera never opens behind the lock screen.
+                                    quickAction = pendingQuickAction.takeUnless { showLock },
+                                    onQuickActionHandled = { pendingQuickAction = null },
+                                )
                             }
                             if (showLock) LockScreen(onUnlock = { authenticate(AuthPurpose.Unlock) })
                         }

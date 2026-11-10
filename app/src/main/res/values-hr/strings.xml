@@ -7,6 +7,7 @@
     <string name="add_budget">Dodaj proračun</string>
     <string name="add_category">Dodaj kategoriju</string>
     <string name="add_collection">Dodaj kolekciju</string>
+    <string name="add_item">Dodaj stavku</string>
     <string name="add_planned_transaction">Dodaj planiranu transakciju</string>
     <string name="add_source">Dodaj račun</string>
     <string name="add_to_collection">Dodaj u kolekciju</string>
@@ -36,7 +37,6 @@
     <string name="collection_name">Naziv kolekcije</string>
     <string name="collections">Kolekcije</string>
     <string name="color">Boja</string>
-    <string name="confirm_password">Potvrdi lozinku</string>
     <string name="daily">Dnevno</string>
     <string name="date">Datum</string>
     <string name="deactivate">Deaktiviraj</string>
@@ -45,10 +45,10 @@
     <string name="edit_budget">Uredi proračun</string>
     <string name="edit_category">Uredi kategoriju</string>
     <string name="edit_collection">Uredi kolekciju</string>
+    <string name="edit_item">Uredi stavku</string>
     <string name="edit_planned_transaction">Uredi planiranu transakciju</string>
     <string name="edit_source">Uredi račun</string>
     <string name="edit_transaction">Uredi transakciju</string>
-    <string name="email">E-mail</string>
     <string name="end_date">Završetak</string>
     <string name="ended">Završeno</string>
     <string name="error">Pogreška</string>
@@ -108,7 +108,6 @@
     <string name="initial_value">Početni iznos</string>
     <string name="kind">Vrsta</string>
     <string name="lock_the_app">Zahtijevaj biometrijsku provjeru</string>
-    <string name="log_in">Prijavi se</string>
     <string name="month">Mjesec</string>
     <string name="monthly">Mjesečno</string>
     <string name="monthly_limit">Mjesečni limit</string>
@@ -126,9 +125,10 @@
     <string name="note">Bilješka</string>
     <string name="ok">OK</string>
     <string name="parsing">Samo malo…</string>
-    <string name="password">Lozinka</string>
     <string name="pause">Pauziraj</string>
     <string name="paused">Pauzirano</string>
+    <string name="paywall_subtitle">Pretplati se i prati prihode i rashode, uštede, najveće kategorije i usporedbu cijena.</string>
+    <string name="paywall_title">Otključaj statistiku</string>
     <string name="personal_inflation">Osobna inflacija</string>
     <plurals name="personal_inflation_description">
         <item quantity="zero">Prosječna promjena cijena često kupovanih artikala (%1$d), od prvih do posljednjih kupnji.</item>
@@ -149,9 +149,11 @@
         <item quantity="few">%1$d kupnje, prva: %2$s</item>
         <item quantity="other">%1$d kupnji, prva: %2$s</item>
     </plurals>
+    <string name="quantity">Količina</string>
+    <string name="quick_action_scan">Skeniraj</string>
     <string name="receipt">Račun</string>
     <string name="receipt_items">Artikli</string>
-    <string name="receipt_items_footer">Povucite prstom kako biste uklonili pogrešno prepoznate artikle.</string>
+    <string name="receipt_items_footer">Dodirnite stavku da je ispravite ili povucite da je uklonite.</string>
     <string name="receipt_page">Stranica računa %1$d</string>
     <string name="recognizing_items">Prepoznavanje artikala…</string>
     <string name="remind_me">Podsjeti na unos transakcija</string>
@@ -182,7 +184,6 @@
     <string name="seed_transport">Prijevoz</string>
     <string name="seed_utilities">Režije</string>
     <string name="settings">Postavke</string>
-    <string name="sign_up">Registriraj se</string>
     <string name="source">Račun</string>
     <string name="source_exists">Račun s tim nazivom već postoji</string>
     <string name="source_name">Naziv računa</string>
@@ -190,21 +191,38 @@
     <string name="start_date">Početak</string>
     <string name="statistics">Statistika</string>
     <string name="this_month_balance">Stanje ovog mjeseca</string>
+    <string name="this_month_you_spent_and_earned_your_balance_is">Ovaj mjesec ste potrošili %1$s i zaradili %2$s. Vaš saldo je %3$s.</string>
     <string name="today">Danas</string>
     <string name="top_categories">Vodeće kategorije</string>
     <string name="top_categories_about_chart">Ovaj grafikon prikazuje tri kategorije na koje ste ukupno potrošili najviše i koliko ste na svaku od njih potrošili iz mjeseca u mjesec. Dodirnite mjesec da biste vidjeli točne iznose.</string>
     <string name="top_categories_about_importance">Znati kamo odlazi vaš novac prvi je korak prema upravljanju njime. U najvećim kategorijama male promjene obično donose najveću razliku. Pratite mjesece u kojima linija naglo poraste, uočite navike koje polako rastu s vremenom i odlučite odgovara li ta potrošnja još uvijek onome što vam je važno.</string>
     <string name="top_categories_about_title">Zašto je to važno</string>
     <string name="total_balance">Ukupno stanje</string>
+    <string name="total_price">Ukupno</string>
     <string name="tracked_items">Praćeni artikli</string>
     <string name="transactions">Transakcije</string>
     <string name="transactions_for">Transakcije: %1$s</string>
     <string name="transactions_without_source">Transakcije bez računa</string>
     <string name="transfer">Prijenos</string>
     <string name="uncategorized">Bez kategorije</string>
+    <string name="unit_price">Jedinična cijena</string>
     <string name="unlock">Otključaj</string>
     <string name="unlock_reason">Otključajte aplikaciju za prikaz stanja i upravljanje transakcijama</string>
     <string name="weekly">Tjedno</string>
+    <string name="widget_budget_description">Pratite svoj mjesečni limit.</string>
+    <string name="widget_chart_description">Potrošnja i saldo ovog mjeseca.</string>
+    <string name="widget_no_budget">Nema aktivnog budžeta</string>
+    <string name="widget_open_app">Otvorite Ledger da biste vidjeli svoje podatke</string>
+    <string name="widget_sample_eating_out">Restorani</string>
+    <string name="widget_sample_food">Hrana</string>
+    <string name="widget_transactions_description">Vaše najnovije transakcije.</string>
     <string name="yearly">Godišnje</string>
     <string name="yesterday">Jučer</string>
+    <string name="you_have_left_for_this_month_out_of">Za %2$s vam je ovaj mjesec ostalo %1$s od %3$s.</string>
+    <string name="you_have_left_of_your_monthly_limit_of">Ostalo vam je %1$s od mjesečnog limita od %2$s.</string>
+    <string name="you_re_over_your_budget_of">Prekoračili ste budžet za %2$s od %3$s za %1$s.</string>
+    <string name="you_re_over_your_monthly_limit_of">Prekoračili ste mjesečni limit od %2$s za %1$s.</string>
+    <string name="you_received_from_this_month">Ovaj mjesec ste primili %1$s od %2$s.</string>
+    <string name="you_spent_on_this_month">Ovaj mjesec ste potrošili %1$s na %2$s.</string>
+    <string name="your_balance_is">Stanje računa %1$s je %2$s.</string>
 </resources>

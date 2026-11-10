@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android-only strings (iOS gets these from the system). iOS-shared strings are in strings.xml. -->
+<resources>
+    <string name="back">Wstecz</string>
+    <string name="cancel">Anuluj</string>
+    <string name="remove_from_collection">Usuń z kolekcji</string>
+    <string name="change_sign">Zmień znak</string>
+    <string name="change_date">Zmień datę</string>
+    <string name="selected">Wybrano</string>
+    <string name="reminder_channel">Codzienne przypomnienie</string>
+    <string name="lock_unavailable">Ustaw blokadę ekranu na tym urządzeniu, aby zablokować aplikację.</string>
+    <string name="notifications_denied">Powiadomienia tej aplikacji są wyłączone. Włącz je w ustawieniach systemu.</string>
+    <string name="open_settings">Ustawienia</string>
+    <string name="take_photo">Zrób zdjęcie</string>
+    <string name="retake_photo">Powtórz</string>
+    <string name="use_photo">Użyj zdjęcia</string>
+    <string name="flash">Lampa błyskowa</string>
+    <string name="close">Zamknij</string>
+    <string name="camera_denied">Dostęp do aparatu jest wyłączony dla tej aplikacji. Włącz go w ustawieniach systemu, aby skanować paragony.</string>
+    <string name="zoom_level">Powiększenie %1$s</string>
+    <string name="previous_month">Poprzedni miesiąc</string>
+    <string name="next_month">Następny miesiąc</string>
+    <string name="increase">Zwiększ</string>
+    <string name="decrease">Zmniejsz</string>
+</resources>

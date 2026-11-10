@@ -38,23 +38,33 @@ class ReceiptRepository(private val database: LadgerDatabase, private val direct
         }
         database.withTransaction {
             photoDao.insertAll(fileNames.mapIndexed { index, name -> ReceiptPhoto(transactionId = transactionId, fileName = name, pageIndex = index) })
-            itemDao.insertAll(
-                items.mapIndexed { index, item ->
-                    ReceiptItem(
-                        transactionId = transactionId,
-                        name = item.name,
-                        normalizedName = ReceiptItems.normalize(item.name),
-                        quantity = item.quantity,
-                        unitPrice = item.unitPrice,
-                        totalPrice = item.totalPrice,
-                        position = index,
-                    )
-                }
-            )
+            itemDao.insertAll(rows(transactionId, items))
         }
     }
 
-    suspend fun deleteItem(item: ReceiptItem) = itemDao.delete(item)
+    /** The items saved with transaction [transactionId], in receipt order. */
+    suspend fun items(transactionId: Long): List<ReceiptItem> = itemDao.getForTransaction(transactionId)
+
+    /** Replaces the items of transaction [transactionId] with [items], numbered again in their new order. */
+    suspend fun replaceItems(transactionId: Long, items: List<ParsedReceiptItem>) {
+        database.withTransaction {
+            itemDao.deleteForTransaction(transactionId)
+            itemDao.insertAll(rows(transactionId, items))
+        }
+    }
+
+    private fun rows(transactionId: Long, items: List<ParsedReceiptItem>): List<ReceiptItem> =
+        items.mapIndexed { index, item ->
+            ReceiptItem(
+                transactionId = transactionId,
+                name = item.name,
+                normalizedName = ReceiptItems.normalize(item.name),
+                quantity = item.quantity,
+                unitPrice = item.unitPrice,
+                totalPrice = item.totalPrice,
+                position = index,
+            )
+        }
 
     /**
      * Deletes page files no transaction refers to any more. Files written in the last hour are kept,

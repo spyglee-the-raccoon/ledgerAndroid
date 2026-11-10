@@ -15,14 +15,11 @@ class CsvRepository(private val database: LadgerDatabase) {
             existingSources = database.sourceDao().getAll(),
             existingCategories = database.categoryDao().getAll(),
             zone = ZoneId.systemDefault(),
+            existingCollections = database.collectionDao().getAll(),
+            existingBudgets = database.budgetDao().getAll(),
+            existingPlanned = database.plannedTransactionDao().getAll(),
         )
-        importer.import(inputs, object : CsvImportSink {
-            override suspend fun createSource(source: Source): Long = database.sourceDao().insert(source)
-            override suspend fun createCategory(category: Category): Long = database.categoryDao().insert(category)
-            override suspend fun insertTransaction(transaction: Transaction) {
-                database.transactionDao().insert(transaction)
-            }
-        })
+        importer.import(inputs, DatabaseSink(database))
     }
 
     suspend fun export(): CsvExport {
@@ -33,11 +30,46 @@ class CsvRepository(private val database: LadgerDatabase) {
             categories = database.categoryDao().getAll(),
             zone = ZoneId.systemDefault(),
             plannedTransactions = database.plannedTransactionDao().getAll(),
+            budgets = database.budgetDao().getAll(),
+            collections = database.collectionDao().getAll(),
+            collectionTransactions = database.collectionDao().getAllMemberships(),
+            receiptItems = database.receiptItemDao().getAll(),
         )
         return CsvExport(files, transactions.size)
     }
 
-    suspend fun hasTransactions(): Boolean = database.transactionDao().count() > 0
+    /** As on iOS, there is nothing to export only when the export would write no files at all. */
+    suspend fun hasDataToExport(): Boolean = export().files.isNotEmpty()
+
+    private class DatabaseSink(private val database: LadgerDatabase) : CsvImportSink {
+        override suspend fun createSource(source: Source): Long = database.sourceDao().insert(source)
+        override suspend fun createCategory(category: Category): Long = database.categoryDao().insert(category)
+        override suspend fun insertTransaction(transaction: Transaction): Long = database.transactionDao().insert(transaction)
+
+        override suspend fun insertPlannedTransaction(planned: PlannedTransaction) {
+            database.plannedTransactionDao().insert(planned)
+        }
+
+        override suspend fun insertBudget(budget: Budget) {
+            database.budgetDao().insert(budget)
+        }
+
+        override suspend fun createCollection(collection: TransactionCollection): Long = database.collectionDao().insert(collection)
+
+        override suspend fun addToCollection(collectionId: Long, transactionId: Long) {
+            database.collectionDao().addTransaction(CollectionTransaction(collectionId, transactionId))
+        }
+
+        override suspend fun insertReceiptItem(item: ReceiptItem) {
+            database.receiptItemDao().insert(item)
+        }
+
+        override suspend fun existingTransactions(): List<Transaction> = database.transactionDao().getAllChronological()
+        override suspend fun collectionTransactionIds(collectionId: Long): List<Long> =
+            database.collectionDao().getTransactionIds(collectionId)
+        override suspend fun receiptItems(transactionId: Long): List<ReceiptItem> =
+            database.receiptItemDao().getForTransaction(transactionId)
+    }
 }
 
 /** The files to write and how many transactions they hold, for the "Exported N transactions" message. */

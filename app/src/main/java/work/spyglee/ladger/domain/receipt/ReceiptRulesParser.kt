@@ -41,8 +41,8 @@ object ReceiptRulesParser {
 
     /**
      * VAT summary lines, which often repeat a smaller "total". These are word stems: they must start
-     * a word but may continue, so "porez" also matches "poreza", while "vat" no longer matches
-     * inside "Hrvatska" (the iOS app matches substrings and skips such lines).
+     * a word but may continue, so "porez" also matches "poreza", while "vat" doesn't match inside
+     * "Hrvatska" (as on iOS since `6f46e7b`).
      */
     private val excludedStems = stemPatterns(
         // Croatian

@@ -3,8 +3,10 @@
     Generates the Android string resources from the iOS app's Localizable.xcstrings.
 
 .DESCRIPTION
-    Writes app/src/main/res/values{,-hr,-uk}/strings.xml so both apps show the same text.
-    Android-only strings live in strings_android.xml and are not touched.
+    Writes app/src/main/res/values{,-hr,-uk,-pl}/strings.xml so both apps show the same text.
+    Android-only strings live in strings_android.xml and are not touched. Keys without an English
+    text are skipped: iOS uses the key itself as the English text for those (the Siri dialogs), and
+    Android has no Siri.
 
     Key names: format specifiers and spaces are dropped ("transactions_for %@" -> transactions_for,
     "top categories" -> top_categories). Default category and source names get a seed_ prefix
@@ -22,7 +24,7 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $catalog = Get-Content $XcStrings -Raw -Encoding UTF8 | ConvertFrom-Json -AsHashtable
-$languages = [ordered]@{ en = 'values'; hr = 'values-hr'; uk = 'values-uk' }
+$languages = [ordered]@{ en = 'values'; hr = 'values-hr'; uk = 'values-uk'; pl = 'values-pl' }
 
 # Ordinal comparer: the catalog has both "Savings" (default source) and "savings" (screen title).
 $seedNames = [System.Collections.Generic.Dictionary[string, string]]::new([StringComparer]::Ordinal)
@@ -60,6 +62,8 @@ function Convert-Value([string] $value) {
 $names = @{}
 foreach ($key in $catalog.strings.Keys) {
     if ($key -in $skippedKeys) { continue }
+    $localizations = $catalog.strings[$key].localizations
+    if (-not $localizations -or -not $localizations['en']) { continue }
     $name = Get-ResourceName $key
     if ($names.ContainsKey($name)) { throw "Keys '$key' and '$($names[$name])' both map to '$name'" }
     $names[$name] = $key

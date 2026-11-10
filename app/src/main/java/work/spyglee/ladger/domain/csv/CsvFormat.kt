@@ -1,21 +1,43 @@
 package work.spyglee.ladger.domain.csv
 
+import java.math.BigDecimal
 import java.nio.ByteBuffer
 import java.nio.charset.CharacterCodingException
 import java.nio.charset.Charset
 import java.nio.charset.CodingErrorAction
 import java.time.format.DateTimeFormatter
 import java.time.format.ResolverStyle
+import work.spyglee.ladger.domain.lineBreak
 
 /**
  * Shared CSV layout, identical to the iOS app's: semicolon-separated, `dd.MM.yyyy` dates,
- * one file per transaction kind. Files exported on one platform import on the other unchanged.
+ * one file per transaction kind plus one per other kind of data. Files exported on one platform
+ * import on the other unchanged.
  */
 internal object CsvFormat {
     const val SEPARATOR = ";"
 
     val exportDate: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.uuuu")
     val importDate: DateTimeFormatter = DateTimeFormatter.ofPattern("d.M.uuuu").withResolverStyle(ResolverStyle.STRICT)
+
+    /** The columns that identify a transaction in the collection and receipt item files, which have no IDs. */
+    val transactionReferenceHeader = listOf(
+        "transaction_date", "transaction_kind", "transaction_amount",
+        "transaction_source", "transaction_destination", "transaction_details",
+    )
+
+    /**
+     * The importer splits on every semicolon and line break, so those are replaced rather than
+     * quoted to keep values intact on re-import.
+     */
+    fun escaped(value: String): String =
+        value.replace(";", ",")
+            .replace("\"", "'")
+            .split(lineBreak)
+            .joinToString(" ")
+
+    /** Like NSDecimalNumber's `stringValue`: "12.5", "1000". */
+    fun plain(amount: BigDecimal): String = amount.stripTrailingZeros().toPlainString()
 }
 
 data class CsvFile(val fileName: String, val text: String)

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Long-pressing the app icon offers these, as the iOS quick actions since 8a76b5d. The intents go to
+    MainActivity, which handles them as QuickAction. targetPackage is the applicationId.
+-->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_add"
+        android:shortcutId="add_transaction"
+        android:shortcutShortLabel="@string/add_transaction">
+        <intent
+            android:action="work.spyglee.ladger.action.ADD_TRANSACTION"
+            android:targetClass="work.spyglee.ladger.MainActivity"
+            android:targetPackage="work.spyglee.ladger" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_scan"
+        android:shortcutId="scan"
+        android:shortcutShortLabel="@string/quick_action_scan">
+        <intent
+            android:action="work.spyglee.ladger.action.SCAN"
+            android:targetClass="work.spyglee.ladger.MainActivity"
+            android:targetPackage="work.spyglee.ladger" />
+    </shortcut>
+</shortcuts>

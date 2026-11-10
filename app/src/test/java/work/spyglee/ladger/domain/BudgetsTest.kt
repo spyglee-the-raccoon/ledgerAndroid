@@ -69,12 +69,32 @@ class BudgetsTest {
     }
 
     @Test
-    fun `dropping below the limit again allows a new alert`() {
+    fun `dropping below the limit and reaching it again doesn't alert again that month`() {
         val alerted = food.copy(lastAlertDate = day(2026, 10, 4))
         val fewer = transactions.drop(1)
-        val result = Budgets.check(Budgets.usages(listOf(alerted), fewer, october), october, day(2026, 10, 20))
-        assertTrue(result.alerts.isEmpty())
-        assertEquals(listOf(food), result.updated)
+        val below = Budgets.check(Budgets.usages(listOf(alerted), fewer, october), october, day(2026, 10, 20))
+        assertTrue(below.alerts.isEmpty())
+        assertTrue(below.updated.isEmpty())
+
+        val again = Budgets.check(Budgets.usages(listOf(alerted), transactions, october), october, day(2026, 10, 21))
+        assertTrue(again.alerts.isEmpty())
+    }
+
+    @Test
+    fun `editing a budget allows a new alert, saving it unchanged doesn't`() {
+        val alerted = food.copy(lastAlertDate = day(2026, 10, 4))
+        val unchanged = alerted.withEdits(alerted.monthlyLimit.setScale(4), alerted.isActive, alerted.categoryId)
+        assertEquals(alerted.lastAlertDate, unchanged.lastAlertDate)
+        assertNull(alerted.withEdits(alerted.monthlyLimit + BigDecimal.ONE, alerted.isActive, alerted.categoryId).lastAlertDate)
+        assertNull(alerted.withEdits(alerted.monthlyLimit, !alerted.isActive, alerted.categoryId).lastAlertDate)
+        assertNull(alerted.withEdits(alerted.monthlyLimit, alerted.isActive, 999).lastAlertDate)
+    }
+
+    @Test
+    fun `the general limit keeps having no category`() {
+        val edited = general.copy(lastAlertDate = day(2026, 10, 4)).withEdits(general.monthlyLimit, general.isActive, categoryId = 10)
+        assertNull(edited.categoryId)
+        assertEquals(day(2026, 10, 4), edited.lastAlertDate)
     }
 
     @Test

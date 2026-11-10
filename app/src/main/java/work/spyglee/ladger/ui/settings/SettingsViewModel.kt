@@ -44,7 +44,10 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
         if (uris.isEmpty()) return
         viewModelScope.launch {
             _dialog.value = try {
-                SettingsDialog.ImportFinished(container.csv.import(container.csvDocuments.read(uris)))
+                val result = container.csv.import(container.csvDocuments.read(uris))
+                // Imported planned transactions need the alarm that records them.
+                container.plannedTransactions.reschedule()
+                SettingsDialog.ImportFinished(result)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -54,7 +57,7 @@ class SettingsViewModel(private val container: AppContainer) : ViewModel() {
     }
 
     /** Checked before the folder picker opens, so an empty database shows a message instead. */
-    suspend fun hasTransactionsToExport(): Boolean = container.csv.hasTransactions()
+    suspend fun hasDataToExport(): Boolean = container.csv.hasDataToExport()
 
     fun showNothingToExport() {
         _dialog.value = SettingsDialog.ExportFailed(null)

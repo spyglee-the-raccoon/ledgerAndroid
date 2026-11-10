@@ -1,0 +1,594 @@
+transaction_date;transaction_kind;transaction_amount;transaction_source;transaction_destination;transaction_details;position;name;quantity;unit_price;total_price
+01.11.2025;expense;19.98;Bank Card;;Value Discount;0;Milk 2.8% 1L;2;1.04;2.08
+01.11.2025;expense;19.98;Bank Card;;Value Discount;1;White Bread 500g;1;1.24;1.24
+01.11.2025;expense;19.98;Bank Card;;Value Discount;2;Eggs M 10pcs;1;2.04;2.04
+01.11.2025;expense;19.98;Bank Card;;Value Discount;3;Bananas;1.043;1.44;1.5
+01.11.2025;expense;19.98;Bank Card;;Value Discount;4;Sugar 1kg;1;1.19;1.19
+01.11.2025;expense;19.98;Bank Card;;Value Discount;5;Toilet Paper 10 rolls;1;4.29;4.29
+01.11.2025;expense;19.98;Bank Card;;Value Discount;6;Laundry Detergent 2L;1;7.64;7.64
+04.11.2025;expense;10.47;Bank Card;;Value Discount;0;Milk 2.8% 1L;1;1.04;1.04
+04.11.2025;expense;10.47;Bank Card;;Value Discount;1;Butter 250g;1;2.69;2.69
+04.11.2025;expense;10.47;Bank Card;;Value Discount;2;Greek Yogurt 400g;1;1.59;1.59
+04.11.2025;expense;10.47;Bank Card;;Value Discount;3;Bananas;0.95;1.44;1.37
+04.11.2025;expense;10.47;Bank Card;;Value Discount;4;Orange Juice 1L;2;1.89;3.78
+08.11.2025;expense;18.5;Cash;;Value Discount;0;Milk 2.8% 1L;3;1.04;3.12
+08.11.2025;expense;18.5;Cash;;Value Discount;1;White Bread 500g;2;1.24;2.48
+08.11.2025;expense;18.5;Cash;;Value Discount;2;Butter 250g;1;2.69;2.69
+08.11.2025;expense;18.5;Cash;;Value Discount;3;Apples;1.519;1.69;2.57
+08.11.2025;expense;18.5;Cash;;Value Discount;4;Laundry Detergent 2L;1;7.64;7.64
+11.11.2025;expense;18.44;Cash;;Corner Deli;0;Milk 2.8% 1L;3;1.14;3.42
+11.11.2025;expense;18.44;Cash;;Corner Deli;1;Ground Coffee 500g;1;6.79;6.79
+11.11.2025;expense;18.44;Cash;;Corner Deli;2;Toilet Paper 10 rolls;1;4.69;4.69
+11.11.2025;expense;18.44;Cash;;Corner Deli;3;Mineral Water 1.5L;6;0.59;3.54
+13.11.2025;expense;4.97;Bank Card;;Value Discount;0;Butter 250g;1;2.69;2.69
+13.11.2025;expense;4.97;Bank Card;;Value Discount;1;Spaghetti 500g;2;1.14;2.28
+15.11.2025;expense;14.7;Bank Card;;Fresh Market;0;White Bread 500g;1;1.29;1.29
+15.11.2025;expense;14.7;Bank Card;;Fresh Market;1;Eggs M 10pcs;1;2.49;2.49
+15.11.2025;expense;14.7;Bank Card;;Fresh Market;2;Butter 250g;1;2.79;2.79
+15.11.2025;expense;14.7;Bank Card;;Fresh Market;3;Bananas;1.567;1.49;2.33
+15.11.2025;expense;14.7;Bank Card;;Fresh Market;4;Tomatoes;0.939;2.74;2.57
+15.11.2025;expense;14.7;Bank Card;;Fresh Market;5;Orange Juice 1L;1;1.99;1.99
+15.11.2025;expense;14.7;Bank Card;;Fresh Market;6;Sugar 1kg;1;1.24;1.24
+18.11.2025;expense;9.53;Bank Card;;Value Discount;0;Milk 2.8% 1L;3;1.04;3.12
+18.11.2025;expense;9.53;Bank Card;;Value Discount;1;Gouda Cheese 400g;1;4.79;4.79
+18.11.2025;expense;9.53;Bank Card;;Value Discount;2;Bananas;1.128;1.44;1.62
+20.11.2025;expense;9.55;Bank Card;;Fresh Market;0;Butter 250g;1;2.79;2.79
+20.11.2025;expense;9.55;Bank Card;;Fresh Market;1;Tomatoes;1.013;2.74;2.78
+20.11.2025;expense;9.55;Bank Card;;Fresh Market;2;Orange Juice 1L;2;1.99;3.98
+22.11.2025;expense;24.33;Bank Card;;Value Discount;0;Milk 2.8% 1L;1;1.04;1.04
+22.11.2025;expense;24.33;Bank Card;;Value Discount;1;White Bread 500g;1;1.24;1.24
+22.11.2025;expense;24.33;Bank Card;;Value Discount;2;Butter 250g;1;2.69;2.69
+22.11.2025;expense;24.33;Bank Card;;Value Discount;3;Gouda Cheese 400g;1;4.79;4.79
+22.11.2025;expense;24.33;Bank Card;;Value Discount;4;Greek Yogurt 400g;3;1.59;4.77
+22.11.2025;expense;24.33;Bank Card;;Value Discount;5;Laundry Detergent 2L;1;7.64;7.64
+22.11.2025;expense;24.33;Bank Card;;Value Discount;6;Mineral Water 1.5L;4;0.54;2.16
+29.11.2025;expense;28.33;Bank Card;;Fresh Market;0;Milk 2.8% 1L;3;1.09;3.27
+29.11.2025;expense;28.33;Bank Card;;Fresh Market;1;White Bread 500g;2;1.29;2.58
+29.11.2025;expense;28.33;Bank Card;;Fresh Market;2;Eggs M 10pcs;1;2.49;2.49
+29.11.2025;expense;28.33;Bank Card;;Fresh Market;3;Gouda Cheese 400g;1;4.99;4.99
+29.11.2025;expense;28.33;Bank Card;;Fresh Market;4;Spaghetti 500g;2;1.19;2.38
+29.11.2025;expense;28.33;Bank Card;;Fresh Market;5;Ground Coffee 500g;1;6.49;6.49
+29.11.2025;expense;28.33;Bank Card;;Fresh Market;6;Dark Chocolate 100g;2;1.59;3.18
+29.11.2025;expense;28.33;Bank Card;;Fresh Market;7;Mineral Water 1.5L;5;0.59;2.95
+04.12.2025;expense;13.19;Bank Card;;Fresh Market;0;Tomatoes;1.167;2.74;3.2
+04.12.2025;expense;13.19;Bank Card;;Fresh Market;1;Olive Oil 1L;1;9.99;9.99
+06.12.2025;expense;17.32;Bank Card;;Value Discount;0;Milk 2.8% 1L;3;1.04;3.12
+06.12.2025;expense;17.32;Bank Card;;Value Discount;1;White Bread 500g;1;1.24;1.24
+06.12.2025;expense;17.32;Bank Card;;Value Discount;2;Eggs M 10pcs;1;2.39;2.39
+06.12.2025;expense;17.32;Bank Card;;Value Discount;3;Butter 250g;1;2.74;2.74
+06.12.2025;expense;17.32;Bank Card;;Value Discount;4;Greek Yogurt 400g;1;1.59;1.59
+06.12.2025;expense;17.32;Bank Card;;Value Discount;5;Ground Coffee 500g;1;6.24;6.24
+09.12.2025;expense;13.14;Bank Card;;Value Discount;0;White Bread 500g;2;1.24;2.48
+09.12.2025;expense;13.14;Bank Card;;Value Discount;1;Greek Yogurt 400g;2;1.59;3.18
+09.12.2025;expense;13.14;Bank Card;;Value Discount;2;Chicken Breast;0.64;8.64;5.53
+09.12.2025;expense;13.14;Bank Card;;Value Discount;3;Apples;1.119;1.74;1.95
+13.12.2025;expense;23.02;Bank Card;;Fresh Market;0;Milk 2.8% 1L;3;1.09;3.27
+13.12.2025;expense;23.02;Bank Card;;Fresh Market;1;White Bread 500g;2;1.29;2.58
+13.12.2025;expense;23.02;Bank Card;;Fresh Market;2;Butter 250g;1;2.84;2.84
+13.12.2025;expense;23.02;Bank Card;;Fresh Market;3;Apples;1.165;1.54;1.79
+13.12.2025;expense;23.02;Bank Card;;Fresh Market;4;Spaghetti 500g;1;1.19;1.19
+13.12.2025;expense;23.02;Bank Card;;Fresh Market;5;Dark Chocolate 100g;2;1.59;3.18
+13.12.2025;expense;23.02;Bank Card;;Fresh Market;6;Orange Juice 1L;2;1.99;3.98
+13.12.2025;expense;23.02;Bank Card;;Fresh Market;7;Sugar 1kg;1;1.24;1.24
+13.12.2025;expense;23.02;Bank Card;;Fresh Market;8;Mineral Water 1.5L;5;0.59;2.95
+18.12.2025;expense;5.17;Bank Card;;Value Discount;0;White Bread 500g;1;1.24;1.24
+18.12.2025;expense;5.17;Bank Card;;Value Discount;1;Eggs M 10pcs;1;2.39;2.39
+18.12.2025;expense;5.17;Bank Card;;Value Discount;2;Dark Chocolate 100g;1;1.54;1.54
+20.12.2025;expense;32.19;Bank Card;;Value Discount;0;Milk 2.8% 1L;1;1.04;1.04
+20.12.2025;expense;32.19;Bank Card;;Value Discount;1;White Bread 500g;2;1.24;2.48
+20.12.2025;expense;32.19;Bank Card;;Value Discount;2;Butter 250g;1;2.74;2.74
+20.12.2025;expense;32.19;Bank Card;;Value Discount;3;Gouda Cheese 400g;1;4.79;4.79
+20.12.2025;expense;32.19;Bank Card;;Value Discount;4;Greek Yogurt 400g;3;1.59;4.77
+20.12.2025;expense;32.19;Bank Card;;Value Discount;5;Tomatoes;1.155;2.64;3.05
+20.12.2025;expense;32.19;Bank Card;;Value Discount;6;Basmati Rice 1kg;1;2.74;2.74
+20.12.2025;expense;32.19;Bank Card;;Value Discount;7;Ground Coffee 500g;1;6.24;6.24
+20.12.2025;expense;32.19;Bank Card;;Value Discount;8;Toilet Paper 10 rolls;1;4.34;4.34
+23.12.2025;expense;7.22;Cash;;Value Discount;0;White Bread 500g;1;1.24;1.24
+23.12.2025;expense;7.22;Cash;;Value Discount;1;Apples;1.402;1.74;2.44
+23.12.2025;expense;7.22;Cash;;Value Discount;2;Mineral Water 1.5L;6;0.59;3.54
+27.12.2025;expense;10.07;Bank Card;;Value Discount;0;Eggs M 10pcs;1;2.39;2.39
+27.12.2025;expense;10.07;Bank Card;;Value Discount;1;Tomatoes;0.574;2.64;1.52
+27.12.2025;expense;10.07;Bank Card;;Value Discount;2;Spaghetti 500g;2;1.14;2.28
+27.12.2025;expense;10.07;Bank Card;;Value Discount;3;Basmati Rice 1kg;1;2.34;2.34
+27.12.2025;expense;10.07;Bank Card;;Value Discount;4;Dark Chocolate 100g;1;1.54;1.54
+30.12.2025;expense;10.97;Bank Card;;Value Discount;0;Eggs M 10pcs;1;2.39;2.39
+30.12.2025;expense;10.97;Bank Card;;Value Discount;1;Bananas;1.428;1.44;2.06
+30.12.2025;expense;10.97;Bank Card;;Value Discount;2;Basmati Rice 1kg;1;2.74;2.74
+30.12.2025;expense;10.97;Bank Card;;Value Discount;3;Orange Juice 1L;2;1.89;3.78
+01.01.2026;expense;2.88;Bank Card;;Fresh Market;0;White Bread 500g;1;1.29;1.29
+01.01.2026;expense;2.88;Bank Card;;Fresh Market;1;Dark Chocolate 100g;1;1.59;1.59
+03.01.2026;expense;30.27;Cash;;Value Discount;0;Milk 2.8% 1L;3;1.04;3.12
+03.01.2026;expense;30.27;Cash;;Value Discount;1;Ground Coffee 500g;1;6.24;6.24
+03.01.2026;expense;30.27;Cash;;Value Discount;2;Olive Oil 1L;1;10.19;10.19
+03.01.2026;expense;30.27;Cash;;Value Discount;3;Orange Juice 1L;1;1.89;1.89
+03.01.2026;expense;30.27;Cash;;Value Discount;4;Sugar 1kg;1;1.19;1.19
+03.01.2026;expense;30.27;Cash;;Value Discount;5;Laundry Detergent 2L;1;7.64;7.64
+06.01.2026;expense;12.16;Cash;;Value Discount;0;Greek Yogurt 400g;2;1.59;3.18
+06.01.2026;expense;12.16;Cash;;Value Discount;1;Basmati Rice 1kg;1;2.74;2.74
+06.01.2026;expense;12.16;Cash;;Value Discount;2;Ground Coffee 500g;1;6.24;6.24
+10.01.2026;expense;38.51;Cash;;Value Discount;0;Milk 2.8% 1L;3;1.04;3.12
+10.01.2026;expense;38.51;Cash;;Value Discount;1;White Bread 500g;1;1.24;1.24
+10.01.2026;expense;38.51;Cash;;Value Discount;2;Butter 250g;1;2.74;2.74
+10.01.2026;expense;38.51;Cash;;Value Discount;3;Greek Yogurt 400g;1;1.59;1.59
+10.01.2026;expense;38.51;Cash;;Value Discount;4;Chicken Breast;0.846;7.49;6.34
+10.01.2026;expense;38.51;Cash;;Value Discount;5;Bananas;1.552;1.44;2.23
+10.01.2026;expense;38.51;Cash;;Value Discount;6;Olive Oil 1L;1;8.69;8.69
+10.01.2026;expense;38.51;Cash;;Value Discount;7;Orange Juice 1L;2;1.89;3.78
+10.01.2026;expense;38.51;Cash;;Value Discount;8;Sugar 1kg;1;1.14;1.14
+10.01.2026;expense;38.51;Cash;;Value Discount;9;Laundry Detergent 2L;1;7.64;7.64
+15.01.2026;expense;7.78;Bank Card;;Fresh Market;0;White Bread 500g;1;1.29;1.29
+15.01.2026;expense;7.78;Bank Card;;Fresh Market;1;Ground Coffee 500g;1;6.49;6.49
+17.01.2026;expense;39.92;Bank Card;;Value Discount;0;Milk 2.8% 1L;1;1.04;1.04
+17.01.2026;expense;39.92;Bank Card;;Value Discount;1;White Bread 500g;2;1.24;2.48
+17.01.2026;expense;39.92;Bank Card;;Value Discount;2;Eggs M 10pcs;1;2.39;2.39
+17.01.2026;expense;39.92;Bank Card;;Value Discount;3;Chicken Breast;0.968;8.79;8.51
+17.01.2026;expense;39.92;Bank Card;;Value Discount;4;Apples;1.87;1.74;3.25
+17.01.2026;expense;39.92;Bank Card;;Value Discount;5;Spaghetti 500g;2;1.14;2.28
+17.01.2026;expense;39.92;Bank Card;;Value Discount;6;Ground Coffee 500g;1;6.24;6.24
+17.01.2026;expense;39.92;Bank Card;;Value Discount;7;Olive Oil 1L;1;10.19;10.19
+17.01.2026;expense;39.92;Bank Card;;Value Discount;8;Mineral Water 1.5L;6;0.59;3.54
+20.01.2026;expense;3.86;Bank Card;;Value Discount;0;Apples;1.562;1.74;2.72
+20.01.2026;expense;3.86;Bank Card;;Value Discount;1;Sugar 1kg;1;1.14;1.14
+22.01.2026;expense;11.98;Bank Card;;Corner Deli;0;Milk 2.8% 1L;1;1.14;1.14
+22.01.2026;expense;11.98;Bank Card;;Corner Deli;1;White Bread 500g;2;1.34;2.68
+22.01.2026;expense;11.98;Bank Card;;Corner Deli;2;Greek Yogurt 400g;1;1.74;1.74
+22.01.2026;expense;11.98;Bank Card;;Corner Deli;3;Chicken Breast;0.496;9.64;4.78
+22.01.2026;expense;11.98;Bank Card;;Corner Deli;4;Dark Chocolate 100g;1;1.64;1.64
+24.01.2026;expense;20.09;Bank Card;;Value Discount;0;Milk 2.8% 1L;3;1.04;3.12
+24.01.2026;expense;20.09;Bank Card;;Value Discount;1;White Bread 500g;2;1.24;2.48
+24.01.2026;expense;20.09;Bank Card;;Value Discount;2;Greek Yogurt 400g;3;1.59;4.77
+24.01.2026;expense;20.09;Bank Card;;Value Discount;3;Chicken Breast;0.846;8.79;7.44
+24.01.2026;expense;20.09;Bank Card;;Value Discount;4;Spaghetti 500g;2;1.14;2.28
+27.01.2026;expense;2.48;Bank Card;;Value Discount;0;White Bread 500g;2;1.24;2.48
+31.01.2026;expense;33.07;Bank Card;;Corner Deli;0;Greek Yogurt 400g;3;1.74;5.22
+31.01.2026;expense;33.07;Bank Card;;Corner Deli;1;Spaghetti 500g;1;1.24;1.24
+31.01.2026;expense;33.07;Bank Card;;Corner Deli;2;Ground Coffee 500g;1;6.79;6.79
+31.01.2026;expense;33.07;Bank Card;;Corner Deli;3;Olive Oil 1L;1;11.14;11.14
+31.01.2026;expense;33.07;Bank Card;;Corner Deli;4;Toilet Paper 10 rolls;1;4.84;4.84
+31.01.2026;expense;33.07;Bank Card;;Corner Deli;5;Mineral Water 1.5L;6;0.64;3.84
+05.02.2026;expense;16.84;Bank Card;;Fresh Market;0;White Bread 500g;2;1.29;2.58
+05.02.2026;expense;16.84;Bank Card;;Fresh Market;1;Butter 250g;1;2.84;2.84
+05.02.2026;expense;16.84;Bank Card;;Fresh Market;2;Gouda Cheese 400g;1;5.19;5.19
+05.02.2026;expense;16.84;Bank Card;;Fresh Market;3;Tomatoes;1.176;2.79;3.28
+05.02.2026;expense;16.84;Bank Card;;Fresh Market;4;Mineral Water 1.5L;5;0.59;2.95
+07.02.2026;expense;36.06;Bank Card;;Value Discount;0;White Bread 500g;2;1.24;2.48
+07.02.2026;expense;36.06;Bank Card;;Value Discount;1;Greek Yogurt 400g;1;1.64;1.64
+07.02.2026;expense;36.06;Bank Card;;Value Discount;2;Bananas;0.874;1.44;1.26
+07.02.2026;expense;36.06;Bank Card;;Value Discount;3;Apples;1.022;1.74;1.78
+07.02.2026;expense;36.06;Bank Card;;Value Discount;4;Tomatoes;0.983;2.64;2.6
+07.02.2026;expense;36.06;Bank Card;;Value Discount;5;Ground Coffee 500g;1;6.24;6.24
+07.02.2026;expense;36.06;Bank Card;;Value Discount;6;Olive Oil 1L;1;10.19;10.19
+07.02.2026;expense;36.06;Bank Card;;Value Discount;7;Orange Juice 1L;1;1.89;1.89
+07.02.2026;expense;36.06;Bank Card;;Value Discount;8;Toilet Paper 10 rolls;1;4.44;4.44
+07.02.2026;expense;36.06;Bank Card;;Value Discount;9;Mineral Water 1.5L;6;0.59;3.54
+10.02.2026;expense;8.49;Bank Card;;Fresh Market;0;Milk 2.8% 1L;2;1.09;2.18
+10.02.2026;expense;8.49;Bank Card;;Fresh Market;1;Eggs M 10pcs;1;2.49;2.49
+10.02.2026;expense;8.49;Bank Card;;Fresh Market;2;Apples;1.248;1.79;2.23
+10.02.2026;expense;8.49;Bank Card;;Fresh Market;3;Dark Chocolate 100g;1;1.59;1.59
+12.02.2026;expense;7.46;Bank Card;;Value Discount;0;Butter 250g;1;2.74;2.74
+12.02.2026;expense;7.46;Bank Card;;Value Discount;1;Greek Yogurt 400g;1;1.64;1.64
+12.02.2026;expense;7.46;Bank Card;;Value Discount;2;Dark Chocolate 100g;2;1.54;3.08
+14.02.2026;expense;17.26;Bank Card;;Value Discount;0;White Bread 500g;1;1.24;1.24
+14.02.2026;expense;17.26;Bank Card;;Value Discount;1;Apples;1.653;1.74;2.88
+14.02.2026;expense;17.26;Bank Card;;Value Discount;2;Olive Oil 1L;1;10.19;10.19
+14.02.2026;expense;17.26;Bank Card;;Value Discount;3;Mineral Water 1.5L;5;0.59;2.95
+19.02.2026;expense;1.29;Bank Card;;Fresh Market;0;White Bread 500g;1;1.29;1.29
+21.02.2026;expense;19.71;Bank Card;;Value Discount;0;Milk 2.8% 1L;2;1.04;2.08
+21.02.2026;expense;19.71;Bank Card;;Value Discount;1;White Bread 500g;2;1.24;2.48
+21.02.2026;expense;19.71;Bank Card;;Value Discount;2;Eggs M 10pcs;1;2.39;2.39
+21.02.2026;expense;19.71;Bank Card;;Value Discount;3;Bananas;0.844;1.44;1.22
+21.02.2026;expense;19.71;Bank Card;;Value Discount;4;Dark Chocolate 100g;1;1.54;1.54
+21.02.2026;expense;19.71;Bank Card;;Value Discount;5;Laundry Detergent 2L;1;7.64;7.64
+21.02.2026;expense;19.71;Bank Card;;Value Discount;6;Mineral Water 1.5L;4;0.59;2.36
+24.02.2026;expense;8.05;Cash;;Value Discount;0;Tomatoes;1.186;2.64;3.13
+24.02.2026;expense;8.05;Cash;;Value Discount;1;Toilet Paper 10 rolls;1;3.74;3.74
+24.02.2026;expense;8.05;Cash;;Value Discount;2;Mineral Water 1.5L;2;0.59;1.18
+26.02.2026;expense;5.77;Bank Card;;Fresh Market;0;Eggs M 10pcs;1;2.49;2.49
+26.02.2026;expense;5.77;Bank Card;;Fresh Market;1;Bananas;0.864;1.49;1.29
+26.02.2026;expense;5.77;Bank Card;;Fresh Market;2;Orange Juice 1L;1;1.99;1.99
+28.02.2026;expense;51.3;Cash;;Corner Deli;0;Milk 2.8% 1L;3;1.14;3.42
+28.02.2026;expense;51.3;Cash;;Corner Deli;1;White Bread 500g;2;1.34;2.68
+28.02.2026;expense;51.3;Cash;;Corner Deli;2;Butter 250g;1;2.99;2.99
+28.02.2026;expense;51.3;Cash;;Corner Deli;3;Gouda Cheese 400g;1;5.44;5.44
+28.02.2026;expense;51.3;Cash;;Corner Deli;4;Greek Yogurt 400g;3;1.79;5.37
+28.02.2026;expense;51.3;Cash;;Corner Deli;5;Chicken Breast;0.896;9.64;8.64
+28.02.2026;expense;51.3;Cash;;Corner Deli;6;Bananas;1.388;1.54;2.14
+28.02.2026;expense;51.3;Cash;;Corner Deli;7;Apples;1.116;1.89;2.11
+28.02.2026;expense;51.3;Cash;;Corner Deli;8;Spaghetti 500g;1;1.24;1.24
+28.02.2026;expense;51.3;Cash;;Corner Deli;9;Ground Coffee 500g;1;6.79;6.79
+28.02.2026;expense;51.3;Cash;;Corner Deli;10;Orange Juice 1L;1;2.09;2.09
+28.02.2026;expense;51.3;Cash;;Corner Deli;11;Laundry Detergent 2L;1;8.39;8.39
+03.03.2026;expense;13.69;Cash;;Corner Deli;0;Tomatoes;0.884;2.89;2.55
+03.03.2026;expense;13.69;Cash;;Corner Deli;1;Olive Oil 1L;1;11.14;11.14
+07.03.2026;expense;18.72;Bank Card;;Corner Deli;0;Eggs M 10pcs;1;2.19;2.19
+07.03.2026;expense;18.72;Bank Card;;Corner Deli;1;Butter 250g;1;2.99;2.99
+07.03.2026;expense;18.72;Bank Card;;Corner Deli;2;Bananas;1.556;1.54;2.4
+07.03.2026;expense;18.72;Bank Card;;Corner Deli;3;Olive Oil 1L;1;11.14;11.14
+12.03.2026;expense;23.38;Bank Card;;Value Discount;0;Milk 2.8% 1L;3;1.04;3.12
+12.03.2026;expense;23.38;Bank Card;;Value Discount;1;White Bread 500g;1;1.24;1.24
+12.03.2026;expense;23.38;Bank Card;;Value Discount;2;Butter 250g;1;2.74;2.74
+12.03.2026;expense;23.38;Bank Card;;Value Discount;3;Bananas;1.314;1.44;1.89
+12.03.2026;expense;23.38;Bank Card;;Value Discount;4;Apples;1.657;1.74;2.88
+12.03.2026;expense;23.38;Bank Card;;Value Discount;5;Tomatoes;0.94;2.64;2.48
+12.03.2026;expense;23.38;Bank Card;;Value Discount;6;Basmati Rice 1kg;1;2.79;2.79
+12.03.2026;expense;23.38;Bank Card;;Value Discount;7;Ground Coffee 500g;1;6.24;6.24
+14.03.2026;expense;29.01;Cash;;Value Discount;0;Milk 2.8% 1L;3;1.04;3.12
+14.03.2026;expense;29.01;Cash;;Value Discount;1;White Bread 500g;1;1.24;1.24
+14.03.2026;expense;29.01;Cash;;Value Discount;2;Greek Yogurt 400g;2;1.64;3.28
+14.03.2026;expense;29.01;Cash;;Value Discount;3;Bananas;1.316;1.44;1.9
+14.03.2026;expense;29.01;Cash;;Value Discount;4;Apples;1.898;1.74;3.3
+14.03.2026;expense;29.01;Cash;;Value Discount;5;Olive Oil 1L;1;10.19;10.19
+14.03.2026;expense;29.01;Cash;;Value Discount;6;Dark Chocolate 100g;1;1.54;1.54
+14.03.2026;expense;29.01;Cash;;Value Discount;7;Toilet Paper 10 rolls;1;4.44;4.44
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;0;Milk 2.8% 1L;1;1.14;1.14
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;1;White Bread 500g;1;1.44;1.44
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;2;Eggs M 10pcs;1;2.59;2.59
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;3;Butter 250g;1;2.99;2.99
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;4;Gouda Cheese 400g;1;5.44;5.44
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;5;Greek Yogurt 400g;2;1.79;3.58
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;6;Bananas;1.386;1.54;2.13
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;7;Apples;1.044;1.89;1.97
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;8;Tomatoes;0.651;2.89;1.88
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;9;Spaghetti 500g;2;1.24;2.48
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;10;Ground Coffee 500g;1;6.79;6.79
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;11;Dark Chocolate 100g;1;1.64;1.64
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;12;Orange Juice 1L;1;2.09;2.09
+21.03.2026;expense;38.08;Bank Card;;Corner Deli;13;Mineral Water 1.5L;3;0.64;1.92
+24.03.2026;expense;7.33;Bank Card;;Value Discount;0;Milk 2.8% 1L;1;1.04;1.04
+24.03.2026;expense;7.33;Bank Card;;Value Discount;1;White Bread 500g;2;1.29;2.58
+24.03.2026;expense;7.33;Bank Card;;Value Discount;2;Eggs M 10pcs;1;2.04;2.04
+24.03.2026;expense;7.33;Bank Card;;Value Discount;3;Bananas;1.163;1.44;1.67
+26.03.2026;expense;7.26;Bank Card;;Value Discount;0;White Bread 500g;1;1.29;1.29
+26.03.2026;expense;7.26;Bank Card;;Value Discount;1;Tomatoes;1.143;2.64;3.02
+26.03.2026;expense;7.26;Bank Card;;Value Discount;2;Mineral Water 1.5L;5;0.59;2.95
+28.03.2026;expense;14.88;Bank Card;;Corner Deli;0;Milk 2.8% 1L;3;1.14;3.42
+28.03.2026;expense;14.88;Bank Card;;Corner Deli;1;White Bread 500g;1;1.44;1.44
+28.03.2026;expense;14.88;Bank Card;;Corner Deli;2;Gouda Cheese 400g;1;4.64;4.64
+28.03.2026;expense;14.88;Bank Card;;Corner Deli;3;Bananas;0.818;1.54;1.26
+28.03.2026;expense;14.88;Bank Card;;Corner Deli;4;Tomatoes;0.857;2.89;2.48
+28.03.2026;expense;14.88;Bank Card;;Corner Deli;5;Dark Chocolate 100g;1;1.64;1.64
+31.03.2026;expense;1.83;Bank Card;;Fresh Market;0;Apples;1.024;1.79;1.83
+04.04.2026;expense;14.75;Bank Card;;Value Discount;0;Milk 2.8% 1L;3;1.04;3.12
+04.04.2026;expense;14.75;Bank Card;;Value Discount;1;White Bread 500g;2;1.29;2.58
+04.04.2026;expense;14.75;Bank Card;;Value Discount;2;Gouda Cheese 400g;1;4.99;4.99
+04.04.2026;expense;14.75;Bank Card;;Value Discount;3;Bananas;0.933;1.44;1.34
+04.04.2026;expense;14.75;Bank Card;;Value Discount;4;Dark Chocolate 100g;1;1.54;1.54
+04.04.2026;expense;14.75;Bank Card;;Value Discount;5;Mineral Water 1.5L;2;0.59;1.18
+07.04.2026;expense;13.46;Bank Card;;Value Discount;0;Eggs M 10pcs;1;2.39;2.39
+07.04.2026;expense;13.46;Bank Card;;Value Discount;1;Gouda Cheese 400g;1;4.99;4.99
+07.04.2026;expense;13.46;Bank Card;;Value Discount;2;Bananas;1.598;1.44;2.3
+07.04.2026;expense;13.46;Bank Card;;Value Discount;3;Orange Juice 1L;2;1.89;3.78
+11.04.2026;expense;18.83;Cash;;Fresh Market;0;Milk 2.8% 1L;3;1.09;3.27
+11.04.2026;expense;18.83;Cash;;Fresh Market;1;Greek Yogurt 400g;3;1.44;4.32
+11.04.2026;expense;18.83;Cash;;Fresh Market;2;Apples;1.886;1.79;3.38
+11.04.2026;expense;18.83;Cash;;Fresh Market;3;Orange Juice 1L;1;1.99;1.99
+11.04.2026;expense;18.83;Cash;;Fresh Market;4;Toilet Paper 10 rolls;1;4.59;4.59
+11.04.2026;expense;18.83;Cash;;Fresh Market;5;Mineral Water 1.5L;2;0.64;1.28
+14.04.2026;expense;9.13;Bank Card;;Value Discount;0;Dark Chocolate 100g;1;1.54;1.54
+14.04.2026;expense;9.13;Bank Card;;Value Discount;1;Laundry Detergent 2L;1;7.59;7.59
+16.04.2026;expense;6.88;Bank Card;;Corner Deli;0;White Bread 500g;1;1.44;1.44
+16.04.2026;expense;6.88;Bank Card;;Corner Deli;1;Gouda Cheese 400g;1;5.44;5.44
+18.04.2026;expense;21.24;Bank Card;;Value Discount;0;Milk 2.8% 1L;2;1.04;2.08
+18.04.2026;expense;21.24;Bank Card;;Value Discount;1;White Bread 500g;2;1.29;2.58
+18.04.2026;expense;21.24;Bank Card;;Value Discount;2;Chicken Breast;0.936;8.79;8.23
+18.04.2026;expense;21.24;Bank Card;;Value Discount;3;Bananas;1.233;1.44;1.78
+18.04.2026;expense;21.24;Bank Card;;Value Discount;4;Tomatoes;0.715;2.64;1.89
+18.04.2026;expense;21.24;Bank Card;;Value Discount;5;Basmati Rice 1kg;1;2.79;2.79
+18.04.2026;expense;21.24;Bank Card;;Value Discount;6;Orange Juice 1L;1;1.89;1.89
+21.04.2026;expense;20.83;Bank Card;;Fresh Market;0;Milk 2.8% 1L;3;1.09;3.27
+21.04.2026;expense;20.83;Bank Card;;Fresh Market;1;Ground Coffee 500g;1;6.49;6.49
+21.04.2026;expense;20.83;Bank Card;;Fresh Market;2;Dark Chocolate 100g;2;1.59;3.18
+21.04.2026;expense;20.83;Bank Card;;Fresh Market;3;Laundry Detergent 2L;1;7.89;7.89
+25.04.2026;expense;14.16;Bank Card;;Corner Deli;0;Milk 2.8% 1L;3;1.14;3.42
+25.04.2026;expense;14.16;Bank Card;;Corner Deli;1;White Bread 500g;1;1.19;1.19
+25.04.2026;expense;14.16;Bank Card;;Corner Deli;2;Bananas;1.513;1.54;2.33
+25.04.2026;expense;14.16;Bank Card;;Corner Deli;3;Basmati Rice 1kg;1;3.04;3.04
+25.04.2026;expense;14.16;Bank Card;;Corner Deli;4;Orange Juice 1L;2;2.09;4.18
+28.04.2026;expense;4.41;Bank Card;;Value Discount;0;Milk 2.8% 1L;3;1.04;3.12
+28.04.2026;expense;4.41;Bank Card;;Value Discount;1;White Bread 500g;1;1.29;1.29
+02.05.2026;expense;31.27;Bank Card;;Value Discount;0;Milk 2.8% 1L;2;1.04;2.08
+02.05.2026;expense;31.27;Bank Card;;Value Discount;1;White Bread 500g;2;1.29;2.58
+02.05.2026;expense;31.27;Bank Card;;Value Discount;2;Eggs M 10pcs;1;2.39;2.39
+02.05.2026;expense;31.27;Bank Card;;Value Discount;3;Bananas;1.597;1.44;2.3
+02.05.2026;expense;31.27;Bank Card;;Value Discount;4;Tomatoes;0.711;2.64;1.88
+02.05.2026;expense;31.27;Bank Card;;Value Discount;5;Basmati Rice 1kg;1;2.79;2.79
+02.05.2026;expense;31.27;Bank Card;;Value Discount;6;Ground Coffee 500g;1;5.29;5.29
+02.05.2026;expense;31.27;Bank Card;;Value Discount;7;Olive Oil 1L;1;10.19;10.19
+02.05.2026;expense;31.27;Bank Card;;Value Discount;8;Mineral Water 1.5L;3;0.59;1.77
+07.05.2026;expense;9.32;Bank Card;;Value Discount;0;Bananas;0.932;1.44;1.34
+07.05.2026;expense;9.32;Bank Card;;Value Discount;1;Toilet Paper 10 rolls;1;4.44;4.44
+07.05.2026;expense;9.32;Bank Card;;Value Discount;2;Mineral Water 1.5L;6;0.59;3.54
+09.05.2026;expense;22.52;Bank Card;;Value Discount;0;Milk 2.8% 1L;1;1.09;1.09
+09.05.2026;expense;22.52;Bank Card;;Value Discount;1;White Bread 500g;1;1.29;1.29
+09.05.2026;expense;22.52;Bank Card;;Value Discount;2;Butter 250g;1;2.84;2.84
+09.05.2026;expense;22.52;Bank Card;;Value Discount;3;Greek Yogurt 400g;2;1.64;3.28
+09.05.2026;expense;22.52;Bank Card;;Value Discount;4;Chicken Breast;1.131;8.79;9.94
+09.05.2026;expense;22.52;Bank Card;;Value Discount;5;Bananas;1.426;1.44;2.05
+09.05.2026;expense;22.52;Bank Card;;Value Discount;6;Tomatoes;0.768;2.64;2.03
+14.05.2026;expense;6.24;Bank Card;;Fresh Market;0;White Bread 500g;1;1.34;1.34
+14.05.2026;expense;6.24;Bank Card;;Fresh Market;1;Bananas;1.37;1.24;1.7
+14.05.2026;expense;6.24;Bank Card;;Fresh Market;2;Mineral Water 1.5L;5;0.64;3.2
+16.05.2026;expense;21;Bank Card;;Value Discount;0;Milk 2.8% 1L;1;1.09;1.09
+16.05.2026;expense;21;Bank Card;;Value Discount;1;White Bread 500g;2;1.29;2.58
+16.05.2026;expense;21;Bank Card;;Value Discount;2;Eggs M 10pcs;1;2.39;2.39
+16.05.2026;expense;21;Bank Card;;Value Discount;3;Greek Yogurt 400g;3;1.64;4.92
+16.05.2026;expense;21;Bank Card;;Value Discount;4;Tomatoes;0.665;2.64;1.76
+16.05.2026;expense;21;Bank Card;;Value Discount;5;Dark Chocolate 100g;1;1.54;1.54
+16.05.2026;expense;21;Bank Card;;Value Discount;6;Orange Juice 1L;2;1.59;3.18
+16.05.2026;expense;21;Bank Card;;Value Discount;7;Mineral Water 1.5L;6;0.59;3.54
+19.05.2026;expense;3.32;Bank Card;;Value Discount;0;White Bread 500g;1;1.29;1.29
+19.05.2026;expense;3.32;Bank Card;;Value Discount;1;Bananas;1.407;1.44;2.03
+21.05.2026;expense;8.82;Bank Card;;Value Discount;0;Eggs M 10pcs;1;2.39;2.39
+21.05.2026;expense;8.82;Bank Card;;Value Discount;1;Bananas;1.178;1.44;1.7
+21.05.2026;expense;8.82;Bank Card;;Value Discount;2;Spaghetti 500g;2;1.14;2.28
+21.05.2026;expense;8.82;Bank Card;;Value Discount;3;Mineral Water 1.5L;5;0.49;2.45
+23.05.2026;expense;44.37;Bank Card;;Value Discount;0;Milk 2.8% 1L;2;1.09;2.18
+23.05.2026;expense;44.37;Bank Card;;Value Discount;1;White Bread 500g;1;1.29;1.29
+23.05.2026;expense;44.37;Bank Card;;Value Discount;2;Gouda Cheese 400g;1;4.99;4.99
+23.05.2026;expense;44.37;Bank Card;;Value Discount;3;Greek Yogurt 400g;2;1.64;3.28
+23.05.2026;expense;44.37;Bank Card;;Value Discount;4;Bananas;1.071;1.44;1.54
+23.05.2026;expense;44.37;Bank Card;;Value Discount;5;Ground Coffee 500g;1;6.24;6.24
+23.05.2026;expense;44.37;Bank Card;;Value Discount;6;Olive Oil 1L;1;10.19;10.19
+23.05.2026;expense;44.37;Bank Card;;Value Discount;7;Dark Chocolate 100g;1;1.54;1.54
+23.05.2026;expense;44.37;Bank Card;;Value Discount;8;Sugar 1kg;1;1.09;1.09
+23.05.2026;expense;44.37;Bank Card;;Value Discount;9;Toilet Paper 10 rolls;1;4.44;4.44
+23.05.2026;expense;44.37;Bank Card;;Value Discount;10;Laundry Detergent 2L;1;7.59;7.59
+28.05.2026;expense;7.85;Bank Card;;Value Discount;0;Eggs M 10pcs;1;2.39;2.39
+28.05.2026;expense;7.85;Bank Card;;Value Discount;1;Butter 250g;1;2.84;2.84
+28.05.2026;expense;7.85;Bank Card;;Value Discount;2;Tomatoes;0.992;2.64;2.62
+30.05.2026;expense;23.7;Bank Card;;Fresh Market;0;Milk 2.8% 1L;3;1.14;3.42
+30.05.2026;expense;23.7;Bank Card;;Fresh Market;1;White Bread 500g;1;1.34;1.34
+30.05.2026;expense;23.7;Bank Card;;Fresh Market;2;Greek Yogurt 400g;2;1.44;2.88
+30.05.2026;expense;23.7;Bank Card;;Fresh Market;3;Chicken Breast;0.521;9.19;4.79
+30.05.2026;expense;23.7;Bank Card;;Fresh Market;4;Apples;1.033;1.79;1.85
+30.05.2026;expense;23.7;Bank Card;;Fresh Market;5;Spaghetti 500g;1;1.19;1.19
+30.05.2026;expense;23.7;Bank Card;;Fresh Market;6;Ground Coffee 500g;1;7.09;7.09
+30.05.2026;expense;23.7;Bank Card;;Fresh Market;7;Sugar 1kg;1;1.14;1.14
+02.06.2026;expense;5;Bank Card;;Value Discount;0;Chicken Breast;0.569;8.79;5
+04.06.2026;expense;12.43;Bank Card;;Corner Deli;0;White Bread 500g;2;1.44;2.88
+04.06.2026;expense;12.43;Bank Card;;Corner Deli;1;Chicken Breast;0.503;9.64;4.85
+04.06.2026;expense;12.43;Bank Card;;Corner Deli;2;Bananas;1.254;1.54;1.93
+04.06.2026;expense;12.43;Bank Card;;Corner Deli;3;Apples;1.463;1.89;2.77
+06.06.2026;expense;25.63;Bank Card;;Corner Deli;0;Milk 2.8% 1L;3;0.99;2.97
+06.06.2026;expense;25.63;Bank Card;;Corner Deli;1;White Bread 500g;2;1.44;2.88
+06.06.2026;expense;25.63;Bank Card;;Corner Deli;2;Bananas;1.576;1.54;2.43
+06.06.2026;expense;25.63;Bank Card;;Corner Deli;3;Spaghetti 500g;2;1.24;2.48
+06.06.2026;expense;25.63;Bank Card;;Corner Deli;4;Olive Oil 1L;1;11.14;11.14
+06.06.2026;expense;25.63;Bank Card;;Corner Deli;5;Dark Chocolate 100g;1;1.64;1.64
+06.06.2026;expense;25.63;Bank Card;;Corner Deli;6;Orange Juice 1L;1;2.09;2.09
+09.06.2026;expense;10.61;Bank Card;;Value Discount;0;Milk 2.8% 1L;3;1.09;3.27
+09.06.2026;expense;10.61;Bank Card;;Value Discount;1;Bananas;1.112;1.44;1.6
+09.06.2026;expense;10.61;Bank Card;;Value Discount;2;Basmati Rice 1kg;1;2.79;2.79
+09.06.2026;expense;10.61;Bank Card;;Value Discount;3;Mineral Water 1.5L;5;0.59;2.95
+11.06.2026;expense;1.64;Bank Card;;Value Discount;0;Greek Yogurt 400g;1;1.64;1.64
+13.06.2026;expense;30.96;Bank Card;;Fresh Market;0;Milk 2.8% 1L;2;1.14;2.28
+13.06.2026;expense;30.96;Bank Card;;Fresh Market;1;Eggs M 10pcs;1;2.49;2.49
+13.06.2026;expense;30.96;Bank Card;;Fresh Market;2;Butter 250g;1;2.94;2.94
+13.06.2026;expense;30.96;Bank Card;;Fresh Market;3;Greek Yogurt 400g;3;1.69;5.07
+13.06.2026;expense;30.96;Bank Card;;Fresh Market;4;Bananas;1.302;1.49;1.94
+13.06.2026;expense;30.96;Bank Card;;Fresh Market;5;Olive Oil 1L;1;10.64;10.64
+13.06.2026;expense;30.96;Bank Card;;Fresh Market;6;Dark Chocolate 100g;2;1.59;3.18
+13.06.2026;expense;30.96;Bank Card;;Fresh Market;7;Sugar 1kg;1;1.14;1.14
+13.06.2026;expense;30.96;Bank Card;;Fresh Market;8;Mineral Water 1.5L;2;0.64;1.28
+16.06.2026;expense;9.86;Bank Card;;Fresh Market;0;Milk 2.8% 1L;2;1.14;2.28
+16.06.2026;expense;9.86;Bank Card;;Fresh Market;1;White Bread 500g;1;1.34;1.34
+16.06.2026;expense;9.86;Bank Card;;Fresh Market;2;Eggs M 10pcs;1;2.49;2.49
+16.06.2026;expense;9.86;Bank Card;;Fresh Market;3;Spaghetti 500g;1;1.19;1.19
+16.06.2026;expense;9.86;Bank Card;;Fresh Market;4;Mineral Water 1.5L;4;0.64;2.56
+18.06.2026;expense;9.71;Bank Card;;Fresh Market;0;White Bread 500g;1;1.34;1.34
+18.06.2026;expense;9.71;Bank Card;;Fresh Market;1;Eggs M 10pcs;1;2.49;2.49
+18.06.2026;expense;9.71;Bank Card;;Fresh Market;2;Tomatoes;0.792;1.99;1.58
+18.06.2026;expense;9.71;Bank Card;;Fresh Market;3;Spaghetti 500g;2;1.19;2.38
+18.06.2026;expense;9.71;Bank Card;;Fresh Market;4;Mineral Water 1.5L;3;0.64;1.92
+20.06.2026;expense;12.78;Bank Card;;Fresh Market;0;Milk 2.8% 1L;3;1.14;3.42
+20.06.2026;expense;12.78;Bank Card;;Fresh Market;1;White Bread 500g;1;1.34;1.34
+20.06.2026;expense;12.78;Bank Card;;Fresh Market;2;Eggs M 10pcs;1;2.49;2.49
+20.06.2026;expense;12.78;Bank Card;;Fresh Market;3;Bananas;1.398;1.49;2.08
+20.06.2026;expense;12.78;Bank Card;;Fresh Market;4;Apples;1.213;1.79;2.17
+20.06.2026;expense;12.78;Bank Card;;Fresh Market;5;Mineral Water 1.5L;2;0.64;1.28
+23.06.2026;expense;5.92;Bank Card;;Corner Deli;0;Milk 2.8% 1L;1;1.19;1.19
+23.06.2026;expense;5.92;Bank Card;;Corner Deli;1;Butter 250g;1;3.09;3.09
+23.06.2026;expense;5.92;Bank Card;;Corner Deli;2;Dark Chocolate 100g;1;1.64;1.64
+25.06.2026;expense;7.19;Bank Card;;Fresh Market;0;White Bread 500g;1;1.34;1.34
+25.06.2026;expense;7.19;Bank Card;;Fresh Market;1;Eggs M 10pcs;1;2.49;2.49
+25.06.2026;expense;7.19;Bank Card;;Fresh Market;2;Greek Yogurt 400g;1;1.69;1.69
+25.06.2026;expense;7.19;Bank Card;;Fresh Market;3;Apples;0.932;1.79;1.67
+27.06.2026;expense;23.29;Cash;;Value Discount;0;Milk 2.8% 1L;3;1.09;3.27
+27.06.2026;expense;23.29;Cash;;Value Discount;1;Eggs M 10pcs;1;2.39;2.39
+27.06.2026;expense;23.29;Cash;;Value Discount;2;Chicken Breast;1.111;9.14;10.15
+27.06.2026;expense;23.29;Cash;;Value Discount;3;Apples;1.722;1.74;3
+27.06.2026;expense;23.29;Cash;;Value Discount;4;Tomatoes;0.573;1.94;1.11
+27.06.2026;expense;23.29;Cash;;Value Discount;5;Spaghetti 500g;2;1.14;2.28
+27.06.2026;expense;23.29;Cash;;Value Discount;6;Sugar 1kg;1;1.09;1.09
+02.07.2026;expense;12.84;Cash;;Fresh Market;0;Milk 2.8% 1L;2;1.14;2.28
+02.07.2026;expense;12.84;Cash;;Fresh Market;1;White Bread 500g;1;1.34;1.34
+02.07.2026;expense;12.84;Cash;;Fresh Market;2;Eggs M 10pcs;1;2.49;2.49
+02.07.2026;expense;12.84;Cash;;Fresh Market;3;Orange Juice 1L;1;2.14;2.14
+02.07.2026;expense;12.84;Cash;;Fresh Market;4;Toilet Paper 10 rolls;1;4.59;4.59
+04.07.2026;expense;40.58;Bank Card;;Value Discount;0;White Bread 500g;2;1.29;2.58
+04.07.2026;expense;40.58;Bank Card;;Value Discount;1;Butter 250g;1;2.39;2.39
+04.07.2026;expense;40.58;Bank Card;;Value Discount;2;Bananas;1.282;1.44;1.85
+04.07.2026;expense;40.58;Bank Card;;Value Discount;3;Tomatoes;0.776;2.04;1.58
+04.07.2026;expense;40.58;Bank Card;;Value Discount;4;Ground Coffee 500g;1;6.79;6.79
+04.07.2026;expense;40.58;Bank Card;;Value Discount;5;Olive Oil 1L;1;10.54;10.54
+04.07.2026;expense;40.58;Bank Card;;Value Discount;6;Dark Chocolate 100g;2;1.64;3.28
+04.07.2026;expense;40.58;Bank Card;;Value Discount;7;Orange Juice 1L;2;2.09;4.18
+04.07.2026;expense;40.58;Bank Card;;Value Discount;8;Toilet Paper 10 rolls;1;4.44;4.44
+04.07.2026;expense;40.58;Bank Card;;Value Discount;9;Mineral Water 1.5L;5;0.59;2.95
+07.07.2026;expense;20.21;Bank Card;;Fresh Market;0;Butter 250g;1;2.94;2.94
+07.07.2026;expense;20.21;Bank Card;;Fresh Market;1;Olive Oil 1L;1;10.99;10.99
+07.07.2026;expense;20.21;Bank Card;;Fresh Market;2;Dark Chocolate 100g;1;1.69;1.69
+07.07.2026;expense;20.21;Bank Card;;Fresh Market;3;Toilet Paper 10 rolls;1;4.59;4.59
+09.07.2026;expense;10.08;Bank Card;;Fresh Market;0;Milk 2.8% 1L;1;1.14;1.14
+09.07.2026;expense;10.08;Bank Card;;Fresh Market;1;White Bread 500g;2;1.34;2.68
+09.07.2026;expense;10.08;Bank Card;;Fresh Market;2;Apples;1.216;1.79;2.18
+09.07.2026;expense;10.08;Bank Card;;Fresh Market;3;Basmati Rice 1kg;1;2.94;2.94
+09.07.2026;expense;10.08;Bank Card;;Fresh Market;4;Sugar 1kg;1;1.14;1.14
+11.07.2026;expense;22.27;Bank Card;;Corner Deli;0;Milk 2.8% 1L;2;1.19;2.38
+11.07.2026;expense;22.27;Bank Card;;Corner Deli;1;Butter 250g;1;3.09;3.09
+11.07.2026;expense;22.27;Bank Card;;Corner Deli;2;Gouda Cheese 400g;1;5.54;5.54
+11.07.2026;expense;22.27;Bank Card;;Corner Deli;3;Greek Yogurt 400g;2;1.79;3.58
+11.07.2026;expense;22.27;Bank Card;;Corner Deli;4;Apples;1.8;1.89;3.4
+11.07.2026;expense;22.27;Bank Card;;Corner Deli;5;Basmati Rice 1kg;1;3.09;3.09
+11.07.2026;expense;22.27;Bank Card;;Corner Deli;6;Sugar 1kg;1;1.19;1.19
+14.07.2026;expense;20.66;Bank Card;;Corner Deli;0;Apples;1.183;1.89;2.24
+14.07.2026;expense;20.66;Bank Card;;Corner Deli;1;Dark Chocolate 100g;2;1.79;3.58
+14.07.2026;expense;20.66;Bank Card;;Corner Deli;2;Orange Juice 1L;2;2.24;4.48
+14.07.2026;expense;20.66;Bank Card;;Corner Deli;3;Laundry Detergent 2L;1;8.29;8.29
+14.07.2026;expense;20.66;Bank Card;;Corner Deli;4;Mineral Water 1.5L;3;0.69;2.07
+16.07.2026;expense;10.55;Bank Card;;Fresh Market;0;Milk 2.8% 1L;1;1.14;1.14
+16.07.2026;expense;10.55;Bank Card;;Fresh Market;1;Greek Yogurt 400g;2;1.74;3.48
+16.07.2026;expense;10.55;Bank Card;;Fresh Market;2;Apples;1.007;1.79;1.8
+16.07.2026;expense;10.55;Bank Card;;Fresh Market;3;Spaghetti 500g;1;1.19;1.19
+16.07.2026;expense;10.55;Bank Card;;Fresh Market;4;Basmati Rice 1kg;1;2.94;2.94
+18.07.2026;expense;29.97;Bank Card;;Fresh Market;0;Gouda Cheese 400g;1;5.24;5.24
+18.07.2026;expense;29.97;Bank Card;;Fresh Market;1;Greek Yogurt 400g;2;1.74;3.48
+18.07.2026;expense;29.97;Bank Card;;Fresh Market;2;Chicken Breast;1.025;9.54;9.78
+18.07.2026;expense;29.97;Bank Card;;Fresh Market;3;Spaghetti 500g;1;1.19;1.19
+18.07.2026;expense;29.97;Bank Card;;Fresh Market;4;Basmati Rice 1kg;1;2.94;2.94
+18.07.2026;expense;29.97;Bank Card;;Fresh Market;5;Ground Coffee 500g;1;7.34;7.34
+21.07.2026;expense;10.32;Bank Card;;Fresh Market;0;Gouda Cheese 400g;1;5.24;5.24
+21.07.2026;expense;10.32;Bank Card;;Fresh Market;1;Sugar 1kg;1;1.14;1.14
+21.07.2026;expense;10.32;Bank Card;;Fresh Market;2;Toilet Paper 10 rolls;1;3.94;3.94
+25.07.2026;expense;22.39;Bank Card;;Fresh Market;0;Milk 2.8% 1L;2;1.14;2.28
+25.07.2026;expense;22.39;Bank Card;;Fresh Market;1;White Bread 500g;2;1.34;2.68
+25.07.2026;expense;22.39;Bank Card;;Fresh Market;2;Butter 250g;1;2.94;2.94
+25.07.2026;expense;22.39;Bank Card;;Fresh Market;3;Chicken Breast;1.109;9.54;10.58
+25.07.2026;expense;22.39;Bank Card;;Fresh Market;4;Tomatoes;1.014;2.19;2.22
+25.07.2026;expense;22.39;Bank Card;;Fresh Market;5;Dark Chocolate 100g;1;1.69;1.69
+28.07.2026;expense;30.59;Bank Card;;Fresh Market;0;Butter 250g;1;2.94;2.94
+28.07.2026;expense;30.59;Bank Card;;Fresh Market;1;Gouda Cheese 400g;1;5.24;5.24
+28.07.2026;expense;30.59;Bank Card;;Fresh Market;2;Basmati Rice 1kg;1;2.99;2.99
+28.07.2026;expense;30.59;Bank Card;;Fresh Market;3;Olive Oil 1L;1;10.99;10.99
+28.07.2026;expense;30.59;Bank Card;;Fresh Market;4;Toilet Paper 10 rolls;1;4.59;4.59
+28.07.2026;expense;30.59;Bank Card;;Fresh Market;5;Mineral Water 1.5L;6;0.64;3.84
+01.08.2026;expense;25.68;Bank Card;;Corner Deli;0;Milk 2.8% 1L;2;1.19;2.38
+01.08.2026;expense;25.68;Bank Card;;Corner Deli;1;White Bread 500g;2;1.44;2.88
+01.08.2026;expense;25.68;Bank Card;;Corner Deli;2;Apples;1.664;1.94;3.23
+01.08.2026;expense;25.68;Bank Card;;Corner Deli;3;Spaghetti 500g;2;1.24;2.48
+01.08.2026;expense;25.68;Bank Card;;Corner Deli;4;Ground Coffee 500g;1;8.14;8.14
+01.08.2026;expense;25.68;Bank Card;;Corner Deli;5;Dark Chocolate 100g;1;1.79;1.79
+01.08.2026;expense;25.68;Bank Card;;Corner Deli;6;Orange Juice 1L;2;2.39;4.78
+04.08.2026;expense;22.35;Bank Card;;Fresh Market;0;White Bread 500g;1;1.34;1.34
+04.08.2026;expense;22.35;Bank Card;;Fresh Market;1;Greek Yogurt 400g;3;1.74;5.22
+04.08.2026;expense;22.35;Bank Card;;Fresh Market;2;Chicken Breast;0.474;9.54;4.52
+04.08.2026;expense;22.35;Bank Card;;Fresh Market;3;Dark Chocolate 100g;2;1.69;3.38
+04.08.2026;expense;22.35;Bank Card;;Fresh Market;4;Laundry Detergent 2L;1;7.89;7.89
+06.08.2026;expense;6.17;Bank Card;;Fresh Market;0;Butter 250g;1;3.19;3.19
+06.08.2026;expense;6.17;Bank Card;;Fresh Market;1;Greek Yogurt 400g;2;1.49;2.98
+08.08.2026;expense;39.54;Bank Card;;Fresh Market;0;Milk 2.8% 1L;3;1.19;3.57
+08.08.2026;expense;39.54;Bank Card;;Fresh Market;1;White Bread 500g;1;1.34;1.34
+08.08.2026;expense;39.54;Bank Card;;Fresh Market;2;Greek Yogurt 400g;3;1.74;5.22
+08.08.2026;expense;39.54;Bank Card;;Fresh Market;3;Chicken Breast;0.599;9.54;5.71
+08.08.2026;expense;39.54;Bank Card;;Fresh Market;4;Spaghetti 500g;2;1.19;2.38
+08.08.2026;expense;39.54;Bank Card;;Fresh Market;5;Basmati Rice 1kg;1;2.54;2.54
+08.08.2026;expense;39.54;Bank Card;;Fresh Market;6;Ground Coffee 500g;1;7.79;7.79
+08.08.2026;expense;39.54;Bank Card;;Fresh Market;7;Olive Oil 1L;1;10.99;10.99
+13.08.2026;expense;27.4;Bank Card;;Value Discount;0;White Bread 500g;1;1.29;1.29
+13.08.2026;expense;27.4;Bank Card;;Value Discount;1;Chicken Breast;0.908;9.14;8.3
+13.08.2026;expense;27.4;Bank Card;;Value Discount;2;Bananas;1.192;1.39;1.66
+13.08.2026;expense;27.4;Bank Card;;Value Discount;3;Apples;0.994;1.84;1.83
+13.08.2026;expense;27.4;Bank Card;;Value Discount;4;Olive Oil 1L;1;10.54;10.54
+13.08.2026;expense;27.4;Bank Card;;Value Discount;5;Dark Chocolate 100g;2;1.89;3.78
+15.08.2026;expense;28.22;Bank Card;;Corner Deli;0;Chicken Breast;0.686;9.99;6.85
+15.08.2026;expense;28.22;Bank Card;;Corner Deli;1;Bananas;1.01;1.54;1.56
+15.08.2026;expense;28.22;Bank Card;;Corner Deli;2;Basmati Rice 1kg;1;3.14;3.14
+15.08.2026;expense;28.22;Bank Card;;Corner Deli;3;Ground Coffee 500g;1;8.64;8.64
+15.08.2026;expense;28.22;Bank Card;;Corner Deli;4;Orange Juice 1L;2;2.04;4.08
+15.08.2026;expense;28.22;Bank Card;;Corner Deli;5;Sugar 1kg;1;1.19;1.19
+15.08.2026;expense;28.22;Bank Card;;Corner Deli;6;Mineral Water 1.5L;4;0.69;2.76
+22.08.2026;expense;24.89;Bank Card;;Fresh Market;0;White Bread 500g;1;1.34;1.34
+22.08.2026;expense;24.89;Bank Card;;Fresh Market;1;Butter 250g;1;3.19;3.19
+22.08.2026;expense;24.89;Bank Card;;Fresh Market;2;Chicken Breast;1.108;8.09;8.96
+22.08.2026;expense;24.89;Bank Card;;Fresh Market;3;Apples;1.256;1.89;2.37
+22.08.2026;expense;24.89;Bank Card;;Fresh Market;4;Sugar 1kg;1;1.14;1.14
+22.08.2026;expense;24.89;Bank Card;;Fresh Market;5;Laundry Detergent 2L;1;7.89;7.89
+27.08.2026;expense;11.58;Bank Card;;Value Discount;0;White Bread 500g;2;1.29;2.58
+27.08.2026;expense;11.58;Bank Card;;Value Discount;1;Apples;1.481;1.54;2.28
+27.08.2026;expense;11.58;Bank Card;;Value Discount;2;Spaghetti 500g;2;1.14;2.28
+27.08.2026;expense;11.58;Bank Card;;Value Discount;3;Toilet Paper 10 rolls;1;4.44;4.44
+29.08.2026;expense;27.17;Bank Card;;Value Discount;0;Milk 2.8% 1L;2;1.14;2.28
+29.08.2026;expense;27.17;Bank Card;;Value Discount;1;Gouda Cheese 400g;1;4.44;4.44
+29.08.2026;expense;27.17;Bank Card;;Value Discount;2;Greek Yogurt 400g;1;1.69;1.69
+29.08.2026;expense;27.17;Bank Card;;Value Discount;3;Bananas;0.886;1.39;1.23
+29.08.2026;expense;27.17;Bank Card;;Value Discount;4;Tomatoes;0.681;2.09;1.42
+29.08.2026;expense;27.17;Bank Card;;Value Discount;5;Ground Coffee 500g;1;7.89;7.89
+29.08.2026;expense;27.17;Bank Card;;Value Discount;6;Dark Chocolate 100g;2;1.89;3.78
+29.08.2026;expense;27.17;Bank Card;;Value Discount;7;Toilet Paper 10 rolls;1;4.44;4.44
+01.09.2026;expense;14.57;Bank Card;;Fresh Market;0;Milk 2.8% 1L;1;1.19;1.19
+01.09.2026;expense;14.57;Bank Card;;Fresh Market;1;Ground Coffee 500g;1;8.24;8.24
+01.09.2026;expense;14.57;Bank Card;;Fresh Market;2;Dark Chocolate 100g;1;1.94;1.94
+01.09.2026;expense;14.57;Bank Card;;Fresh Market;3;Mineral Water 1.5L;5;0.64;3.2
+03.09.2026;expense;14.99;Bank Card;;Fresh Market;0;Olive Oil 1L;1;11.79;11.79
+03.09.2026;expense;14.99;Bank Card;;Fresh Market;1;Mineral Water 1.5L;5;0.64;3.2
+05.09.2026;expense;12.15;Bank Card;;Value Discount;0;Milk 2.8% 1L;2;1.14;2.28
+05.09.2026;expense;12.15;Bank Card;;Value Discount;1;Bananas;1.004;1.39;1.4
+05.09.2026;expense;12.15;Bank Card;;Value Discount;2;Tomatoes;0.637;2.09;1.33
+05.09.2026;expense;12.15;Bank Card;;Value Discount;3;Basmati Rice 1kg;1;2.89;2.89
+05.09.2026;expense;12.15;Bank Card;;Value Discount;4;Dark Chocolate 100g;1;1.89;1.89
+05.09.2026;expense;12.15;Bank Card;;Value Discount;5;Mineral Water 1.5L;4;0.59;2.36
+12.09.2026;expense;16.08;Bank Card;;Corner Deli;0;Milk 2.8% 1L;3;1.24;3.72
+12.09.2026;expense;16.08;Bank Card;;Corner Deli;1;Eggs M 10pcs;1;3.09;3.09
+12.09.2026;expense;16.08;Bank Card;;Corner Deli;2;Greek Yogurt 400g;2;1.84;3.68
+12.09.2026;expense;16.08;Bank Card;;Corner Deli;3;Bananas;1.409;1.54;2.17
+12.09.2026;expense;16.08;Bank Card;;Corner Deli;4;Apples;1.719;1.99;3.42
+19.09.2026;expense;37.64;Bank Card;;Fresh Market;0;Milk 2.8% 1L;3;1.19;3.57
+19.09.2026;expense;37.64;Bank Card;;Fresh Market;1;White Bread 500g;2;1.34;2.68
+19.09.2026;expense;37.64;Bank Card;;Fresh Market;2;Eggs M 10pcs;1;3.24;3.24
+19.09.2026;expense;37.64;Bank Card;;Fresh Market;3;Greek Yogurt 400g;3;1.74;5.22
+19.09.2026;expense;37.64;Bank Card;;Fresh Market;4;Chicken Breast;0.861;9.54;8.21
+19.09.2026;expense;37.64;Bank Card;;Fresh Market;5;Basmati Rice 1kg;1;2.99;2.99
+19.09.2026;expense;37.64;Bank Card;;Fresh Market;6;Orange Juice 1L;2;2.29;4.58
+19.09.2026;expense;37.64;Bank Card;;Fresh Market;7;Toilet Paper 10 rolls;1;4.59;4.59
+19.09.2026;expense;37.64;Bank Card;;Fresh Market;8;Mineral Water 1.5L;4;0.64;2.56
+22.09.2026;expense;2.43;Bank Card;;Value Discount;0;Milk 2.8% 1L;1;1.14;1.14
+22.09.2026;expense;2.43;Bank Card;;Value Discount;1;White Bread 500g;1;1.29;1.29
+24.09.2026;expense;12.86;Bank Card;;Value Discount;0;Eggs M 10pcs;1;3.14;3.14
+24.09.2026;expense;12.86;Bank Card;;Value Discount;1;Butter 250g;1;3.04;3.04
+24.09.2026;expense;12.86;Bank Card;;Value Discount;2;Chicken Breast;0.491;9.14;4.49
+24.09.2026;expense;12.86;Bank Card;;Value Discount;3;Orange Juice 1L;1;2.19;2.19
+26.09.2026;expense;13.84;Bank Card;;Corner Deli;0;Milk 2.8% 1L;1;1.24;1.24
+26.09.2026;expense;13.84;Bank Card;;Corner Deli;1;White Bread 500g;2;1.49;2.98
+26.09.2026;expense;13.84;Bank Card;;Corner Deli;2;Eggs M 10pcs;1;3.39;3.39
+26.09.2026;expense;13.84;Bank Card;;Corner Deli;3;Greek Yogurt 400g;1;1.84;1.84
+26.09.2026;expense;13.84;Bank Card;;Corner Deli;4;Bananas;1.577;1.49;2.35
+26.09.2026;expense;13.84;Bank Card;;Corner Deli;5;Orange Juice 1L;1;2.04;2.04
+29.09.2026;expense;14.23;Bank Card;;Corner Deli;0;Milk 2.8% 1L;2;1.24;2.48
+29.09.2026;expense;14.23;Bank Card;;Corner Deli;1;Bananas;1.033;1.49;1.54
+29.09.2026;expense;14.23;Bank Card;;Corner Deli;2;Laundry Detergent 2L;1;8.14;8.14
+29.09.2026;expense;14.23;Bank Card;;Corner Deli;3;Mineral Water 1.5L;3;0.69;2.07
+03.10.2026;expense;28.66;Bank Card;;Corner Deli;0;Milk 2.8% 1L;1;1.04;1.04
+03.10.2026;expense;28.66;Bank Card;;Corner Deli;1;Eggs M 10pcs;1;3.39;3.39
+03.10.2026;expense;28.66;Bank Card;;Corner Deli;2;Gouda Cheese 400g;1;5.69;5.69
+03.10.2026;expense;28.66;Bank Card;;Corner Deli;3;Greek Yogurt 400g;3;1.84;5.52
+03.10.2026;expense;28.66;Bank Card;;Corner Deli;4;Chicken Breast;0.47;9.99;4.7
+03.10.2026;expense;28.66;Bank Card;;Corner Deli;5;Spaghetti 500g;2;1.24;2.48
+03.10.2026;expense;28.66;Bank Card;;Corner Deli;6;Orange Juice 1L;1;2.39;2.39
+03.10.2026;expense;28.66;Bank Card;;Corner Deli;7;Mineral Water 1.5L;5;0.69;3.45
+06.10.2026;expense;24.62;Bank Card;;Value Discount;0;Eggs M 10pcs;1;3.14;3.14
+06.10.2026;expense;24.62;Bank Card;;Value Discount;1;Chicken Breast;0.964;9.14;8.81
+06.10.2026;expense;24.62;Bank Card;;Value Discount;2;Bananas;1.031;1.34;1.38
+06.10.2026;expense;24.62;Bank Card;;Value Discount;3;Olive Oil 1L;1;11.29;11.29
+10.10.2026;expense;24.15;Cash;;Corner Deli;0;Milk 2.8% 1L;1;1.24;1.24
+10.10.2026;expense;24.15;Cash;;Corner Deli;1;Eggs M 10pcs;1;3.39;3.39
+10.10.2026;expense;24.15;Cash;;Corner Deli;2;Butter 250g;1;3.34;3.34
+10.10.2026;expense;24.15;Cash;;Corner Deli;3;Ground Coffee 500g;1;8.64;8.64
+10.10.2026;expense;24.15;Cash;;Corner Deli;4;Orange Juice 1L;2;2.39;4.78
+10.10.2026;expense;24.15;Cash;;Corner Deli;5;Mineral Water 1.5L;4;0.69;2.76
+17.10.2026;expense;21.37;Bank Card;;Value Discount;0;Milk 2.8% 1L;3;1.14;3.42
+17.10.2026;expense;21.37;Bank Card;;Value Discount;1;White Bread 500g;2;1.34;2.68
+17.10.2026;expense;21.37;Bank Card;;Value Discount;2;Gouda Cheese 400g;1;5.19;5.19
+17.10.2026;expense;21.37;Bank Card;;Value Discount;3;Chicken Breast;0.776;9.14;7.09
+17.10.2026;expense;21.37;Bank Card;;Value Discount;4;Tomatoes;1.016;2.94;2.99
+22.10.2026;expense;6.41;Bank Card;;Value Discount;0;White Bread 500g;1;1.34;1.34
+22.10.2026;expense;6.41;Bank Card;;Value Discount;1;Greek Yogurt 400g;3;1.69;5.07
+24.10.2026;expense;12.24;Bank Card;;Corner Deli;0;Milk 2.8% 1L;1;1.24;1.24
+24.10.2026;expense;12.24;Bank Card;;Corner Deli;1;Tomatoes;0.592;3.19;1.89
+24.10.2026;expense;12.24;Bank Card;;Corner Deli;2;Basmati Rice 1kg;1;3.14;3.14
+24.10.2026;expense;12.24;Bank Card;;Corner Deli;3;Orange Juice 1L;2;2.39;4.78
+24.10.2026;expense;12.24;Bank Card;;Corner Deli;4;Sugar 1kg;1;1.19;1.19
+29.10.2026;expense;24.41;Bank Card;;Fresh Market;0;White Bread 500g;2;1.44;2.88
+29.10.2026;expense;24.41;Bank Card;;Fresh Market;1;Greek Yogurt 400g;2;1.74;3.48
+29.10.2026;expense;24.41;Bank Card;;Fresh Market;2;Spaghetti 500g;2;1.19;2.38
+29.10.2026;expense;24.41;Bank Card;;Fresh Market;3;Olive Oil 1L;1;11.79;11.79
+29.10.2026;expense;24.41;Bank Card;;Fresh Market;4;Dark Chocolate 100g;2;1.94;3.88

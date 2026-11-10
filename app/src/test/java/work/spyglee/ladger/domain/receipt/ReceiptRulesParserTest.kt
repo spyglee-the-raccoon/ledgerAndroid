@@ -54,7 +54,7 @@ class ReceiptRulesParserTest {
 
     @Test
     fun `keywords match whole words only`() {
-        // "vat" inside "Hrvatska" must not mark the line as a VAT line (it does on iOS).
+        // "vat" inside "Hrvatska" must not mark the line as a VAT line (the same case as iOS's ReceiptParserTests).
         assertAmount("15.89", ReceiptRulesParser.parse("Konzum\nUKUPNO KONZUM HRVATSKA 15,89").total)
         // "total" inside "subtotal" is not a total label.
         assertAmount("12.00", ReceiptRulesParser.parse("Shop\nSUBTOTAL 99,00\nTOTAL 12,00").total)

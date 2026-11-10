@@ -137,6 +137,8 @@ class StatisticsFlowTest {
         launch(withTransactions = false)
         compose.onNodeWithText(context.getString(R.string.export_csv)).performClick()
 
-        compose.onNodeWithText(context.getString(R.string.export_nothing)).assertExists()
+        // Checking for something to export runs database queries, which the test rule doesn't wait for.
+        val nothing = context.getString(R.string.export_nothing)
+        compose.waitUntil(5_000) { compose.onAllNodesWithText(nothing).fetchSemanticsNodes().isNotEmpty() }
     }
 }

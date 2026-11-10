@@ -12,8 +12,9 @@ day for branch `sync-ios-8a76b5d-part1` ("part 1" below), which ports everything
 decision. File references without a repo name are to the iOS repo when they are Swift files, and to this repo when
 they are Kotlin files.
 
-Each decision in part 3 has the options, an **Android proposal** (a starting point, not a conclusion) and an
-empty **Decision** line to fill in when we have talked it through.
+Each decision in part 3 has the options, an **Android proposal** (a starting point, not a conclusion) and the
+**Decision** the iOS and Android developers made together on 10 November 2026. How Android implements them:
+[decisions-plan.md](decisions-plan.md).
 
 ---
 
@@ -204,22 +205,22 @@ budgets) on and off separately in system settings.
 
 ## 3. Decisions
 
-| # | Question | Android proposal | Blocks |
-|---|---|---|---|
-| D1 | Pro subscription on Android, and the "no internet" promise | Google Play Billing; network permission used only for billing | paywall port, first release |
-| D2 | Backup and moving to a new phone; iCloud sync later? | Allow phone-to-phone transfer, no cloud backup; decide sync before iOS turns it on | first release |
-| D3 | What replaces Siri and Shortcuts | Nothing for now; the quick actions (done in part 1) | Siri port |
-| D4 | Widgets | Port all three | widget port |
-| D5 | What the app lock covers | Widgets and lock-screen notifications hide amounts when the lock is on | widgets, D3 |
-| D6 | Android app ID spelled "ladger" | Change to `work.spyglee.ledger` before the first upload | first release |
-| D7 | Version numbers | Same marketing version on both | first release |
-| D8 | Per-app language (Polish is done in part 1) | Turn it on | none |
-| D9 | Receipt camera and Cyrillic | Keep our camera, add multi-page; accept the Cyrillic gap | none |
-| D10 | Background work for planned transactions | Keep Android's way; iOS words the notification "due" or records in the background | none |
-| D11 | Fix shared bugs together or keep matching | Agree on the right behaviour; both apps fix together | none |
-| D12 | CSV as the shared contract | A short shared spec; keep `DemoData` as the shared test files (Android uses a copy since part 1) | none |
-| D13 | Android-native look or iOS look-alike | Stay Android-native | none |
-| D14 | How we sync from now on | One Android PR per iOS commit; a few lines on behaviour changes per iOS commit | none |
+| # | Question | Android proposal | Decision | Blocks |
+|---|---|---|---|---|
+| D1 | Pro subscription on Android, and the "no internet" promise | Google Play Billing; network permission used only for billing | As proposed | paywall port, first release |
+| D2 | Backup and moving to a new phone; iCloud sync later? | Allow phone-to-phone transfer, no cloud backup; decide sync before iOS turns it on | Transfer **and** Google cloud backup, photos included | first release |
+| D3 | What replaces Siri and Shortcuts | Nothing for now; the quick actions (done in part 1) | As proposed | Siri port |
+| D4 | Widgets | Port all three | As proposed | widget port |
+| D5 | What the app lock covers | Widgets and lock-screen notifications hide amounts when the lock is on | As proposed; app switcher unchanged | widgets, D3 |
+| D6 | Android app ID spelled "ladger" | Change to `work.spyglee.ledger` before the first upload | As proposed | first release |
+| D7 | Version numbers | Same marketing version on both | As proposed | first release |
+| D8 | Per-app language (Polish is done in part 1) | Turn it on | As proposed | none |
+| D9 | Receipt camera and Cyrillic | Keep our camera, add multi-page; accept the Cyrillic gap | Proposal **plus** Cyrillic OCR | none |
+| D10 | Background work for planned transactions | Keep Android's way; iOS words the notification "due" or records in the background | Android: exact alarms. iOS: records in the background | none |
+| D11 | Fix shared bugs together or keep matching | Agree on the right behaviour; both apps fix together | As proposed | none |
+| D12 | CSV as the shared contract | A short shared spec; keep `DemoData` as the shared test files (Android uses a copy since part 1) | As proposed | none |
+| D13 | Android-native look or iOS look-alike | Stay Android-native | As proposed | none |
+| D14 | How we sync from now on | One Android PR per iOS commit; a few lines on behaviour changes per iOS commit | As proposed; iOS sends strings to translators | none |
 
 ### D1. Pro subscription on Android
 **Context.**
@@ -253,7 +254,12 @@ budgets) on and off separately in system settings.
 **Android proposal:** option 1, same products and prices. Say clearly in the store listing that the
 only network use is Google Play billing.
 
-**Decision:**
+**Decision:** option 1, as proposed.
+- Google Play Billing. The app keeps the network permissions, and its only network use is Google Play billing; the
+  store listing says so.
+- Same product IDs, prices, 1-week trial and locked statistics screens as iOS.
+- A subscription bought on one platform doesn't unlock the other. Accepted.
+- Android remembers the last Pro status, so the statistics don't look locked while the check runs.
 
 ### D2. Backup, moving to a new phone, and iCloud sync later
 **Context.**
@@ -274,7 +280,11 @@ only network use is Google Play billing.
 **Android proposal:** option 2. Before iOS turns on iCloud sync, agree whether Android needs sync too. If it does,
 that's a backend project, not a port.
 
-**Decision:**
+**Decision:** option 3: phone-to-phone transfer **and** Google cloud backup.
+- Both include everything, receipt photos too. Android skips an app's cloud backup altogether once it is over
+  25 MB, which is roughly 100 or more scanned receipts; we accept that.
+- iCloud sync: no work now. iOS doesn't turn it on before we agree whether Android needs sync too. If it does,
+  that's a backend project.
 
 ### D3. What replaces Siri and Shortcuts on Android
 **Context.**
@@ -297,7 +307,8 @@ that's a backend project, not a port.
 
 **Android proposal:** option 1. Look at AppFunctions again when it's stable.
 
-**Decision:**
+**Decision:** option 1, as proposed: nothing besides the quick actions for now. Look at AppFunctions again when
+it's stable.
 
 ### D4. Widgets
 **Context.**
@@ -315,7 +326,7 @@ that's a backend project, not a port.
 
 **Android proposal:** all three, refreshed after every change. What they show while the app lock is on is D5.
 
-**Decision:**
+**Decision:** as proposed: all three widgets, refreshed after every change.
 
 ### D5. What the app lock covers
 **Context.** Both apps have an optional lock. The new features show money outside the app, and today the platforms
@@ -344,7 +355,14 @@ already disagree on the details:
 - Siri/Android questions behave like widgets.
 - Android stops re-locking for its own pickers.
 
-**Decision:**
+**Decision:** as proposed.
+- With the lock on, widgets show no amounts or notes, and notifications show no amounts on the lock screen (the
+  full text once the phone is unlocked).
+- Siri questions follow the same rule as widgets.
+- Android stops re-locking when the user comes back from a file picker or settings page the app opened.
+- The app switcher stays as it is: iOS always blurs it; Android hides it only with the lock on, which also blocks
+  screenshots.
+- Not discussed: whether logging a transaction through Siri checks the lock (#17).
 
 ### D6. Android app ID spelled "ladger"
 **Context.**
@@ -361,7 +379,8 @@ already disagree on the details:
 **Android proposal:** option 2, before the first upload. iOS could rename the URL scheme to `ledger://` at the same
 time (widgets and the share extension use it).
 
-**Decision:**
+**Decision:** option 2, as proposed: Android becomes `work.spyglee.ledger` before the first upload, and iOS
+renames its URL scheme to `ledger://` at the same time.
 
 ### D7. Version numbers
 **Context.** iOS went to 1.0 in `fa64623`. Android is 0.1 (RELEASE.md says Android follows the iOS marketing
@@ -370,7 +389,8 @@ version). The build numbers are separate on each store anyway.
 **Android proposal:** the same marketing version on both, and an Android release takes the version of the iOS
 commit it's synced to.
 
-**Decision:**
+**Decision:** as proposed: the same marketing version on both. An Android release takes the version of the iOS
+commit it's synced to; build numbers stay separate.
 
 ### D8. Choosing a language per app
 **Context.**
@@ -382,7 +402,8 @@ commit it's synced to.
 **Android proposal:** turn on the per-app language. We need a native speaker for Polish (and the Croatian and
 Ukrainian list in translations-to-review.md).
 
-**Decision:**
+**Decision:** as proposed: turn on the per-app language (Android 13+), and find native speakers for Polish and
+for the Croatian and Ukrainian strings in translations-to-review.md.
 
 ### D9. Receipt camera and Cyrillic
 **Context.** See part 2: one page per scan on Android, and Ukrainian words aren't read.
@@ -396,7 +417,8 @@ Ukrainian list in translations-to-review.md).
 
 **Android proposal:** keep our camera and add multi-page. Accept the Cyrillic gap unless Ukrainian users complain.
 
-**Decision:**
+**Decision:** keep our camera and add multi-page scans, as proposed, **and** add an OCR engine that reads
+Cyrillic, although it makes the app bigger.
 
 ### D10. Planned transactions and reminders in the background
 **Context.**
@@ -414,6 +436,9 @@ Ukrainian list in translations-to-review.md).
 tell the user the same thing.
 
 **Decision:**
+- **Android** switches to exact alarms. It asks for the exact-alarm permission and stays inexact if the user
+  refuses.
+- **iOS** records planned transactions in a background refresh task, so "has been recorded" is true (fixes #10).
 
 ### D11. Fix shared bugs together, or keep matching
 **Context.** Android copies some iOS bugs so both apps behave the same:
@@ -425,7 +450,12 @@ tell the user the same thing.
 **Android proposal:** agree on the correct behaviour for each one now. iOS fixes first, Android follows in the same
 sync, and neither app fixes a shared behaviour alone.
 
-**Decision:**
+**Decision:** as proposed: iOS fixes first, Android follows in the same sync, and neither app fixes a shared
+behaviour alone. The correct behaviour:
+- #8: names are compared ignoring case.
+- #12: changing a plan's schedule never records an occurrence twice.
+- #18: switching a budget off and on in the list re-arms its alert, as the editor does.
+- #19: restoring a backup takes the backup's budget limits.
 
 ### D12. CSV as the shared contract
 **Context.**
@@ -449,7 +479,11 @@ sync, and neither app fixes a shared behaviour alone.
 
 **Android proposal:** yes to the spec and the shared test files; the full backup can wait.
 
-**Decision:**
+**Decision:** as proposed.
+- A short spec, `docs/csv-format.md`, in both repos.
+- `DemoData/` stays the shared test files: iOS updates it when the format changes, Android copies it.
+- CSV files only use icon names from `Icons.swift`.
+- The full backup (photos and merchant learning) waits.
 
 ### D13. Android-native look, or an iOS look-alike
 **Context.** Android follows Material 3 conventions:
@@ -464,7 +498,7 @@ Users of each platform expect their own conventions, but screenshots of the two 
 
 **Android proposal:** stay native, keep the iOS colours, no wallpaper colours.
 
-**Decision:**
+**Decision:** as proposed: stay Android-native, keep the iOS colours, no wallpaper colours.
 
 ### D14. How we sync from now on
 **Context.**
@@ -478,7 +512,9 @@ Users of each platform expect their own conventions, but screenshots of the two 
 - **Changes to shared formats** (CSV, string keys, phrases) are flagged, so Android can check them before they ship.
 - **Who sends strings to translators:** to agree.
 
-**Decision:**
+**Decision:** as proposed: smaller iOS commits, one feature each where possible, each with a few lines on any
+behaviour change, and changes to shared formats are flagged before they ship. The iOS developer sends new strings
+to translators, for both apps.
 
 ### Not decisions, but worth knowing (iOS repo)
 - **A real app database is committed** in `new data backup/` (`default.store`, `-shm`, `-wal`, since `6f46e7b`). If it holds

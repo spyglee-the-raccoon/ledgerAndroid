@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasText
@@ -17,7 +18,13 @@ import androidx.core.content.ContextCompat
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import java.io.File
 import java.math.BigDecimal
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -32,6 +39,7 @@ import work.spyglee.ladger.data.Category
 import work.spyglee.ladger.data.LadgerDatabase
 import work.spyglee.ladger.data.RecurrenceFrequency
 import work.spyglee.ladger.data.Source
+import work.spyglee.ladger.reminder.ExactAlarms
 import work.spyglee.ladger.ui.theme.LadgerTheme
 
 @RunWith(AndroidJUnit4::class)
@@ -40,11 +48,13 @@ class PlannedTransactionsFlowTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private lateinit var database: LadgerDatabase
+    private lateinit var container: AppContainer
+    private val settingsScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     @Before
     fun setUp() {
         // Saving asks for the notification permission, which a test can't answer. Grant it first
-        // (adb shell pm grant work.spyglee.ladger android.permission.POST_NOTIFICATIONS); otherwise the test is skipped.
+        // (adb shell pm grant work.spyglee.ledger android.permission.POST_NOTIFICATIONS); otherwise the test is skipped.
         assumeTrue(
             Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
                 ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
@@ -54,7 +64,11 @@ class PlannedTransactionsFlowTest {
             database.sourceDao().insert(Source(name = "Cash", initValue = BigDecimal("100")))
             database.categoryDao().insert(Category(name = "Food"))
         }
-        val container = AppContainer(context, database)
+        // Fresh settings, so the one-time question about exact alarms is always asked here.
+        val settings = PreferenceDataStoreFactory.create(scope = settingsScope) {
+            File(context.cacheDir, "planned-flow-${System.nanoTime()}.preferences_pb")
+        }
+        container = AppContainer(context, database, settings)
         compose.setContent {
             CompositionLocalProvider(LocalAppContainer provides container) {
                 LadgerTheme { LadgerNavHost() }
@@ -65,6 +79,7 @@ class PlannedTransactionsFlowTest {
     @After
     fun tearDown() {
         if (::database.isInitialized) database.close()
+        settingsScope.cancel()
     }
 
     @Test
@@ -87,6 +102,15 @@ class PlannedTransactionsFlowTest {
         compose.onNodeWithText(everyThreeMonths).assertExists()
         save.assertIsEnabled()
         save.performClick()
+
+        // Android 14+ asks once for exact alarms (D10) unless they are allowed already; the plan is saved
+        // whatever the answer.
+        if (!ExactAlarms.allowed(context)) {
+            compose.onNodeWithText(context.getString(R.string.exact_alarms_title)).assertExists()
+            compose.onNodeWithText(context.getString(R.string.not_now)).performClick()
+            // Remembered in the background, so the next save doesn't ask again.
+            compose.waitUntil(5_000) { runBlocking { container.settings.didAskExactAlarms.first() } }
+        }
 
         // Back on the list; a plan starting today is recorded straight away, as on iOS.
         compose.waitUntil(5_000) { compose.onAllNodes(hasText("Netflix")).fetchSemanticsNodes().isNotEmpty() }

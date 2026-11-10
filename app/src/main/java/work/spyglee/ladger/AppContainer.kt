@@ -1,6 +1,8 @@
 package work.spyglee.ladger
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import java.io.File
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,11 +25,15 @@ import work.spyglee.ladger.reminder.DailyReminder
 import work.spyglee.ladger.reminder.PlannedTransactionNotifier
 import work.spyglee.ladger.scan.ReceiptScanner
 
-/** App-wide dependencies, created once in [LadgerApp]. */
-class AppContainer(context: Context, val database: LadgerDatabase = LadgerDatabase.build(context)) {
+/** App-wide dependencies, created once in [LadgerApp]. Tests can pass their own [database] and [settingsStore]. */
+class AppContainer(
+    context: Context,
+    val database: LadgerDatabase = LadgerDatabase.build(context),
+    settingsStore: DataStore<Preferences> = context.settingsDataStore,
+) {
     val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    val settings = SettingsRepository(context.settingsDataStore)
+    val settings = SettingsRepository(settingsStore)
     val merchants = MerchantRepository(database.merchantCategoryDao())
     val collections = CollectionRepository(database)
     val csv = CsvRepository(database)

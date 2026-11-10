@@ -208,7 +208,7 @@ class MainActivity : FragmentActivity() {
     }
 
     /**
-     * Debug builds only: `adb shell am start -S -n work.spyglee.ladger/.MainActivity --ez show_reminder true`.
+     * Debug builds only: `adb shell am start -S -n work.spyglee.ledger/work.spyglee.ladger.MainActivity --ez show_reminder true`.
      * Without `-S` a running app is just brought to the front and the extra never arrives.
      */
     private fun handleDebugIntent(intent: Intent?) {

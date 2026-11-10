@@ -122,7 +122,7 @@ won't notice them, but anyone comparing the two apps will.
 |---|---|---|
 | Planned transactions | Recorded when the app is next opened. Notifications are scheduled in advance, so "has been recorded" can arrive days before the transaction exists. | An alarm at the due time **records the transaction in the background**, then notifies. Also caught up when the app opens. |
 | Daily reminder budget hint | Fixed when the reminder is scheduled, can be out of date | Worked out when the reminder goes off |
-| Timing | Exact | Inexact alarms (no exact-alarm permission), so Android may deliver "around 20:30" when the phone is idle |
+| Timing | Exact | Exact once the user allows exact alarms (D10). Android 14+ asks once, when a plan is saved or the reminder turned on; without the permission, alarms stay inexact and may arrive a little late while the phone is idle. |
 | After restart, update, clock or time-zone change | Handled by the system | The app sets its alarms again |
 | While the app is open | Reminder and planned notifications are hidden; the budget alert shows as a banner | All are shown. A budget alert replaces the previous one for that budget. |
 | Asking for permission | After saving a budget or plan | Before saving, then saves |
@@ -170,7 +170,7 @@ budgets) on and off separately in system settings.
 - iOS: English, Croatian, Ukrainian and (since `8a76b5d`) **Polish**. Users can pick a language per app.
 - Android: the same four (Polish since part 1), generated from the iOS catalog by `tools/sync-ios-strings.ps1`.
   - Android follows the phone's language; there is no per-app language choice yet (D8).
-  - 21 Android-only strings were translated without a native speaker, in all three languages besides English
+  - 26 Android-only strings were translated without a native speaker, in all three languages besides English
     ([translations-to-review.md](translations-to-review.md)).
   - The Siri texts in the catalog are generated too but unused, since Android has no Siri (D3).
 

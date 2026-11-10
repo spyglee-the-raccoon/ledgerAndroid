@@ -21,8 +21,9 @@ import work.spyglee.ladger.domain.Budgets
 import work.spyglee.ladger.ui.formatMoney
 
 /**
- * The daily reminder notification. It is scheduled one day at a time with an inexact alarm, which
- * needs no exact-alarm permission; [ReminderReceiver] shows it and schedules the next one.
+ * The daily reminder notification. It is scheduled one day at a time, with an exact alarm when the
+ * user allows them and an inexact one otherwise ([ExactAlarms], D10); [ReminderReceiver] shows it and
+ * schedules the next one.
  */
 class DailyReminder(context: Context) {
     private val context = context.applicationContext
@@ -31,7 +32,7 @@ class DailyReminder(context: Context) {
     /** Schedules the next reminder, replacing any pending one. */
     fun schedule(now: ZonedDateTime = ZonedDateTime.now()) {
         val trigger = ReminderSchedule.nextTrigger(now).toInstant().toEpochMilli()
-        alarmManager.setWindow(AlarmManager.RTC_WAKEUP, trigger, WINDOW.toMillis(), alarmIntent())
+        alarmManager.setAt(context, trigger, WINDOW, alarmIntent())
     }
 
     fun cancel() {
@@ -93,7 +94,7 @@ class DailyReminder(context: Context) {
         const val CHANNEL_ID = "daily_reminder"
         const val NOTIFICATION_ID = 1
 
-        /** How late the system may deliver the reminder, so it can batch it with other alarms. */
+        /** Without exact alarms: how late the system may deliver the reminder, so it can batch it with other alarms. */
         val WINDOW: Duration = Duration.ofMinutes(10)
     }
 }

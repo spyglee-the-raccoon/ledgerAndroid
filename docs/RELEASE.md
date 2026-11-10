@@ -63,6 +63,7 @@ The app is local-only and has **no INTERNET permission** (libraries that request
 | `CAMERA` | Photographing receipts; requested when "Scan your receipt" is tapped. |
 | `POST_NOTIFICATIONS` | The optional daily reminder at 20:30, "planned transaction performed" and "budget limit reached"; requested when the reminder is turned on or a plan or budget is saved. |
 | `RECEIVE_BOOT_COMPLETED` | Scheduling the reminder again after a restart. |
+| `SCHEDULE_EXACT_ALARM` | Recording planned transactions and showing the daily reminder at the time the user set (decision D10). From Android 14 the user allows it in system settings; without it the alarms stay inexact. Not `USE_EXACT_ALARM`, which Play keeps for alarm-clock and calendar apps. **Before release:** check the Play Console rules for exact-alarm permissions (Play Console help, answer 12253906). |
 | `USE_BIOMETRIC` | The optional app lock. |
 | `BIND_SERVICE` (AICore) | Talking to Gemini Nano on the device, if the phone has it. |
 

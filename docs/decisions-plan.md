@@ -122,25 +122,37 @@ the old app and an import into the new one; this loses receipt photos. Then unin
 The app switcher stays as it is (decided).
 
 ## 4. Exact alarms (D10)
-**Changes**
-- Manifest: `SCHEDULE_EXACT_ALARM`. Not `USE_EXACT_ALARM`, which Play keeps for alarm-clock and calendar apps.
-- `reminder/PlannedTransactionNotifier.kt` and `reminder/DailyReminder.kt`: use `setExactAndAllowWhileIdle` when
-  exact alarms are allowed (always below Android 12; on 12+ when `canScheduleExactAlarms()` is true), and
-  `setWindow` as now otherwise.
-  - D10 is about planned transactions. Doing the same for the daily reminder is my reading of "and reminders" in
-    its title, since the timing row in part 2 covers both. Say if only planned transactions should change.
-- Asking: after the notification permission, when a plan is saved or the reminder is turned on, show a short
-  explanation and open `ACTION_REQUEST_SCHEDULE_EXACT_ALARM`. That page counts as one of our own (PR 3).
-  Settings shows whether exact timing is on, with a button to turn it on.
-- `reminder/ReminderReceivers.kt`: also listen for `ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED`, and
-  set the alarms again.
-- The new strings are Android-only. They go on the list for translators, which the iOS developer sends (D14).
-- Docs: the timing row in part 2 of the decisions doc, and `docs/RELEASE.md`.
+**Done**, branch `exact-alarms`.
+
+**What was built**
+- Manifest: `SCHEDULE_EXACT_ALARM`, not `USE_EXACT_ALARM`, which Play keeps for alarm-clock and calendar apps.
+- `reminder/ExactAlarms.kt`: the planned-transaction alarm and the daily reminder use
+  `setExactAndAllowWhileIdle` when exact alarms are allowed, and `setWindow` as before otherwise.
+  - "Allowed" means always below Android 12; Android 12 and 13 grant it on install; Android 14+ asks.
+- **Asking, once:** right after the notification permission, when a plan is saved or the reminder is turned on.
+  - "Allow" and "Not now" both go ahead with the save straight away; "Allow" then opens the system page.
+  - The answer is remembered (`didAskExactAlarms`), so the app doesn't ask again.
+  - The system page counts as one of the app's own pages for the app lock (D5).
+- **Settings** shows "Allow exact timing" for as long as exact alarms are off.
+- When the user allows them, Android tells the app (`ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED`),
+  and `ReminderRescheduleReceiver` sets both alarms again, exact.
+  - When the user takes the permission back, Android stops the app. The alarms become inexact again on its
+    next start.
+- `AppContainer` can take its own settings store, so UI tests no longer share the app's settings.
+- Five new Android-only strings, added to translations-to-review.md for the iOS developer to send (D14).
+
+**Tested**
+- On the Android 14 emulator, where exact alarms are off for a new install:
+  - Settings showed the row. Turning the reminder on asked; "Allow" opened the system page.
+  - After allowing there, the row went away, and the reminder alarm was set again as exact (`window=0`,
+    `exactAllowReason=permission`).
+  - After taking it back, Android stopped the app. On the next start the alarm was inexact again (10-minute
+    window), and the row was back.
+- `PlannedTransactionsFlowTest` answers the question with "Not now" and checks that the plan is saved anyway.
+- 169 unit tests and 36 instrumented tests pass.
+- Not checked: timing while a real phone sits idle for a long time. That's for the phone session.
 
 **Before release:** check the Play Console rules for exact-alarm permissions (help article 12253906).
-
-**Test:** a unit test for picking exact or inexact. On the emulator: `adb shell cmd appops set work.spyglee.ledger
-SCHEDULE_EXACT_ALARM deny` (then `allow`), and check that a plan due in two minutes is recorded on time.
 
 ## 5. Per-app language (D8)
 **Changes**

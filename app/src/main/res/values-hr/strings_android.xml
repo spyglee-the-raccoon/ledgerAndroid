@@ -22,4 +22,10 @@
     <string name="next_month">Sljedeći mjesec</string>
     <string name="increase">Povećaj</string>
     <string name="decrease">Smanji</string>
+    <!-- Exact alarms for planned transactions and the reminder (D10). -->
+    <string name="exact_alarms_title">Točno vrijeme</string>
+    <string name="exact_alarms_message">Dopustite Ledgeru korištenje alarma kako bi se planirane transakcije bilježile, a podsjetnici stizali točno na vrijeme. Bez toga mogu kasniti nekoliko minuta.</string>
+    <string name="exact_alarms_allow">Dopusti</string>
+    <string name="not_now">Ne sada</string>
+    <string name="allow_exact_alarms">Dopusti točno vrijeme</string>
 </resources>

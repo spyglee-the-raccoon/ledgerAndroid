@@ -22,8 +22,9 @@ import work.spyglee.ladger.data.TransactionKind
 import work.spyglee.ladger.ui.formatMoney
 
 /**
- * Records planned transactions when they fall due, also while the app is closed: an inexact alarm
- * goes off at the earliest due occurrence, and [PlannedTransactionReceiver] records it and shows
+ * Records planned transactions when they fall due, also while the app is closed: an alarm goes off at
+ * the earliest due occurrence (exact when the user allows it, [ExactAlarms], D10), and
+ * [PlannedTransactionReceiver] records it and shows
  * "Planned transaction performed". iOS schedules only the notifications and records the transactions
  * the next time the app opens.
  */
@@ -35,7 +36,7 @@ class PlannedTransactionNotifier(
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
     override fun schedule(at: Instant) {
-        alarmManager.setWindow(AlarmManager.RTC_WAKEUP, at.toEpochMilli(), WINDOW.toMillis(), alarmIntent())
+        alarmManager.setAt(context, at.toEpochMilli(), WINDOW, alarmIntent())
     }
 
     override fun cancel() {
@@ -86,7 +87,7 @@ class PlannedTransactionNotifier(
         const val CHANNEL_ID = "planned_transactions"
         const val NOTIFICATION_TAG = "planned_transaction"
 
-        /** How late the system may record a due transaction, so it can batch the alarm with others. */
+        /** Without exact alarms: how late the system may record a due transaction, so it can batch the alarm with others. */
         val WINDOW: Duration = Duration.ofMinutes(10)
     }
 }

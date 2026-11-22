@@ -269,6 +269,8 @@ wording) go to the iOS developer for translators.
 - `ui/transactions/TransactionEditorViewModel.kt`: `_scannedPhotos` is already a list, and
   `ReceiptRepository.attach` already stores pages in order. Read each page and join the text in page order
   before parsing, as for a PDF. The page limit is the same as for PDFs.
+  - Since the `1748a53` sync, `scan/ReceiptTextRecognizer.read` does this for shared files: each page becomes
+    a stored photo and its text, and the editor shows all the pages. The camera's pages can reuse it.
 - Tests: joining the pages' text (unit). The camera isn't covered by tests; check it by hand on the phone.
 
 ## 10. Cyrillic OCR (D9)

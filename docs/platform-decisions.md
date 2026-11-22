@@ -23,9 +23,10 @@ Each decision in part 3 has the options, an **Android proposal** (a starting poi
 | iOS commit | Date | What it added | Android |
 |---|---|---|---|
 | up to `f909b82` | until 21 Oct | everything up to planned transactions and list search | **done**, on `main` |
-| `46702e5` | 28 Oct | budgets, receipt items and photos, price comparison, Sources renamed to Accounts | **ported**, branch `sync-ios-46702e5`; tested on the emulator and a phone; pull request not opened yet |
-| `8a76b5d` | 30 Oct | "Bells and whistles": widgets, Siri, quick actions, Pro subscription, CSV for all data, editing receipt items, Polish | **part 1 done**, branch `sync-ios-8a76b5d-part1`: everything that needs no decision |
-| `fa64623` | 3 Nov | cleanup: StoreKit test setup, privacy manifest, login stubs removed, version 1.0, medium chart widget | **not started**: everything in it waits for a decision, except the login removal, which Android doesn't need |
+| `46702e5` | 28 Oct | budgets, receipt items and photos, price comparison, Sources renamed to Accounts | **done**, on `main` (pull request #2); tested on the emulator and a phone |
+| `8a76b5d` | 30 Oct | "Bells and whistles": widgets, Siri, quick actions, Pro subscription, CSV for all data, editing receipt items, Polish | **part 1 done**, on `main` (pull request #3): everything that needs no decision. The rest follows [decisions-plan.md](decisions-plan.md). |
+| `fa64623` | 3 Nov | cleanup: StoreKit test setup, privacy manifest, login stubs removed, version 1.0, medium chart widget | follows [decisions-plan.md](decisions-plan.md); the login removal needs nothing on Android |
+| `1748a53` | 10 Nov | a shared photo or PDF is saved with the transaction, like scanned pages; the StoreKit test file's format | **done**, branch `sync-ios-1748a53`. The StoreKit file needs nothing (same prices and trials). |
 
 Those two commits change 74 files (+8,300 lines). About 1,600 lines are demo CSV data and 2,600 are the string
 catalog, which leaves about 4,000 lines of code, 1,400 of them tests. After part 1, what's left are the features
@@ -92,7 +93,7 @@ won't notice them, but anyone comparing the two apps will.
 | Text recognition | Apple Vision, which also reads Cyrillic | ML Kit, built into the app, **Latin letters only**. Ukrainian words such as "СУМА" aren't read; amounts and dates are. |
 | AI reading (merchant, total, category, items) | Apple Intelligence (Foundation Models); the output is forced into a schema | Gemini Nano through Android's AICore, on few phones so far. Plain-text answers parsed leniently, with time limits. |
 | Without on-device AI | Rules parser: total, date, time, merchant; no items | Same |
-| Sharing a photo or PDF into the app | Share extension reads it, then opens the app with the text | The app itself receives the share and reads it |
+| Sharing a photo or PDF into the app | Share extension reads it and leaves its pages in the app group, then opens the app with the text | The app itself receives the share and reads it |
 
 - Android avoided Google's ready-made document scanner because it runs in Play services. With its own camera,
   photos never leave the app.
@@ -101,7 +102,11 @@ won't notice them, but anyone comparing the two apps will.
 - Android's parser has two extras:
   - It reads a 0 touching letters as "O" ("UKUPN0").
   - It knows a few more tax words.
-- On both, a shared file is only read and isn't stored; a scanned photo is kept with its transaction.
+- On both, a scanned photo is kept with its transaction. Since iOS `1748a53`, so is a shared photo or PDF:
+  - the photo, or each PDF page read (up to five), stored like a scanned page: at most 1,600 px on its longest
+    side, JPEG quality 60;
+  - the pages are kept even when no text can be read; the form then just isn't filled in;
+  - Android turns a shared photo upright from its EXIF orientation, as iOS does.
 - Editing receipt items (part 1) works the same, with one small difference: iOS starts a new item at a total of 0,
   so it can be saved with just a name. Android leaves the total empty until a unit price or total is typed, and
   Save waits for it.

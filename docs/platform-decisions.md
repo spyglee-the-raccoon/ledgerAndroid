@@ -38,7 +38,7 @@ that wait for a decision: widgets, Siri, the Pro subscription and version 1.0.
 |---|---|---|---|
 | **Widgets**: month chart (small + medium), budget (medium), 3 latest transactions (medium) | L | D4, D5 | **done** since D4 |
 | **Siri and Shortcuts**: log a transaction; ask what's left of the budget, the month's spending, an account balance | L | D3 | waiting |
-| **Pro subscription**: the four statistics screens need Pro (€2.99 a month or €29.99 a year, 1-week free trial) | L | D1 | waiting |
+| **Pro subscription**: the four statistics screens need Pro (€2.99 a month or €29.99 a year, 1-week free trial) | L | D1 | **code ready**, branch `pro-subscription`; testing with Google Play waits for the Play Console |
 | **CSV for all data**: categories, budgets, collections and receipt items are now exported; the importer works out the file type from its header and also imports accounts and planned transactions | L | (D12) | **done** in part 1 |
 | **Editing receipt items**: tap an item to fix it, add or remove items; total = quantity × unit price unless changed | M | none | **done** in part 1 |
 | **Budget alert at most once a month**: it no longer comes back when spending drops under the limit and rises again; editing a budget re-arms it | S | none | **done** in part 1 |
@@ -46,7 +46,7 @@ that wait for a decision: widgets, Siri, the Pro subscription and version 1.0.
 | **Polish** translation | M | (D8) | **done** in part 1; per-app language done since D8 |
 | **New app icon** | S | none | **done** in part 1 (`tools/make-icons.py`) |
 | **Version 1.0** | S | D7 | waiting |
-| **Privacy manifest** ("no data collected"), which on Android means the Play Data safety form | S | D1 | waiting |
+| **Privacy manifest** ("no data collected"), which on Android means the Play Data safety form | S | D1 | answers drafted in [RELEASE.md](RELEASE.md); filled in once the Play Console exists |
 | **Demo data**: `DemoData/generate.py` writes a year of data as CSV files | S | (D12) | **done** in part 1, as Android test data |
 | **New iOS tests** (budgets, CSV, model logic, recurrence) | M | none | **done** in part 1, ported to Android tests |
 | Login and sign-up screens removed | none | none | nothing to do; Android never had them |
@@ -144,7 +144,7 @@ budgets) on and off separately in system settings.
 | Receipt photos | Inside the database | JPEG files in the app's private folder |
 | Backup | **Included** in iCloud/computer backups and iPhone-to-iPhone transfer | **Included** since D2: in Google backup, only when encrypted end to end with the screen lock (Android 9+), and in phone-to-phone transfer. Google backup stops above 25 MB. Android 8: none. |
 | Moving to a new phone | Automatic | Automatic with Android's phone-to-phone transfer or a Google backup, photos included. CSV still works but loses photos and learned merchant categories. |
-| Network | None (purchases go through the App Store) | **No INTERNET permission at all**, so the app itself sends nothing. Android's backup and transfer (D2) are the only way data leaves the phone. |
+| Network | None (purchases go through the App Store) | **No INTERNET permission at all**, so the app itself sends nothing; Ledger Pro's purchases go through the Play Store app. Android's backup and transfer (D2) are the only way data leaves the phone. |
 
 ### CSV
 - The format is identical, and files go both ways. Since part 1, Android reads and writes all 11 files like iOS
@@ -166,6 +166,20 @@ The same three as iOS (since D4).
 | With the app lock on | Everything shows (#16) | No amounts or notes (D5): a lock instead of the balance, budget name and bar only, transactions without amount and note |
 | Tapping | `ladger://` links to main, budgeting, accounts | The same screens, after unlocking, like the app icon shortcuts |
 | In the widget picker | Previews with sample data | The app icon, name and description; no preview yet |
+
+### Ledger Pro
+The same products, prices, trial and locked screens (D1). Code ready; testing with Google Play waits for the
+Play Console.
+
+| | iOS | Android |
+|---|---|---|
+| Paywall | Apple's ready-made subscription store | Its own screen: the iOS icon, title and text, both plans with Google Play's prices and trial, restore, terms and privacy |
+| While checking at launch | Locked until StoreKit answers | The last answer, kept outside the backup; a restored phone asks Google Play afresh |
+| Switching monthly ↔ yearly | Inside the app, within the subscription group | Cancel in Google Play, then subscribe again; not in the app yet |
+| Manage or cancel | The system's subscription settings | Also a "Manage subscription" row in Settings, which opens Google Play |
+| Checking a purchase | StoreKit's verified transactions | Google Play's signature, checked with the app's licence key |
+| Trying it without the store | `Ledger.storekit` | Debug builds use a stand-in store with the same products |
+| Network | None | None: the Play Store app does the network part |
 
 ### Look and navigation
 - **Material 3, not an iOS look-alike.**
@@ -191,7 +205,7 @@ The same three as iOS (since D4).
     Before Android 13, Ledger follows the phone's language.
   - Amounts keep the phone's region, and so its currency, when Ledger has a language without a region,
     as iOS does. Android 14's picker usually asks for a region too, and then that region's currency is used.
-  - 26 Android-only strings were translated without a native speaker, in all three languages besides English
+  - 43 Android-only strings were translated without a native speaker, in all three languages besides English
     ([translations-to-review.md](translations-to-review.md)).
   - The Siri texts in the catalog are generated too but unused, since Android has no Siri (D3).
 
@@ -282,6 +296,12 @@ only network use is Google Play billing.
 - Same product IDs, prices, 1-week trial and locked statistics screens as iOS.
 - A subscription bought on one platform doesn't unlock the other. Accepted.
 - Android remembers the last Pro status, so the statistics don't look locked while the check runs.
+
+**Found while implementing (23 November 2026):** Play Billing Library 9.1 declares no network permission itself.
+Only its usage logging does (`datatransport`, the same library as ML Kit's), and the manifest already removes
+that. Purchases go through the Play Store app. So Android keeps **no INTERNET permission** for now, and the
+"no internet" promise still holds. This is to confirm with the first real test purchase. If purchases need the
+permission after all, Android falls back to the decision as written.
 
 ### D2. Backup, moving to a new phone, and iCloud sync later
 **Context.**

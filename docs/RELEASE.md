@@ -55,7 +55,11 @@ The app is local-only and has **no INTERNET permission** (libraries that request
   Android's AICore service where available). Since iOS `46702e5` a photo taken with "Scan your receipt" is
   kept with its transaction (a 1600 px JPEG in the app's private `files/receipts`, backed up with the
   database), with the products read from it; nothing is sent to us, so it still isn't "collected".
-  Shared images and PDFs are only read, not stored.
+  Since iOS `1748a53` a shared image or PDF is kept the same way.
+- Ledger Pro (decision D1) is bought through Google Play. The app only learns from the Play Store app whether
+  the user has an active subscription, keeps that on the phone, and sends nothing anywhere: the app still has no
+  INTERNET permission. **Check before submitting** how Play's Data safety help treats purchase history read
+  through Play Billing; nothing about it leaves the phone, so we expect "not collected".
 
 ## 5. Permissions (for review questions)
 | Permission | Why |
@@ -65,9 +69,28 @@ The app is local-only and has **no INTERNET permission** (libraries that request
 | `RECEIVE_BOOT_COMPLETED` | Scheduling the reminder again after a restart. |
 | `SCHEDULE_EXACT_ALARM` | Recording planned transactions and showing the daily reminder at the time the user set (decision D10). From Android 14 the user allows it in system settings; without it the alarms stay inexact. Not `USE_EXACT_ALARM`, which Play keeps for alarm-clock and calendar apps. **Before release:** check the Play Console rules for exact-alarm permissions (Play Console help, answer 12253906). |
 | `USE_BIOMETRIC` | The optional app lock. |
+| `com.android.vending.BILLING` | Ledger Pro, bought through Google Play (decision D1); added by Play Billing. |
 | `BIND_SERVICE` (AICore) | Talking to Gemini Nano on the device, if the phone has it. |
 
 ## 6. Store listing assets
 - Icon: `app/src/main/ic_launcher-playstore.png` (512 × 512), generated with the launcher icons by
   `tools/make-icons.py` from the iOS icon.
 - Screenshots and feature graphic: still to make.
+
+## 7. Ledger Pro (Google Play Billing)
+The subscriptions and their prices live in Play Console (`work.spyglee.ledger.pro.monthly` and `.yearly`, the iOS
+product IDs). Play Console only offers subscriptions after a build that contains Play Billing has been uploaded.
+
+- **Licence key.** Play Console → Monetize with Play → Monetization setup → Licensing has the app's public key.
+  Put it in `gradle.properties` as `ledger.playLicenseKey=MIIB...`. It isn't secret. With it, the app accepts
+  only purchases signed by Google Play. Without it, purchases are taken as Play reports them, so set it before
+  the first release.
+- **Debug builds** sell Pro through a stand-in store (`FakeStore`), with the same products and trial. Buying
+  succeeds at once and "Manage subscription" cancels. That's for trying the paywall without Play.
+- **Testing with Google Play.** Add the tester's Google account under Play Console → Settings → License testing.
+  Install a debug build made with `./gradlew installDebug -Pledger.playBilling=true` on a phone signed in with
+  that account. License testers can use sideloaded debug builds, and their purchases are free. Test renewals are
+  fast: a trial lasts 3 minutes, a month 5 minutes and a year 30, and a subscription ends after six renewals.
+- **Before each release**, check the APK's permissions (`aapt dump permissions`). `INTERNET` and
+  `ACCESS_NETWORK_STATE` must stay absent. Play Billing's usage logging asks for them, and the manifest removes
+  them as for ML Kit.

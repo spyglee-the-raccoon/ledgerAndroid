@@ -5,7 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
@@ -32,6 +34,8 @@ import work.spyglee.ladger.ui.settings.SettingsScreen
 import work.spyglee.ladger.ui.settings.SourceEditorScreen
 import work.spyglee.ladger.ui.settings.SourcesScreen
 import work.spyglee.ladger.ui.sources.SourcesOverviewScreen
+import work.spyglee.ladger.ui.pro.PaywallScreen
+import work.spyglee.ladger.ui.pro.ProGate
 import work.spyglee.ladger.ui.stats.IncomeExpenseScreen
 import work.spyglee.ladger.ui.stats.PriceComparisonScreen
 import work.spyglee.ladger.ui.stats.PriceHistoryScreen
@@ -55,6 +59,7 @@ private object Routes {
     const val TOP_CATEGORIES = "stats/top_categories"
     const val PRICE_COMPARISON = "stats/price_comparison"
     const val PRICE_HISTORY = "stats/price_history/{key}"
+    const val PAYWALL = "paywall"
     const val TRANSACTION_EDITOR = "transaction?id={id}&kind={kind}&receipt={receipt}&scan={scan}"
     const val TRANSACTION_LIST = "transactions/{filter}?sourceId={sourceId}"
     const val CATEGORY_EDITOR = "category?id={id}"
@@ -204,16 +209,24 @@ fun LadgerNavHost(
                 onOpenSavings = { navController.navigate(Routes.SAVINGS) },
                 onOpenTopCategories = { navController.navigate(Routes.TOP_CATEGORIES) },
                 onOpenPriceComparison = { navController.navigate(Routes.PRICE_COMPARISON) },
+                onOpenPaywall = { navController.navigate(Routes.PAYWALL) },
             )
         }
+        readableComposable(Routes.PAYWALL) {
+            // As on iOS, the paywall closes once the purchase unlocks the statistics.
+            val isPro by LocalAppContainer.current.subscriptions.isPro.collectAsStateWithLifecycle()
+            LaunchedEffect(isPro) { if (isPro) back() }
+            PaywallScreen(onClose = back)
+        }
+        // The statistics need Ledger Pro (D1); the paywall takes their place without it.
         readableComposable(Routes.INCOME_EXPENSE) {
-            IncomeExpenseScreen(onBack = back)
+            ProGate(onClose = back) { IncomeExpenseScreen(onBack = back) }
         }
         readableComposable(Routes.SAVINGS) {
-            SavingsScreen(onBack = back, onOpenTransaction = openTransaction, onOpenCollection = openCollection)
+            ProGate(onClose = back) { SavingsScreen(onBack = back, onOpenTransaction = openTransaction, onOpenCollection = openCollection) }
         }
         readableComposable(Routes.TOP_CATEGORIES) {
-            TopCategoriesScreen(onBack = back)
+            ProGate(onClose = back) { TopCategoriesScreen(onBack = back) }
         }
         readableComposable(Routes.CATEGORIES) {
             CategoriesScreen(
@@ -276,10 +289,12 @@ fun LadgerNavHost(
             BudgetEditorScreen(budgetId = entry.optionalId(), onDone = back)
         }
         readableComposable(Routes.PRICE_COMPARISON) {
-            PriceComparisonScreen(onBack = back, onOpenHistory = { navController.navigate(Routes.priceHistory(it)) })
+            ProGate(onClose = back) {
+                PriceComparisonScreen(onBack = back, onOpenHistory = { navController.navigate(Routes.priceHistory(it)) })
+            }
         }
         readableComposable(Routes.PRICE_HISTORY, arguments = listOf(navArgument("key") { type = NavType.StringType })) { entry ->
-            PriceHistoryScreen(key = entry.arguments?.getString("key").orEmpty(), onBack = back)
+            ProGate(onClose = back) { PriceHistoryScreen(key = entry.arguments?.getString("key").orEmpty(), onBack = back) }
         }
     }
 }

@@ -27,6 +27,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import work.spyglee.ladger.AppContainer
 import work.spyglee.ladger.R
+import work.spyglee.ladger.billing.FakeStore
+import work.spyglee.ladger.billing.MemoryProCache
+import work.spyglee.ladger.billing.Pro
 import work.spyglee.ladger.data.Category
 import work.spyglee.ladger.data.LadgerDatabase
 import work.spyglee.ladger.data.Source
@@ -62,7 +65,8 @@ class StatisticsFlowTest {
                 )
             }
         }
-        val container = AppContainer(context, database)
+        // The statistics need Ledger Pro (D1); ProFlowTest covers the paywall.
+        val container = AppContainer(context, database, store = FakeStore(initialSubscription = Pro.MONTHLY), proCache = MemoryProCache(Pro.MONTHLY))
         compose.setContent {
             CompositionLocalProvider(LocalAppContainer provides container) {
                 LadgerTheme { LadgerNavHost() }

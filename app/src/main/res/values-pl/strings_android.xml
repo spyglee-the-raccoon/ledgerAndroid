@@ -30,4 +30,36 @@
     <string name="allow_exact_alarms">Zezwól na dokładny czas</string>
     <!-- Widgets with the app lock on (D5): read out instead of the hidden amounts. -->
     <string name="widget_locked">Ukryte, gdy blokada aplikacji jest włączona</string>
+    <!-- Ledger Pro (decision D1): the paywall and "Manage subscription". -->
+    <string name="pro_price_per_month">%1$s miesięcznie</string>
+    <string name="pro_price_per_year">%1$s rocznie</string>
+    <string name="pro_subscribe">Subskrybuj</string>
+    <string name="pro_renewal_note">Odnawia się automatycznie, dopóki nie anulujesz jej w Google Play.</string>
+    <string name="pro_restore">Przywróć zakupy</string>
+    <string name="pro_restore_none">Nie znaleziono subskrypcji dla tego konta Google.</string>
+    <string name="pro_terms">Warunki korzystania</string>
+    <string name="pro_privacy">Polityka prywatności</string>
+    <string name="pro_unavailable">Subskrypcje są teraz niedostępne. Sprawdź, czy Google Play jest zainstalowany i czy jesteś zalogowany.</string>
+    <string name="pro_try_again">Spróbuj ponownie</string>
+    <string name="pro_pending">Płatność jest przetwarzana. Statystyki odblokują się, gdy Google Play ją potwierdzi.</string>
+    <string name="pro_failed">Zakup się nie powiódł. Spróbuj ponownie.</string>
+    <string name="pro_manage">Zarządzaj subskrypcją</string>
+    <plurals name="pro_free_trial_days">
+        <item quantity="one">%d dzień za darmo</item>
+        <item quantity="few">%d dni za darmo</item>
+        <item quantity="many">%d dni za darmo</item>
+        <item quantity="other">%d dnia za darmo</item>
+    </plurals>
+    <plurals name="pro_free_trial_weeks">
+        <item quantity="one">%d tydzień za darmo</item>
+        <item quantity="few">%d tygodnie za darmo</item>
+        <item quantity="many">%d tygodni za darmo</item>
+        <item quantity="other">%d tygodnia za darmo</item>
+    </plurals>
+    <plurals name="pro_free_trial_months">
+        <item quantity="one">%d miesiąc za darmo</item>
+        <item quantity="few">%d miesiące za darmo</item>
+        <item quantity="many">%d miesięcy za darmo</item>
+        <item quantity="other">%d miesiąca za darmo</item>
+    </plurals>
 </resources>

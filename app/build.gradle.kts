@@ -21,6 +21,11 @@ android {
         versionName = "0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // The app's public licence key from Play Console (Monetize with Play → Monetization setup), to check
+        // that purchases were signed by Google Play. Not a secret; set it in gradle.properties before release.
+        val playLicenseKey = providers.gradleProperty("ledger.playLicenseKey").getOrElse("")
+        buildConfigField("String", "PLAY_LICENSE_KEY", "\"$playLicenseKey\"")
     }
 
     // Release signing comes from keystore.properties in the project root (not in git), with
@@ -40,6 +45,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Debug builds sell Ledger Pro through a stand-in store until the app exists in Play Console;
+            // `-Pledger.playBilling=true` uses Google Play instead (needs a license tester account).
+            val playBilling = providers.gradleProperty("ledger.playBilling").getOrElse("false").toBoolean()
+            buildConfigField("boolean", "PLAY_BILLING", "$playBilling")
+        }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
@@ -87,6 +98,8 @@ dependencies {
     implementation(libs.androidx.camera.view)
     // EXIF rotation of shared receipt images.
     implementation(libs.androidx.exifinterface)
+    // Google Play Billing for Ledger Pro (decision D1).
+    implementation(libs.billing.ktx)
     // Bundled model: OCR runs in the app's process, with nothing downloaded or sent anywhere.
     implementation(libs.mlkit.text.recognition)
     // Gemini Nano through the AICore system service; used only when already on the device.

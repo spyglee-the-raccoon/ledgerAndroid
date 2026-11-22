@@ -140,6 +140,8 @@ class MainActivity : FragmentActivity() {
             container.plannedTransactions.recordDue()
             container.budgets.check()
         }
+        // Ledger Pro may have been bought, renewed or cancelled meanwhile (D1).
+        container.subscriptions.refreshInBackground()
     }
 
     override fun onResume() {

@@ -35,7 +35,11 @@ class ReceiptScanner(context: Context) {
         File(cacheDir, "last-receipt.jpg").outputStream().use { bitmap.compress(Bitmap.CompressFormat.JPEG, 90, it) }
     }
 
-    suspend fun recognize(uri: Uri): String = recognizer.recognize(uri)
+    /**
+     * A receipt image or PDF shared from another app: its text, and its pages (up to five for a PDF)
+     * stored like scanned ones, as iOS does since `1748a53`.
+     */
+    suspend fun read(uri: Uri): ScannedReceipt = recognizer.read(uri, ::photoData)
 
     /**
      * The photo as stored with the transaction: at most [MAX_PHOTO_SIDE] px on its longest side and

@@ -9,6 +9,7 @@ import java.io.File
 import java.time.Instant
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +29,7 @@ import work.spyglee.ladger.domain.SourceSuggestion
 import work.spyglee.ladger.domain.TransactionDraft
 import work.spyglee.ladger.domain.receipt.ParsedReceiptItem
 import work.spyglee.ladger.domain.receipt.withReceipt
+import work.spyglee.ladger.scan.ScannedReceipt
 
 class TransactionEditorViewModel(
     private val container: AppContainer,
@@ -60,7 +62,7 @@ class TransactionEditorViewModel(
     /** The merchant of the last scanned receipt; its category and source are remembered on save. */
     private var scannedMerchant: String? = null
 
-    /** The scanned page (JPEG), saved with a new transaction. */
+    /** The scanned or shared pages (JPEG), saved with a new transaction. */
     private val _scannedPhotos = MutableStateFlow<List<ByteArray>>(emptyList())
     val scannedPhotos: StateFlow<List<ByteArray>> = _scannedPhotos.asStateFlow()
 
@@ -97,7 +99,7 @@ class TransactionEditorViewModel(
                 suggestSources()
             }
         }
-        sharedReceipt?.let { uri -> scan { container.receipts.recognize(uri) } }
+        sharedReceipt?.let { uri -> scan { container.receipts.read(uri) } }
     }
 
     fun setAmountText(text: String) {
@@ -123,7 +125,12 @@ class TransactionEditorViewModel(
     }
 
     /** Reads the photo and keeps a smaller copy of it to save with the transaction, as iOS keeps scanned pages. */
-    fun onPhotoConfirmed(photo: Bitmap) = scan(photo) { container.receipts.recognize(photo) }
+    fun onPhotoConfirmed(photo: Bitmap) = scan {
+        coroutineScope {
+            val page = async { container.receipts.photoData(photo) }
+            ScannedReceipt(container.receipts.recognize(photo), listOf(page.await()))
+        }
+    }
 
     /** Saves the item editor: replaces the item with [key], or adds a new one when [key] is null. */
     fun saveItem(key: Long?, item: ParsedReceiptItem) {
@@ -141,19 +148,19 @@ class TransactionEditorViewModel(
     private fun editable(item: ParsedReceiptItem) = EditableReceiptItem(nextItemKey++, item)
 
     /**
-     * Shows "parsing" right away, then fills the form from the recognized text, as iOS's parseText does.
-     * The products are read afterwards in their own request while the form can already be edited.
-     * A [photo] is meanwhile made into the page saved with the transaction.
+     * Shows "parsing" right away, then shows the receipt's pages and fills the form from its text, as
+     * iOS's parseText does. The pages stay even when there's no text, as on iOS since `1748a53`. The
+     * products are read afterwards in their own request while the form can already be edited.
      */
-    private fun scan(photo: Bitmap? = null, recognize: suspend () -> String) {
+    private fun scan(read: suspend () -> ScannedReceipt) {
         _isParsing.value = true
         _isRecognizingItems.value = true
         _scannedPhotos.value = emptyList()
         viewModelScope.launch {
-            val page = photo?.let { async { container.receipts.photoData(it) } }
             try {
-                readReceipt(recognize())
-                page?.let { _scannedPhotos.value = listOf(it.await()) }
+                val receipt = read()
+                _scannedPhotos.value = receipt.pages
+                readReceipt(receipt.text)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {

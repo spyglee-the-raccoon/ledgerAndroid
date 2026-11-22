@@ -85,6 +85,8 @@ dependencies {
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
+    // EXIF rotation of shared receipt images.
+    implementation(libs.androidx.exifinterface)
     // Bundled model: OCR runs in the app's process, with nothing downloaded or sent anywhere.
     implementation(libs.mlkit.text.recognition)
     // Gemini Nano through the AICore system service; used only when already on the device.

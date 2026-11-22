@@ -28,4 +28,6 @@
     <string name="exact_alarms_allow">Dopusti</string>
     <string name="not_now">Ne sada</string>
     <string name="allow_exact_alarms">Dopusti točno vrijeme</string>
+    <!-- Widgets with the app lock on (D5): read out instead of the hidden amounts. -->
+    <string name="widget_locked">Skriveno dok je uključeno zaključavanje aplikacije</string>
 </resources>

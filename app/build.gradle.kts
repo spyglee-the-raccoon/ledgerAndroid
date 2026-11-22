@@ -89,6 +89,9 @@ dependencies {
     implementation(libs.mlkit.text.recognition)
     // Gemini Nano through the AICore system service; used only when already on the device.
     implementation(libs.mlkit.genai.prompt)
+    // Home screen widgets (decision D4).
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)

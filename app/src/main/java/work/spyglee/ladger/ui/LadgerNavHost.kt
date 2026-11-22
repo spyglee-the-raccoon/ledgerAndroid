@@ -107,7 +107,7 @@ private fun NavBackStackEntry.optionalId(): Long? = arguments?.getLong("id")?.ta
 
 /**
  * [sharedReceipt] is a receipt shared from another app; the add transaction screen opens with it.
- * [quickAction] is an app icon shortcut to open, after which [onQuickActionHandled] is called.
+ * [quickAction] is an app icon shortcut or widget link to open, after which [onQuickActionHandled] is called.
  */
 @Composable
 fun LadgerNavHost(
@@ -127,6 +127,8 @@ fun LadgerNavHost(
         when (quickAction) {
             QuickAction.ADD_TRANSACTION -> navController.navigate(Routes.transactionEditor())
             QuickAction.SCAN -> navController.navigate(Routes.transactionEditor(scan = true))
+            QuickAction.OPEN_BUDGETS -> navController.navigate(Routes.BUDGETS)
+            QuickAction.OPEN_ACCOUNTS -> navController.navigate(Routes.SOURCES_OVERVIEW)
             null -> return@LaunchedEffect
         }
         onQuickActionHandled()

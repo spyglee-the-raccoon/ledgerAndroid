@@ -28,4 +28,6 @@
     <string name="exact_alarms_allow">Дозволити</string>
     <string name="not_now">Не зараз</string>
     <string name="allow_exact_alarms">Дозволити точний час</string>
+    <!-- Widgets with the app lock on (D5): read out instead of the hidden amounts. -->
+    <string name="widget_locked">Приховано, поки ввімкнено блокування застосунку</string>
 </resources>

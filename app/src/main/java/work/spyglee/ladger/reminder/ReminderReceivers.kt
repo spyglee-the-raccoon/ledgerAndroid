@@ -7,6 +7,7 @@ import android.content.Intent
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import work.spyglee.ladger.LadgerApp
+import work.spyglee.ladger.widget.Widgets
 
 /** The reminder alarm went off: schedule tomorrow's and show the notification with the budget hint. */
 class ReminderReceiver : BroadcastReceiver() {
@@ -57,6 +58,8 @@ class ReminderRescheduleReceiver : BroadcastReceiver() {
             try {
                 if (container.settings.isReminderOn.first()) container.reminder.schedule()
                 container.plannedTransactions.reschedule()
+                // A new day, month or time zone changes what the widgets show; widgets also need redrawing after an update.
+                Widgets.updateAll(context)
             } finally {
                 pending.finish()
             }

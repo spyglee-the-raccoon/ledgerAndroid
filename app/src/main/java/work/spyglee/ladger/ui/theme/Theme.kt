@@ -9,12 +9,12 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 import work.spyglee.ladger.data.CategoryColor
 
-private val LightColors = lightColorScheme(
+internal val LightColors = lightColorScheme(
     primary = Color(0xFF007AFF),
     secondary = Color(0xFF5856D6),
 )
 
-private val DarkColors = darkColorScheme(
+internal val DarkColors = darkColorScheme(
     primary = Color(0xFF0A84FF),
     secondary = Color(0xFF5E5CE6),
 )
@@ -31,11 +31,16 @@ val ExpenseColor = Color(0xFFFF3B30)
 /** The iOS system colors behind [CategoryColor], in their light and dark variants. */
 @Composable
 @ReadOnlyComposable
-fun CategoryColor.toColor(): Color {
-    val dark = isSystemInDarkTheme()
+fun CategoryColor.toColor(): Color = toColor(dark = isSystemInDarkTheme(), primary = MaterialTheme.colorScheme.onSurface)
+
+/**
+ * [CategoryColor] outside composition, e.g. for widget bitmaps: [dark] picks the dark variant, and
+ * [CategoryColor.PRIMARY] is [primary], the theme's foreground color.
+ */
+fun CategoryColor.toColor(dark: Boolean, primary: Color): Color {
     fun pick(light: Long, darkVariant: Long) = Color(if (dark) darkVariant else light)
     return when (this) {
-        CategoryColor.PRIMARY -> MaterialTheme.colorScheme.onSurface
+        CategoryColor.PRIMARY -> primary
         CategoryColor.RED -> pick(0xFFFF3B30, 0xFFFF453A)
         CategoryColor.ORANGE -> pick(0xFFFF9500, 0xFFFF9F0A)
         CategoryColor.YELLOW -> pick(0xFFFFCC00, 0xFFFFD60A)

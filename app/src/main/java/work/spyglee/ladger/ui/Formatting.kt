@@ -47,11 +47,16 @@ fun withPhoneRegion(locale: Locale, phoneLocale: Locale = PhoneLocale.get()): Lo
 /**
  * Formats an amount in the currency of the app's locale, with the phone's region ([withPhoneRegion]).
  * Locales without a region have no currency, so those fall back to EUR, as the iOS app does.
+ * [wholeUnits] rounds to whole euros, dollars and so on, as the iOS widgets do.
  */
-fun formatMoney(amount: BigDecimal, locale: Locale = withPhoneRegion(Locale.getDefault())): String {
+fun formatMoney(amount: BigDecimal, locale: Locale = withPhoneRegion(Locale.getDefault()), wholeUnits: Boolean = false): String {
     val format = NumberFormat.getCurrencyInstance(locale)
     if (locale.country.isEmpty()) {
         format.currency = Currency.getInstance("EUR")
+    }
+    if (wholeUnits) {
+        format.minimumFractionDigits = 0
+        format.maximumFractionDigits = 0
     }
     return format.format(amount)
 }

@@ -36,3 +36,4 @@ They live in `app/src/main/res/values*/strings_android.xml`. `%1$s` is replaced 
 | `exact_alarms_allow` | Allow | Dopusti | Дозволити | Zezwól |
 | `not_now` | Not now | Ne sada | Не зараз | Nie teraz |
 | `allow_exact_alarms` | Allow exact timing | Dopusti točno vrijeme | Дозволити точний час | Zezwól na dokładny czas |
+| `widget_locked` | Hidden while the app lock is on | Skriveno dok je uključeno zaključavanje aplikacije | Приховано, поки ввімкнено блокування застосунку | Ukryte, gdy blokada aplikacji jest włączona |

@@ -73,6 +73,43 @@
         <receiver
             android:name=".reminder.PlannedTransactionReceiver"
             android:exported="false" />
+        <!-- Home screen widgets (decision D4), as iOS's: month chart, budget, latest transactions. -->
+        <receiver
+            android:name=".widget.MonthChartWidgetReceiver"
+            android:exported="true"
+            android:label="@string/this_month_balance">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_month_chart" />
+        </receiver>
+        <receiver
+            android:name=".widget.BudgetWidgetReceiver"
+            android:exported="true"
+            android:label="@string/budgeting">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_budget" />
+        </receiver>
+        <receiver
+            android:name=".widget.RecentTransactionsWidgetReceiver"
+            android:exported="true"
+            android:label="@string/transactions">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_recent_transactions" />
+        </receiver>
+        <receiver
+            android:name=".widget.WidgetMonthReceiver"
+            android:exported="false" />
         <receiver
             android:name=".reminder.ReminderRescheduleReceiver"
             android:exported="false">

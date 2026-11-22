@@ -13,9 +13,12 @@ import java.util.Base64
  * There's no server, so this check on the phone is the one we have, as on iOS.
  */
 object PurchaseSignature {
-    /** Without a key (before the app exists in Play Console), purchases are taken as Play reports them. */
-    fun isValid(base64PublicKey: String, signedData: String, signature: String): Boolean {
-        if (base64PublicKey.isBlank()) return true
+    /**
+     * Without a key, purchases are refused, except where [acceptWithoutKey] (debug builds, for license testers
+     * before the key is set). Release builds refuse to build without the key (app/build.gradle.kts).
+     */
+    fun isValid(base64PublicKey: String, signedData: String, signature: String, acceptWithoutKey: Boolean = false): Boolean {
+        if (base64PublicKey.isBlank()) return acceptWithoutKey
         if (signature.isBlank()) return false
         return try {
             val key = KeyFactory.getInstance("RSA").generatePublic(X509EncodedKeySpec(Base64.getDecoder().decode(base64PublicKey.trim())))

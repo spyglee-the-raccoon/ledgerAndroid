@@ -82,9 +82,13 @@ The subscriptions and their prices live in Play Console (`work.spyglee.ledger.pr
 product IDs). Play Console only offers subscriptions after a build that contains Play Billing has been uploaded.
 
 - **Licence key.** Play Console → Monetize with Play → Monetization setup → Licensing has the app's public key.
-  Put it in `gradle.properties` as `ledger.playLicenseKey=MIIB...`. It isn't secret. With it, the app accepts
-  only purchases signed by Google Play. Without it, purchases are taken as Play reports them, so set it before
-  the first release.
+  Put it in `gradle.properties` as `ledger.playLicenseKey=MIIB...`. It isn't secret. The app accepts only
+  purchases signed with it.
+  - **Release builds without the key** would accept no purchase at all, so they don't build. The exception is
+    the first upload to internal testing, which only switches billing on in Play Console: build it with
+    `-Pledger.allowMissingLicenseKey=true`, and don't test purchases on it.
+  - **Debug builds made with `-Pledger.playBilling=true`** accept purchases without the key, for license
+    testers.
 - **Debug builds** sell Pro through a stand-in store (`FakeStore`), with the same products and trial. Buying
   succeeds at once and "Manage subscription" cancels. That's for trying the paywall without Play.
 - **Testing with Google Play.** Add the tester's Google account under Play Console → Settings → License testing.

@@ -42,7 +42,10 @@ class PurchaseSignatureTest {
     }
 
     @Test
-    fun withoutAKeyPurchasesAreTakenAsTheStoreReportsThem() {
-        assertTrue(PurchaseSignature.isValid("", json, ""))
+    fun withoutAKeyPurchasesAreRefusedExceptInDebugBuilds() {
+        assertFalse(PurchaseSignature.isValid("", json, sign(json)))
+        assertTrue(PurchaseSignature.isValid("", json, "", acceptWithoutKey = true))
+        // A configured key is always checked.
+        assertFalse(PurchaseSignature.isValid(publicKey, json, "", acceptWithoutKey = true))
     }
 }

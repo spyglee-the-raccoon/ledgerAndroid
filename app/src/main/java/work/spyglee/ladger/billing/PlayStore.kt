@@ -38,7 +38,12 @@ import kotlinx.coroutines.withTimeoutOrNull
  * network part; the library itself asks for no network permission (only its usage logging would,
  * and the manifest removes that, as for ML Kit).
  */
-class PlayStore(context: Context, private val licenseKey: String) : Store {
+class PlayStore(
+    context: Context,
+    private val licenseKey: String,
+    /** Debug builds only: take purchases as Play reports them while [licenseKey] isn't set. */
+    private val acceptWithoutKey: Boolean = false,
+) : Store {
     private val _updates = MutableSharedFlow<PurchaseUpdate>(extraBufferCapacity = 8)
     override val updates: Flow<PurchaseUpdate> = _updates.asSharedFlow()
 
@@ -157,7 +162,7 @@ class PlayStore(context: Context, private val licenseKey: String) : Store {
         isAcknowledged = purchase.isAcknowledged,
         isSuspended = purchase.isSuspended,
         token = purchase.purchaseToken,
-        isVerified = PurchaseSignature.isValid(licenseKey, purchase.originalJson, purchase.signature),
+        isVerified = PurchaseSignature.isValid(licenseKey, purchase.originalJson, purchase.signature, acceptWithoutKey),
     )
 
     private fun log(call: String, result: BillingResult) = Log.w(TAG, "$call: ${result.responseCode} ${result.debugMessage}")

@@ -246,9 +246,11 @@ sends strings to translators (D14).
 - Pro status is asked for at every `MainActivity.onStart`. The last answer is kept in its own preferences file
   (`pro`), which the backup rules leave out, so a restored phone asks Google Play afresh. The plan had it in
   `SettingsRepository`, which is backed up.
-- Purchases are checked against the app's licence key from Play Console (Gradle property `ledger.playLicenseKey`).
-  Without the key they're taken as Play reports them. That's the Android counterpart of StoreKit's verified
-  transactions, since there's no server.
+- Purchases are checked against the app's licence key from Play Console (Gradle property `ledger.playLicenseKey`),
+  the Android counterpart of StoreKit's verified transactions, since there's no server.
+  - Without the key, release builds refuse every purchase, and they don't build, except for the first upload
+    with `-Pledger.allowMissingLicenseKey=true`.
+  - Debug builds on Google Play accept purchases without the key, for license testers.
 - **Network: still no `INTERNET` permission.** The test build showed that Play Billing Library 9.1 declares no
   network permission itself. Only its usage logging does (`datatransport`, the same library ML Kit uses), and the
   manifest already removes that. Billing goes through the Play Store app, which does the network part. So the
@@ -284,8 +286,6 @@ sends strings to translators (D14).
 - Purchases are acknowledged when the app asks Google Play: after the purchase sheet, and at every start.
   Without a server there's no other way. A payment that is still pending when the app is closed, and settles while
   it stays closed for more than three days, is refunded by Google. A periodic WorkManager check could cover that.
-- Purchases are only accepted as signed by Google Play once `ledger.playLicenseKey` is set. Nothing stops a
-  release build without it, so it's on the release checklist in RELEASE.md.
 
 **Play Console (needs PR 1)**
 - Upload a build to internal testing.

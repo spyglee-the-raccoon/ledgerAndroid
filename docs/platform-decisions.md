@@ -24,9 +24,9 @@ Each decision in part 3 has the options, an **Android proposal** (a starting poi
 |---|---|---|---|
 | up to `f909b82` | until 21 Oct | everything up to planned transactions and list search | **done**, on `main` |
 | `46702e5` | 28 Oct | budgets, receipt items and photos, price comparison, Sources renamed to Accounts | **done**, on `main` (pull request #2); tested on the emulator and a phone |
-| `8a76b5d` | 30 Oct | "Bells and whistles": widgets, Siri, quick actions, Pro subscription, CSV for all data, editing receipt items, Polish | **part 1 done**, on `main` (pull request #3): everything that needs no decision. The rest follows [decisions-plan.md](decisions-plan.md). |
-| `fa64623` | 3 Nov | cleanup: StoreKit test setup, privacy manifest, login stubs removed, version 1.0, medium chart widget | follows [decisions-plan.md](decisions-plan.md); the login removal needs nothing on Android |
-| `1748a53` | 10 Nov | a shared photo or PDF is saved with the transaction, like scanned pages; the StoreKit test file's format | **done**, branch `sync-ios-1748a53`. The StoreKit file needs nothing (same prices and trials). |
+| `8a76b5d` | 30 Oct | "Bells and whistles": widgets, Siri, quick actions, Pro subscription, CSV for all data, editing receipt items, Polish | **done**, except Siri (D3): part 1 (#3), widgets (#10), Pro (#12, purchases wait for the Play Console) |
+| `fa64623` | 3 Nov | cleanup: StoreKit test setup, privacy manifest, login stubs removed, version 1.0, medium chart widget | **done**: the medium chart widget (#10), the paywall's policy links and Data safety answers (#12), version 1.0 (`version-1.0`). The login removal needs nothing on Android. |
+| `1748a53` | 10 Nov | a shared photo or PDF is saved with the transaction, like scanned pages; the StoreKit test file's format | **done** (#11). The StoreKit file needs nothing (same prices and trials). |
 
 Those two commits change 74 files (+8,300 lines). About 1,600 lines are demo CSV data and 2,600 are the string
 catalog, which leaves about 4,000 lines of code, 1,400 of them tests. After part 1, what's left are the features
@@ -45,7 +45,7 @@ that wait for a decision: widgets, Siri, the Pro subscription and version 1.0.
 | **Quick actions** on the app icon: Add transaction, Scan | S | none | **done** in part 1 |
 | **Polish** translation | M | (D8) | **done** in part 1; per-app language done since D8 |
 | **New app icon** | S | none | **done** in part 1 (`tools/make-icons.py`) |
-| **Version 1.0** | S | D7 | waiting |
+| **Version 1.0** | S | D7 | **done** since D7 |
 | **Privacy manifest** ("no data collected"), which on Android means the Play Data safety form | S | D1 | answers drafted in [RELEASE.md](RELEASE.md); filled in once the Play Console exists |
 | **Demo data**: `DemoData/generate.py` writes a year of data as CSV files | S | (D12) | **done** in part 1, as Android test data |
 | **New iOS tests** (budgets, CSV, model logic, recurrence) | M | none | **done** in part 1, ported to Android tests |
@@ -214,7 +214,7 @@ Play Console.
 | | iOS | Android |
 |---|---|---|
 | ID | `work.spyglee.ledger` | The same since D6 (was `work.spyglee.ladger`). The Kotlin code keeps its `work.spyglee.ladger` package. |
-| Version | 1.0 (since `fa64623`) | 0.1 |
+| Version | 1.0 | 1.0 (D7: the iOS version of the commit Android is synced to); separate build numbers |
 | Runs on | iOS 26.5, iPhone and iPad | Android 8.0 and later, phones and tablets |
 | URL scheme | `ladger://` (also with an a) | none; Android uses intents |
 | Icon | Three bars forming an L on black (since `8a76b5d`) | The same artwork (part 1), drawn a little smaller so the round and squircle masks of Android launchers don't cut off the bars; also a one-colour version for themed icons |

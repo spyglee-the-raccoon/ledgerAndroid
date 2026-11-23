@@ -2,10 +2,9 @@
 
 The Android version of Ledger, a local-only budgeting app; the iOS app (SwiftUI, in the
 `spyglee-the-raccoon/ledgerIos` repository) is the reference for features and behaviour. Android is up to date
-with iOS commit `46702e5`, plus the parts of `8a76b5d` that need no decision: CSV for all data, editing receipt
-items, budget alerts once a month, the quick actions, Polish and the new icon; and, following the decisions in
-[docs/decisions-plan.md](docs/decisions-plan.md), the three home screen widgets. The Pro subscription (decision D1) is
-coded and waits for the Play Console to be tested with Google Play; Siri has no Android equivalent for now (decision D3). Kotlin, Jetpack Compose, Room, CameraX and ML Kit; minSdk 26.
+with iOS commit `1748a53`, version 1.0, following the decisions in [docs/decisions-plan.md](docs/decisions-plan.md).
+Siri has no Android equivalent for now (decision D3). The Pro subscription (decision D1) is coded and waits for the
+Play Console to be tested with real Google Play purchases. Kotlin, Jetpack Compose, Room, CameraX and ML Kit; minSdk 26.
 
 The app has no INTERNET permission, also with Ledger Pro (purchases go through the Play Store app), and reads receipts on the device. Android's own backup is on (decision
 D2): the database, receipt photos and settings go into the user's Google backup when the phone can encrypt it

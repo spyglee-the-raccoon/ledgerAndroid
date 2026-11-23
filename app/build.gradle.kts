@@ -37,8 +37,9 @@ android {
         applicationId = "work.spyglee.ledger"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1"
+        // The iOS marketing version of the commit Android is synced to (decision D7); the build number is Android's own.
+        versionCode = 2
+        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 

@@ -23,8 +23,9 @@ Without `keystore.properties`, release builds are signed with the debug key: fin
 own devices, rejected by Google Play.
 
 ## 2. Version
-`app/build.gradle.kts`: `versionName` follows the iOS app's marketing version (currently 0.1),
-`versionCode` must go up by one for every upload.
+`app/build.gradle.kts`:
+- `versionName` is the iOS marketing version of the iOS commit Android is synced to (decision D7); currently 1.0.
+- `versionCode` is Android's own build number and must go up by one for every upload. iOS keeps its own.
 
 ## 3. Build and test
 ```sh

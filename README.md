@@ -49,6 +49,7 @@ Releasing, signing and the Play Data safety answers: [docs/RELEASE.md](docs/RELE
 - `tools/make-ka-ching.py`: regenerates the sound played after adding a transaction.
 
 ## Docs
+- [docs/android-status.md](docs/android-status.md): where Android stands and what comes next, for the iOS developer.
 - [docs/platform-decisions.md](docs/platform-decisions.md): how far Android is behind iOS, how the apps differ, and
   the decisions made together.
 - [docs/decisions-plan.md](docs/decisions-plan.md): how Android implements those decisions, in order.

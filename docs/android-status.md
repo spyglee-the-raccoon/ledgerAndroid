@@ -20,6 +20,7 @@ Everything below is merged into Android `main`, newest first. The D numbers are 
 
 | Merged | What | From | Pull request |
 | --- | --- | --- | --- |
+| 23 Nov | Multi-page receipt scans: Add page and Done after each photo, up to five pages | D9 | #14 |
 | 23 Nov | Version 1.0, the same as iOS | D7, iOS `fa64623` | #13 |
 | 23 Nov | Ledger Pro: the paywall and the locked statistics; real purchases wait for the Play Console | D1 | #12 |
 | 22 Nov | A photo or PDF shared into the app is saved with the transaction, like scanned pages | iOS `1748a53` | #11 |
@@ -33,7 +34,7 @@ Everything below is merged into Android `main`, newest first. The D numbers are 
 | 10 Nov | Budgets, receipt items and photos, price comparison, Sources renamed to Accounts | iOS `46702e5` | #2 |
 | until 21 Oct | Everything up to planned transactions and list search | iOS up to `f909b82` | earlier |
 
-All 197 unit tests and 43 instrumented tests pass on an emulator. Earlier builds also ran on a real phone with
+All 197 unit tests and 45 instrumented tests pass on an emulator. Earlier builds also ran on a real phone with
 Android 17.
 
 ## Pro subscription
@@ -149,7 +150,7 @@ Most come from the decisions doc and [ios-issues.md](ios-issues.md).
 - [ ] **URL scheme `ladger://` → `ledger://` (D6).** It's simpler to rename it before the first release, together
   with the widget links and the share extension.
 - [ ] **Siri logging and the app lock.** Still open: should logging a transaction through Siri check the lock?
-- [ ] **Translations (D14).** Android has 43 strings of its own, 16 of them for Pro, listed in
+- [ ] **Translations (D14).** Android has 47 strings of its own, 16 of them for Pro, listed in
   [translations-to-review.md](translations-to-review.md). They were translated without a native speaker; please send
   them to the translators with the iOS strings.
 - [x] **Version numbers (D7).** Android takes the iOS version of the commit it's synced to: both are 1.0. Build
@@ -157,17 +158,15 @@ Most come from the decisions doc and [ios-issues.md](ios-issues.md).
 
 ## Next steps on Android
 
-The order follows [decisions-plan.md](decisions-plan.md). Steps 2–4 don't need the Play Console, so they can go
+The order follows [decisions-plan.md](decisions-plan.md). Steps 2 and 3 don't need the Play Console, so they can go
 ahead while it's being set up.
 
 1. **Pro subscription (D1).** Real purchases and the release wait for the Play Console.
-2. **Multi-page camera scans (D9).** The Android camera takes one photo per scan, while iOS's document scanner takes
-   several pages. Shared PDFs already give several pages.
-3. **Cyrillic text recognition (D9).** Android's on-device OCR reads Latin letters only, so Ukrainian words on
+2. **Cyrillic text recognition (D9).** Android's on-device OCR reads Latin letters only, so Ukrainian words on
    receipts are lost, though amounts and dates are read. We'll build a prototype with Tesseract first, which needs
    real Ukrainian receipts to test with.
-4. **CSV spec (D12).** Android drafts `docs/csv-format.md` for you to review and copy to the iOS repo.
-5. **First release on Google Play.** Internal testing, then closed testing, then production, in the order
+3. **CSV spec (D12).** Android drafts `docs/csv-format.md` for you to review and copy to the iOS repo.
+4. **First release on Google Play.** Internal testing, then closed testing, then production, in the order
    [Play Console setup](#play-console-setup) describes.
 
 After that, each new iOS commit is ported the same way as before. Smaller iOS commits, each with a few lines on what

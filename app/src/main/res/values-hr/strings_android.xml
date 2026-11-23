@@ -13,7 +13,6 @@
     <string name="open_settings">Postavke</string>
     <string name="take_photo">Snimi fotografiju</string>
     <string name="retake_photo">Ponovi</string>
-    <string name="use_photo">Koristi fotografiju</string>
     <string name="flash">Bljeskalica</string>
     <string name="close">Zatvori</string>
     <string name="camera_denied">Pristup kameri isključen je za ovu aplikaciju. Uključite ga u postavkama sustava da biste skenirali račune.</string>
@@ -59,4 +58,10 @@
         <item quantity="few">%d mjeseca besplatno</item>
         <item quantity="other">%d mjeseci besplatno</item>
     </plurals>
+    <!-- Multi-page receipt scans (decision D9). -->
+    <string name="add_page">Dodaj stranicu</string>
+    <string name="done">Gotovo</string>
+    <string name="remove_page">Ukloni stranicu %1$d</string>
+    <string name="discard_pages">Odbaciti snimljene stranice?</string>
+    <string name="discard">Odbaci</string>
 </resources>

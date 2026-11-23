@@ -13,7 +13,6 @@
     <string name="open_settings">Ustawienia</string>
     <string name="take_photo">Zrób zdjęcie</string>
     <string name="retake_photo">Powtórz</string>
-    <string name="use_photo">Użyj zdjęcia</string>
     <string name="flash">Lampa błyskowa</string>
     <string name="close">Zamknij</string>
     <string name="camera_denied">Dostęp do aparatu jest wyłączony dla tej aplikacji. Włącz go w ustawieniach systemu, aby skanować paragony.</string>
@@ -62,4 +61,10 @@
         <item quantity="many">%d miesięcy za darmo</item>
         <item quantity="other">%d miesiąca za darmo</item>
     </plurals>
+    <!-- Multi-page receipt scans (decision D9). -->
+    <string name="add_page">Dodaj stronę</string>
+    <string name="done">Gotowe</string>
+    <string name="remove_page">Usuń stronę %1$d</string>
+    <string name="discard_pages">Odrzucić zrobione strony?</string>
+    <string name="discard">Odrzuć</string>
 </resources>

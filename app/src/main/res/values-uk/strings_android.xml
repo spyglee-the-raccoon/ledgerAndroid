@@ -13,7 +13,6 @@
     <string name="open_settings">Налаштування</string>
     <string name="take_photo">Зробити фото</string>
     <string name="retake_photo">Перезняти</string>
-    <string name="use_photo">Використати фото</string>
     <string name="flash">Спалах</string>
     <string name="close">Закрити</string>
     <string name="camera_denied">Доступ до камери для цього застосунку вимкнено. Увімкніть його в налаштуваннях системи, щоб сканувати чеки.</string>
@@ -62,4 +61,10 @@
         <item quantity="many">%d місяців безкоштовно</item>
         <item quantity="other">%d місяця безкоштовно</item>
     </plurals>
+    <!-- Multi-page receipt scans (decision D9). -->
+    <string name="add_page">Додати сторінку</string>
+    <string name="done">Готово</string>
+    <string name="remove_page">Вилучити сторінку %1$d</string>
+    <string name="discard_pages">Відкинути зняті сторінки?</string>
+    <string name="discard">Відкинути</string>
 </resources>

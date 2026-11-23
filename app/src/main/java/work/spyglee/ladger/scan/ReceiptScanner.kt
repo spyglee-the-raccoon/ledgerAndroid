@@ -22,13 +22,17 @@ class ReceiptScanner(context: Context) {
 
     suspend fun prewarm() = nano.prewarm()
 
-    suspend fun recognize(bitmap: Bitmap): String {
+    /**
+     * Pages photographed with the receipt camera (JPEG), read in order and stored like scanned ones, as
+     * iOS's document camera keeps several pages (decision D9).
+     */
+    suspend fun read(photos: List<ByteArray>): ScannedReceipt = recognizer.read(photos) { bitmap ->
         if (BuildConfig.DEBUG) saveForDebugging(bitmap)
-        return recognizer.recognize(bitmap)
+        photoData(bitmap)
     }
 
     /**
-     * Debug builds only: keeps the last photo in app-private storage, so a misread receipt can be
+     * Debug builds only: keeps the last page photographed in app-private storage, so a misread receipt can be
      * pulled with `adb exec-out run-as work.spyglee.ledger cat cache/last-receipt.jpg > last-receipt.jpg`.
      */
     private suspend fun saveForDebugging(bitmap: Bitmap) = withContext(Dispatchers.IO) {

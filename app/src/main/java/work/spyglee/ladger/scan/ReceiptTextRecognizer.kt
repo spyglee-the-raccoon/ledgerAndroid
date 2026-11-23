@@ -37,15 +37,39 @@ class ReceiptTextRecognizer(context: Context) {
 
     /**
      * A shared image or PDF: the text of its pages, and each page made by [toPage] into the photo saved
-     * with the transaction, as iOS does since `1748a53`. A page and its text are kept or lost
-     * separately, so a receipt whose text can't be read still keeps its pages, as on iOS.
+     * with the transaction, as iOS does since `1748a53`.
      */
-    suspend fun read(uri: Uri, toPage: suspend (Bitmap) -> ByteArray): ScannedReceipt {
+    suspend fun read(uri: Uri, toPage: suspend (Bitmap) -> ByteArray): ScannedReceipt = readPages(toPage) { forEachPage(uri, it) }
+
+    /**
+     * Pages photographed with the receipt camera (JPEG), up to [MAX_PAGES], read in order like the pages
+     * of a PDF, as iOS's document camera does with several pages (decision D9).
+     */
+    suspend fun read(photos: List<ByteArray>, toPage: suspend (Bitmap) -> ByteArray): ScannedReceipt = readPages(toPage) { block ->
+        for (jpeg in photos.take(MAX_PAGES)) {
+            val bitmap = withContext(Dispatchers.Default) { BitmapFactory.decodeByteArray(jpeg, 0, jpeg.size) } ?: continue
+            try {
+                block(bitmap)
+            } finally {
+                bitmap.recycle()
+            }
+        }
+    }
+
+    /**
+     * The text of the pages [forEach] gives, joined in page order, and each page made by [toPage] into a
+     * stored photo. A page and its text are kept or lost separately, so a receipt whose text can't be read
+     * still keeps its pages, as on iOS.
+     */
+    private suspend fun readPages(
+        toPage: suspend (Bitmap) -> ByteArray,
+        forEach: suspend (block: suspend (Bitmap) -> Unit) -> Unit,
+    ): ScannedReceipt {
         val texts = mutableListOf<String>()
         val pages = mutableListOf<ByteArray>()
-        forEachPage(uri) { bitmap ->
-            attempt("Keeping a shared page") { toPage(bitmap) }?.let(pages::add)
-            attempt("Reading a shared page") { recognize(bitmap) }?.takeIf { it.isNotBlank() }?.let(texts::add)
+        forEach { bitmap ->
+            attempt("Keeping a page") { toPage(bitmap) }?.let(pages::add)
+            attempt("Reading a page") { recognize(bitmap) }?.takeIf { it.isNotBlank() }?.let(texts::add)
         }
         return ScannedReceipt(texts.joinToString("\n"), pages)
     }
@@ -63,7 +87,7 @@ class ReceiptTextRecognizer(context: Context) {
         }
         val descriptor = withContext(Dispatchers.IO) { context.contentResolver.openFileDescriptor(uri, "r") } ?: return
         PdfRenderer(descriptor).use { renderer ->
-            for (index in 0 until minOf(renderer.pageCount, MAX_PDF_PAGES)) {
+            for (index in 0 until minOf(renderer.pageCount, MAX_PAGES)) {
                 val bitmap = withContext(Dispatchers.IO) { renderer.openPage(index).use(::render) }
                 try {
                     block(bitmap)
@@ -140,17 +164,19 @@ class ReceiptTextRecognizer(context: Context) {
         return ReceiptTextLayout.toText(lines)
     }
 
-    private companion object {
-        const val TAG = "ReceiptTextRecognizer"
-        const val PDF_MIME_TYPE = "application/pdf"
-        const val MAX_PDF_PAGES = 5
-        const val PDF_RENDER_SCALE = 3f
+    companion object {
+        /** The most pages read from one receipt, shared or photographed, as for iOS's shared PDFs. */
+        const val MAX_PAGES = 5
+
+        private const val TAG = "ReceiptTextRecognizer"
+        private const val PDF_MIME_TYPE = "application/pdf"
+        private const val PDF_RENDER_SCALE = 3f
 
         /** About 50 MB per rendered page; larger pages are rendered at a lower scale. */
-        const val MAX_PDF_PAGE_PIXELS = 12_000_000f
+        private const val MAX_PDF_PAGE_PIXELS = 12_000_000f
 
         /** Plenty for OCR; a 50 MP photo is read at half size instead of taking 200 MB. */
-        const val MAX_IMAGE_SIDE = 4_096
+        private const val MAX_IMAGE_SIDE = 4_096
     }
 }
 

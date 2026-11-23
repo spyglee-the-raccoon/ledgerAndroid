@@ -30,4 +30,33 @@
     <string name="allow_exact_alarms">Dopusti točno vrijeme</string>
     <!-- Widgets with the app lock on (D5): read out instead of the hidden amounts. -->
     <string name="widget_locked">Skriveno dok je uključeno zaključavanje aplikacije</string>
+    <!-- Ledger Pro (decision D1): the paywall and "Manage subscription". -->
+    <string name="pro_price_per_month">%1$s mjesečno</string>
+    <string name="pro_price_per_year">%1$s godišnje</string>
+    <string name="pro_subscribe">Pretplati se</string>
+    <string name="pro_renewal_note">Obnavlja se automatski dok je ne otkažete u Google Playu.</string>
+    <string name="pro_restore">Vrati kupnje</string>
+    <string name="pro_restore_none">Za ovaj Google račun nije pronađena pretplata.</string>
+    <string name="pro_terms">Uvjeti korištenja</string>
+    <string name="pro_privacy">Pravila privatnosti</string>
+    <string name="pro_unavailable">Pretplate trenutačno nisu dostupne. Provjerite je li Google Play instaliran i jeste li prijavljeni.</string>
+    <string name="pro_try_again">Pokušaj ponovno</string>
+    <string name="pro_pending">Plaćanje se obrađuje. Statistika se otključava kad ga Google Play potvrdi.</string>
+    <string name="pro_failed">Kupnja nije uspjela. Pokušajte ponovno.</string>
+    <string name="pro_manage">Upravljanje pretplatom</string>
+    <plurals name="pro_free_trial_days">
+        <item quantity="one">%d dan besplatno</item>
+        <item quantity="few">%d dana besplatno</item>
+        <item quantity="other">%d dana besplatno</item>
+    </plurals>
+    <plurals name="pro_free_trial_weeks">
+        <item quantity="one">%d tjedan besplatno</item>
+        <item quantity="few">%d tjedna besplatno</item>
+        <item quantity="other">%d tjedana besplatno</item>
+    </plurals>
+    <plurals name="pro_free_trial_months">
+        <item quantity="one">%d mjesec besplatno</item>
+        <item quantity="few">%d mjeseca besplatno</item>
+        <item quantity="other">%d mjeseci besplatno</item>
+    </plurals>
 </resources>

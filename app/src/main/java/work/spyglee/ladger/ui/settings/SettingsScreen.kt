@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.TrendingUp
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.Alarm
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.CreditCard
@@ -28,8 +30,10 @@ import androidx.compose.material.icons.outlined.NotificationsActive
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material.icons.outlined.SwapVert
 import androidx.compose.material.icons.outlined.Update
+import androidx.compose.material.icons.outlined.WorkspacePremium
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -83,6 +87,7 @@ fun SettingsScreen(
     onOpenSavings: () -> Unit,
     onOpenTopCategories: () -> Unit,
     onOpenPriceComparison: () -> Unit,
+    onOpenPaywall: () -> Unit,
 ) {
     val viewModel = appViewModel { SettingsViewModel(it) }
     val isReminderOn by viewModel.isReminderOn.collectAsStateWithLifecycle()
@@ -90,7 +95,9 @@ fun SettingsScreen(
     val dialog by viewModel.dialog.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
+    val activity = LocalActivity.current
     val container = LocalAppContainer.current
+    val isPro by container.subscriptions.isPro.collectAsStateWithLifecycle()
     val reminder = container.reminder
     // The pickers and settings pages below are the app's own, so coming back doesn't lock it (D5).
     val appLock = container.appLock
@@ -194,11 +201,46 @@ fun SettingsScreen(
                 }
             }
 
+            // As in iOS's statisticLink: without Ledger Pro each row shows a lock and opens the paywall (D1).
+            val statistic: (() -> Unit) -> () -> Unit = { open -> if (isPro) open else onOpenPaywall }
             SectionHeader(stringResource(R.string.statistics), Modifier.padding(top = 16.dp))
-            SettingsLink(Icons.Outlined.SwapVert, CategoryColor.GREEN.toColor(), stringResource(R.string.income_expense), onOpenIncomeExpense)
-            SettingsLink(Icons.Outlined.MoveToInbox, CategoryColor.ORANGE.toColor(), stringResource(R.string.savings), onOpenSavings)
-            SettingsLink(Icons.AutoMirrored.Outlined.TrendingUp, CategoryColor.PURPLE.toColor(), stringResource(R.string.top_categories), onOpenTopCategories)
-            SettingsLink(Icons.Outlined.ShoppingCart, CategoryColor.TEAL.toColor(), stringResource(R.string.price_comparison), onOpenPriceComparison)
+            StatisticLink(
+                Icons.Outlined.SwapVert,
+                CategoryColor.GREEN.toColor(),
+                stringResource(R.string.income_expense),
+                locked = !isPro,
+                onClick = statistic(onOpenIncomeExpense),
+            )
+            StatisticLink(
+                Icons.Outlined.MoveToInbox,
+                CategoryColor.ORANGE.toColor(),
+                stringResource(R.string.savings),
+                locked = !isPro,
+                onClick = statistic(onOpenSavings),
+            )
+            StatisticLink(
+                Icons.AutoMirrored.Outlined.TrendingUp,
+                CategoryColor.PURPLE.toColor(),
+                stringResource(R.string.top_categories),
+                locked = !isPro,
+                onClick = statistic(onOpenTopCategories),
+            )
+            StatisticLink(
+                Icons.Outlined.ShoppingCart,
+                CategoryColor.TEAL.toColor(),
+                stringResource(R.string.price_comparison),
+                locked = !isPro,
+                onClick = statistic(onOpenPriceComparison),
+            )
+            // Android only: Google Play's page for cancelling or changing the subscription.
+            if (isPro) {
+                SettingsLink(Icons.Outlined.WorkspacePremium, CategoryColor.INDIGO.toColor(), stringResource(R.string.pro_manage)) {
+                    if (activity != null) {
+                        appLock.expectReturn()
+                        container.subscriptions.openManagement(activity)
+                    }
+                }
+            }
         }
     }
 
@@ -208,6 +250,27 @@ fun SettingsScreen(
 @Composable
 private fun SettingsLink(icon: ImageVector, tint: Color, title: String, onClick: () -> Unit) {
     ListRow(title = title, leading = { Icon(icon, contentDescription = null, tint = tint) }, onClick = onClick)
+}
+
+/** A statistics row, like iOS's statisticLink: with a lock while the user doesn't have Ledger Pro. */
+@Composable
+private fun StatisticLink(icon: ImageVector, tint: Color, title: String, locked: Boolean, onClick: () -> Unit) {
+    ListRow(
+        title = title,
+        leading = { Icon(icon, contentDescription = null, tint = tint) },
+        trailingContent = if (locked) {
+            {
+                Icon(
+                    Icons.Filled.Lock,
+                    contentDescription = stringResource(R.string.paywall_title),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        } else {
+            null
+        },
+        onClick = onClick,
+    )
 }
 
 @Composable

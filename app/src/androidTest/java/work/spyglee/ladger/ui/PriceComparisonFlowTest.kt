@@ -23,6 +23,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import work.spyglee.ladger.AppContainer
 import work.spyglee.ladger.R
+import work.spyglee.ladger.billing.FakeStore
+import work.spyglee.ladger.billing.MemoryProCache
+import work.spyglee.ladger.billing.Pro
 import work.spyglee.ladger.data.LadgerDatabase
 import work.spyglee.ladger.data.Transaction
 import work.spyglee.ladger.data.TransactionKind
@@ -40,7 +43,8 @@ class PriceComparisonFlowTest {
     @Before
     fun setUp() {
         database = Room.inMemoryDatabaseBuilder(context, LadgerDatabase::class.java).build()
-        container = AppContainer(context, database)
+        // Price comparison needs Ledger Pro (D1); ProFlowTest covers the paywall.
+        container = AppContainer(context, database, store = FakeStore(initialSubscription = Pro.MONTHLY), proCache = MemoryProCache(Pro.MONTHLY))
         compose.setContent {
             CompositionLocalProvider(LocalAppContainer provides container) {
                 LadgerTheme { LadgerNavHost() }

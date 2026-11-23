@@ -30,4 +30,36 @@
     <string name="allow_exact_alarms">Дозволити точний час</string>
     <!-- Widgets with the app lock on (D5): read out instead of the hidden amounts. -->
     <string name="widget_locked">Приховано, поки ввімкнено блокування застосунку</string>
+    <!-- Ledger Pro (decision D1): the paywall and "Manage subscription". -->
+    <string name="pro_price_per_month">%1$s на місяць</string>
+    <string name="pro_price_per_year">%1$s на рік</string>
+    <string name="pro_subscribe">Підписатися</string>
+    <string name="pro_renewal_note">Поновлюється автоматично, доки ви не скасуєте підписку в Google Play.</string>
+    <string name="pro_restore">Відновити покупки</string>
+    <string name="pro_restore_none">Для цього облікового запису Google підписку не знайдено.</string>
+    <string name="pro_terms">Умови використання</string>
+    <string name="pro_privacy">Політика конфіденційності</string>
+    <string name="pro_unavailable">Підписки зараз недоступні. Перевірте, чи встановлено Google Play і чи ви ввійшли в обліковий запис.</string>
+    <string name="pro_try_again">Спробувати ще раз</string>
+    <string name="pro_pending">Платіж обробляється. Статистика відкриється, щойно Google Play його підтвердить.</string>
+    <string name="pro_failed">Не вдалося здійснити покупку. Спробуйте ще раз.</string>
+    <string name="pro_manage">Керувати підпискою</string>
+    <plurals name="pro_free_trial_days">
+        <item quantity="one">%d день безкоштовно</item>
+        <item quantity="few">%d дні безкоштовно</item>
+        <item quantity="many">%d днів безкоштовно</item>
+        <item quantity="other">%d дня безкоштовно</item>
+    </plurals>
+    <plurals name="pro_free_trial_weeks">
+        <item quantity="one">%d тиждень безкоштовно</item>
+        <item quantity="few">%d тижні безкоштовно</item>
+        <item quantity="many">%d тижнів безкоштовно</item>
+        <item quantity="other">%d тижня безкоштовно</item>
+    </plurals>
+    <plurals name="pro_free_trial_months">
+        <item quantity="one">%d місяць безкоштовно</item>
+        <item quantity="few">%d місяці безкоштовно</item>
+        <item quantity="many">%d місяців безкоштовно</item>
+        <item quantity="other">%d місяця безкоштовно</item>
+    </plurals>
 </resources>

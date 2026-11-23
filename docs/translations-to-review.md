@@ -37,3 +37,21 @@ They live in `app/src/main/res/values*/strings_android.xml`. `%1$s` is replaced 
 | `not_now` | Not now | Ne sada | Не зараз | Nie teraz |
 | `allow_exact_alarms` | Allow exact timing | Dopusti točno vrijeme | Дозволити точний час | Zezwól na dokładny czas |
 | `widget_locked` | Hidden while the app lock is on | Skriveno dok je uključeno zaključavanje aplikacije | Приховано, поки ввімкнено блокування застосунку | Ukryte, gdy blokada aplikacji jest włączona |
+| `pro_price_per_month` | %1$s / month | %1$s mjesečno | %1$s на місяць | %1$s miesięcznie |
+| `pro_price_per_year` | %1$s / year | %1$s godišnje | %1$s на рік | %1$s rocznie |
+| `pro_subscribe` | Subscribe | Pretplati se | Підписатися | Subskrybuj |
+| `pro_renewal_note` | Renews automatically until you cancel it in Google Play. | Obnavlja se automatski dok je ne otkažete u Google Playu. | Поновлюється автоматично, доки ви не скасуєте підписку в Google Play. | Odnawia się automatycznie, dopóki nie anulujesz jej w Google Play. |
+| `pro_restore` | Restore purchases | Vrati kupnje | Відновити покупки | Przywróć zakupy |
+| `pro_restore_none` | No subscription was found for this Google account. | Za ovaj Google račun nije pronađena pretplata. | Для цього облікового запису Google підписку не знайдено. | Nie znaleziono subskrypcji dla tego konta Google. |
+| `pro_terms` | Terms of Service | Uvjeti korištenja | Умови використання | Warunki korzystania |
+| `pro_privacy` | Privacy Policy | Pravila privatnosti | Політика конфіденційності | Polityka prywatności |
+| `pro_unavailable` | Subscriptions aren't available right now. Check that Google Play is installed and you're signed in. | Pretplate trenutačno nisu dostupne. Provjerite je li Google Play instaliran i jeste li prijavljeni. | Підписки зараз недоступні. Перевірте, чи встановлено Google Play і чи ви ввійшли в обліковий запис. | Subskrypcje są teraz niedostępne. Sprawdź, czy Google Play jest zainstalowany i czy jesteś zalogowany. |
+| `pro_try_again` | Try again | Pokušaj ponovno | Спробувати ще раз | Spróbuj ponownie |
+| `pro_pending` | Your payment is being processed. Statistics unlock once Google Play confirms it. | Plaćanje se obrađuje. Statistika se otključava kad ga Google Play potvrdi. | Платіж обробляється. Статистика відкриється, щойно Google Play його підтвердить. | Płatność jest przetwarzana. Statystyki odblokują się, gdy Google Play ją potwierdzi. |
+| `pro_failed` | The purchase didn't go through. Please try again. | Kupnja nije uspjela. Pokušajte ponovno. | Не вдалося здійснити покупку. Спробуйте ще раз. | Zakup się nie powiódł. Spróbuj ponownie. |
+| `pro_manage` | Manage subscription | Upravljanje pretplatom | Керувати підпискою | Zarządzaj subskrypcją |
+| `pro_free_trial_days` | one: %d day free / other: %d days free | one: %d dan besplatno / few: %d dana besplatno / other: %d dana besplatno | one: %d день безкоштовно / few: %d дні безкоштовно / many: %d днів безкоштовно / other: %d дня безкоштовно | one: %d dzień za darmo / few: %d dni za darmo / many: %d dni za darmo / other: %d dnia za darmo |
+| `pro_free_trial_weeks` | one: %d week free / other: %d weeks free | one: %d tjedan besplatno / few: %d tjedna besplatno / other: %d tjedana besplatno | one: %d тиждень безкоштовно / few: %d тижні безкоштовно / many: %d тижнів безкоштовно / other: %d тижня безкоштовно | one: %d tydzień za darmo / few: %d tygodnie za darmo / many: %d tygodni za darmo / other: %d tygodnia za darmo |
+| `pro_free_trial_months` | one: %d month free / other: %d months free | one: %d mjesec besplatno / few: %d mjeseca besplatno / other: %d mjeseci besplatno | one: %d місяць безкоштовно / few: %d місяці безкоштовно / many: %d місяців безкоштовно / other: %d місяця безкоштовно | one: %d miesiąc za darmo / few: %d miesiące za darmo / many: %d miesięcy za darmo / other: %d miesiąca za darmo |
+
+The `pro_` strings are for Ledger Pro (decision D1): the paywall and "Manage subscription". `%1$s` in `pro_price_per_month` and `pro_price_per_year` is Google Play's price, such as "€2.99"; the trial strings are plurals, shown as quantity: text.

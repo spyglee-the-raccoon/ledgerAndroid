@@ -30,4 +30,30 @@
     <string name="allow_exact_alarms">Allow exact timing</string>
     <!-- Widgets with the app lock on (D5): read out instead of the hidden amounts. -->
     <string name="widget_locked">Hidden while the app lock is on</string>
+    <!-- Ledger Pro (decision D1): the paywall and "Manage subscription". -->
+    <string name="pro_price_per_month">%1$s / month</string>
+    <string name="pro_price_per_year">%1$s / year</string>
+    <string name="pro_subscribe">Subscribe</string>
+    <string name="pro_renewal_note">Renews automatically until you cancel it in Google Play.</string>
+    <string name="pro_restore">Restore purchases</string>
+    <string name="pro_restore_none">No subscription was found for this Google account.</string>
+    <string name="pro_terms">Terms of Service</string>
+    <string name="pro_privacy">Privacy Policy</string>
+    <string name="pro_unavailable">Subscriptions aren\'t available right now. Check that Google Play is installed and you\'re signed in.</string>
+    <string name="pro_try_again">Try again</string>
+    <string name="pro_pending">Your payment is being processed. Statistics unlock once Google Play confirms it.</string>
+    <string name="pro_failed">The purchase didn\'t go through. Please try again.</string>
+    <string name="pro_manage">Manage subscription</string>
+    <plurals name="pro_free_trial_days">
+        <item quantity="one">%d day free</item>
+        <item quantity="other">%d days free</item>
+    </plurals>
+    <plurals name="pro_free_trial_weeks">
+        <item quantity="one">%d week free</item>
+        <item quantity="other">%d weeks free</item>
+    </plurals>
+    <plurals name="pro_free_trial_months">
+        <item quantity="one">%d month free</item>
+        <item quantity="other">%d months free</item>
+    </plurals>
 </resources>

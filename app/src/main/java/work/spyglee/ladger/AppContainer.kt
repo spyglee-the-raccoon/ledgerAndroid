@@ -8,6 +8,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
+import work.spyglee.ladger.billing.PreferencesProCache
+import work.spyglee.ladger.billing.ProCache
+import work.spyglee.ladger.billing.Store
+import work.spyglee.ladger.billing.SubscriptionManager
+import work.spyglee.ladger.billing.defaultStore
 import work.spyglee.ladger.data.BudgetRepository
 import work.spyglee.ladger.data.CollectionRepository
 import work.spyglee.ladger.data.CsvDocuments
@@ -26,13 +31,21 @@ import work.spyglee.ladger.reminder.PlannedTransactionNotifier
 import work.spyglee.ladger.scan.ReceiptScanner
 import work.spyglee.ladger.widget.WidgetData
 
-/** App-wide dependencies, created once in [LadgerApp]. Tests can pass their own [database] and [settingsStore]. */
+/**
+ * App-wide dependencies, created once in [LadgerApp]. Tests can pass their own [database],
+ * [settingsStore], [store] (a `FakeStore`) and [proCache].
+ */
 class AppContainer(
     context: Context,
     val database: LadgerDatabase = LadgerDatabase.build(context),
     settingsStore: DataStore<Preferences> = context.settingsDataStore,
+    store: Store = defaultStore(context),
+    proCache: ProCache = PreferencesProCache(context),
 ) {
     val applicationScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    /** Ledger Pro (decision D1). */
+    val subscriptions = SubscriptionManager(store, proCache, applicationScope)
 
     val settings = SettingsRepository(settingsStore)
     val merchants = MerchantRepository(database.merchantCategoryDao())

@@ -229,6 +229,64 @@ sends strings to translators (D14).
 - **The lock-on look needs agreeing with iOS (#16)**, so both apps match.
 
 ## 7. Pro subscription (D1)
+**Code done**, branch `pro-subscription` (23 November). Testing with Google Play waits for the Play Console.
+
+**Built**
+- `billing/`:
+  - `Store`, the interface;
+  - `PlayStore`, Play Billing Library 9.1;
+  - `Pro`, the rules: which purchase makes the user Pro, what to acknowledge, which offer to show;
+  - `SubscriptionManager`, the counterpart of iOS's;
+  - `PurchaseSignature` and `ProCache`.
+- Debug builds sell Pro through `FakeStore` (`src/debug`), a stand-in with the iOS products and the 1-week trial,
+  like iOS's `Ledger.storekit`. `-Pledger.playBilling=true` switches a debug build to Google Play for license
+  testers. Release builds always use Google Play.
+- `ui/pro/PaywallScreen.kt`, and `ProGate` on the five statistics routes. Settings shows the locks and "Manage
+  subscription".
+- Pro status is asked for at every `MainActivity.onStart`. The last answer is kept in its own preferences file
+  (`pro`), which the backup rules leave out, so a restored phone asks Google Play afresh. The plan had it in
+  `SettingsRepository`, which is backed up.
+- Purchases are checked against the app's licence key from Play Console (Gradle property `ledger.playLicenseKey`),
+  the Android counterpart of StoreKit's verified transactions, since there's no server.
+  - Without the key, release builds refuse every purchase, and they don't build, except for the first upload
+    with `-Pledger.allowMissingLicenseKey=true`.
+  - Debug builds on Google Play accept purchases without the key, for license testers.
+- **Network: still no `INTERNET` permission.** The test build showed that Play Billing Library 9.1 declares no
+  network permission itself. Only its usage logging does (`datatransport`, the same library ML Kit uses), and the
+  manifest already removes that. Billing goes through the Play Store app, which does the network part. So the
+  "Network permissions" steps below weren't needed. **To confirm** with the first real test purchase; if
+  purchases fail without `INTERNET`, the fallback is those steps, as decided.
+- 16 Android-only strings (prices per month or year, trial wording, restore, the terms, errors, Manage
+  subscription), in `translations-to-review.md`.
+
+**Tested:**
+- Unit tests: the rules, the signature check and the manager against the stand-in store.
+- `ProFlowTest`: locked rows, buying, a failed purchase, nothing to restore, no Google Play, and a statistics
+  route opened without Pro.
+- By hand on the emulator: buying through the stand-in store unlocks the statistics, and cancelling through
+  "Manage subscription" locks them again on return.
+- A minified release build reaches Google Play and shows "not available" when Play can't sell. The emulator has
+  no Google account.
+
+**Left for when the Play Console exists**
+1. Put the licence key in `gradle.properties` as `ledger.playLicenseKey`.
+2. Upload a signed release to internal testing (docs/RELEASE.md).
+3. Create the subscriptions, then add license testers.
+4. Install a debug build with `-Pledger.playBilling=true` on a phone signed in with a license tester, and test:
+   - buying, with and without the trial;
+   - restore on a second phone;
+   - cancelling in Google Play, and the subscription ending after the shortened test renewals;
+   - a declined card, and the slow test card (pending).
+5. Check with `adb shell dumpsys netstats` that the app itself still sends nothing.
+
+**Open**
+- Switching between monthly and yearly isn't possible in the app. iOS can switch inside its subscription group;
+  on Android the user cancels in Google Play and subscribes again once the first subscription ends. Play's
+  `SubscriptionUpdateParams` could do the switch in the app later, if wanted.
+- Purchases are acknowledged when the app asks Google Play: after the purchase sheet, and at every start.
+  Without a server there's no other way. A payment that is still pending when the app is closed, and settles while
+  it stays closed for more than three days, is refunded by Google. A periodic WorkManager check could cover that.
+
 **Play Console (needs PR 1)**
 - Upload a build to internal testing.
 - Create two subscriptions with the iOS IDs `work.spyglee.ledger.pro.monthly` (€2.99) and `.yearly` (€29.99). Each

@@ -335,6 +335,10 @@ wording) go to the iOS developer for translators.
 - Not on the phone with the sample data (no instrumented tests there).
 
 ## 8. Finish the `fa64623` sync (D7)
+**Done**, branch `version-1.0`: `versionName` 1.0 and `versionCode` 2. `tools/sync-ios-strings.ps1` against iOS
+`1748a53` changed nothing: the removed login strings never reached Android, which ports only strings it uses.
+Android is now synced to iOS `1748a53`, apart from Siri (D3).
+
 - `app/build.gradle.kts`: `versionName = "1.0"`, and `versionCode` goes up.
 - `docs/RELEASE.md`: replace "currently 0.1" with the rule: Android takes the iOS version of the commit it's
   synced to.

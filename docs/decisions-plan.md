@@ -359,7 +359,19 @@ Android is now synced to iOS `1748a53`, apart from Siri (D3).
 - Strings: `add_page`, `done`, `remove_page`, `discard_pages` and `discard` are new; `use_photo` is gone.
 - Tests: two camera pages read as one receipt in page order, and at most five pages (instrumented, real OCR).
   Checked by hand on the emulator's camera: three pages, remove one, the discard question, Done, and the editor
-  showing the pages. **Still to check on a phone** with a real long receipt.
+  showing the pages.
+- **Checked on the phone on 25 November** (Nothing A059, Android 17): a two-page photo of a web shop order
+  (`Recognized receipt text` in the debug log). Both pages were kept in order, the text of both was read and
+  joined, and the item split between the photos appeared once, with nothing lost or doubled.
+  - Overlapping photos would repeat the lines they share: pages are joined as they are, as on iOS.
+  - No total was found, which isn't caused by the pages. Every "Ukupno" line on that order also said
+    "bez poreza" or "sa porezom", and the rules skip any line with "porez", so the real total
+    ("Ukupno (sa porezom): 489,09 kn") was skipped too. iOS has the same rule. Till receipts put the total on a
+    line of its own, so they aren't affected. **Open, for the user to decide:** accept "sa porezom" / "s porezom"
+    ("with tax") lines as totals in `ReceiptRulesParser`, and note it for iOS in `ios-issues.md`.
+  - No items: items come only from Gemini Nano, and that phone has no AICore. Expected, like an iPhone without
+    Apple Intelligence.
+  - Not yet checked on a real till receipt in several photos, where the total would be read too.
 
 - `scan/ReceiptCameraScreen.kt`: after "Use photo", offer "Add page" or "Done". Show the pages taken as
   thumbnails, and let the user remove one.

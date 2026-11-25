@@ -1,6 +1,6 @@
 # Ledger for Android: status and next steps
 
-For the iOS developer. Updated 23 November 2026, and kept up to date with each Android pull request.
+For the iOS developer. Updated 25 November 2026, and kept up to date with each Android pull request.
 
 ## Summary
 
@@ -34,8 +34,8 @@ Everything below is merged into Android `main`, newest first. The D numbers are 
 | 10 Nov | Budgets, receipt items and photos, price comparison, Sources renamed to Accounts | iOS `46702e5` | #2 |
 | until 21 Oct | Everything up to planned transactions and list search | iOS up to `f909b82` | earlier |
 
-All 197 unit tests and 45 instrumented tests pass on an emulator. Earlier builds also ran on a real phone with
-Android 17.
+All 197 unit tests and 45 instrumented tests pass on an emulator. The multi-page scans also ran on a real phone with
+Android 17 on 25 November.
 
 ## Pro subscription
 

@@ -89,7 +89,7 @@ won't notice them, but anyone comparing the two apps will.
 
 | | iOS | Android |
 |---|---|---|
-| Camera | System document scanner (VisionKit): finds the edges, straightens the page, several pages per scan | Own camera screen (CameraX): **one photo per scan**, cropped to what the preview showed. Zoom buttons, tap to focus, torch, Retake / Use photo. |
+| Camera | System document scanner (VisionKit): finds the edges, straightens the page, several pages per scan | Own camera screen (CameraX), cropped to what the preview showed: **several pages per scan** since D9, up to five, with Retake / Add page / Done, the pages taken as thumbnails that can be removed. Zoom buttons, tap to focus, torch. It doesn't find the edges or straighten the page. |
 | Text recognition | Apple Vision, which also reads Cyrillic | ML Kit, built into the app, **Latin letters only**. Ukrainian words such as "СУМА" aren't read; amounts and dates are. |
 | AI reading (merchant, total, category, items) | Apple Intelligence (Foundation Models); the output is forced into a schema | Gemini Nano through Android's AICore, on few phones so far. Plain-text answers parsed leniently, with time limits. |
 | Without on-device AI | Rules parser: total, date, time, merchant; no items | Same |
@@ -206,7 +206,7 @@ Play Console.
     Before Android 13, Ledger follows the phone's language.
   - Amounts keep the phone's region, and so its currency, when Ledger has a language without a region,
     as iOS does. Android 14's picker usually asks for a region too, and then that region's currency is used.
-  - 43 Android-only strings were translated without a native speaker, in all three languages besides English
+  - 47 Android-only strings were translated without a native speaker, in all three languages besides English
     ([translations-to-review.md](translations-to-review.md)).
   - The Siri texts in the catalog are generated too but unused, since Android has no Siri (D3).
 

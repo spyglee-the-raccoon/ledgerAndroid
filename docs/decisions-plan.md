@@ -348,6 +348,31 @@ Android is now synced to iOS `1748a53`, apart from Siri (D3).
   manifest). The login removal needs nothing on Android.
 
 ## 9. Multi-page scans (D9)
+**Done**, branch `multi-page-scans`.
+- The camera's review offers Retake, Add page and Done. With pages taken, the camera shows them as thumbnails,
+  each with a remove button, and a Done button. The review says which page it is. Closing with pages taken asks
+  before discarding them. Five pages at most (`ReceiptTextRecognizer.MAX_PAGES`, as for PDFs).
+- A kept page is held as a JPEG (quality 95) until Done, so five pages don't hold 100 MB of bitmaps.
+  `ReceiptScanner.read(photos)` then reads them one at a time through the same code as shared PDFs: each page
+  becomes a stored photo and its text, joined in page order.
+- A photo whose text can't be read now keeps its page, as shared files and iOS do.
+- Strings: `add_page`, `done`, `remove_page`, `discard_pages` and `discard` are new; `use_photo` is gone.
+- Tests: two camera pages read as one receipt in page order, and at most five pages (instrumented, real OCR).
+  Checked by hand on the emulator's camera: three pages, remove one, the discard question, Done, and the editor
+  showing the pages.
+- **Checked on the phone on 25 November** (Nothing A059, Android 17): a two-page photo of a web shop order
+  (`Recognized receipt text` in the debug log). Both pages were kept in order, the text of both was read and
+  joined, and the item split between the photos appeared once, with nothing lost or doubled.
+  - Overlapping photos would repeat the lines they share: pages are joined as they are, as on iOS.
+  - No total was found, which isn't caused by the pages. Every "Ukupno" line on that order also said
+    "bez poreza" or "sa porezom", and the rules skip any line with "porez", so the real total
+    ("Ukupno (sa porezom): 489,09 kn") was skipped too. iOS has the same rule. Till receipts put the total on a
+    line of its own, so they aren't affected. **Open, for the user to decide:** accept "sa porezom" / "s porezom"
+    ("with tax") lines as totals in `ReceiptRulesParser`, and note it for iOS in `ios-issues.md`.
+  - No items: items come only from Gemini Nano, and that phone has no AICore. Expected, like an iPhone without
+    Apple Intelligence.
+  - Not yet checked on a real till receipt in several photos, where the total would be read too.
+
 - `scan/ReceiptCameraScreen.kt`: after "Use photo", offer "Add page" or "Done". Show the pages taken as
   thumbnails, and let the user remove one.
 - `ui/transactions/TransactionEditorViewModel.kt`: `_scannedPhotos` is already a list, and

@@ -1,6 +1,5 @@
 package work.spyglee.ladger.ui.transactions
 
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -8,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import java.io.File
 import java.time.Instant
 import kotlin.coroutines.cancellation.CancellationException
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -124,13 +121,11 @@ class TransactionEditorViewModel(
         viewModelScope.launch { container.receipts.prewarm() }
     }
 
-    /** Reads the photo and keeps a smaller copy of it to save with the transaction, as iOS keeps scanned pages. */
-    fun onPhotoConfirmed(photo: Bitmap) = scan {
-        coroutineScope {
-            val page = async { container.receipts.photoData(photo) }
-            ScannedReceipt(container.receipts.recognize(photo), listOf(page.await()))
-        }
-    }
+    /**
+     * Reads the photographed pages (JPEG) in order and keeps a smaller copy of each to save with the
+     * transaction, as iOS keeps the pages of a scan.
+     */
+    fun onPagesConfirmed(pages: List<ByteArray>) = scan { container.receipts.read(pages) }
 
     /** Saves the item editor: replaces the item with [key], or adds a new one when [key] is null. */
     fun saveItem(key: Long?, item: ParsedReceiptItem) {

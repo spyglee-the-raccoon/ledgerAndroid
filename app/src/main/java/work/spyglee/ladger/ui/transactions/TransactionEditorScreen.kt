@@ -173,9 +173,9 @@ fun TransactionEditorScreen(
 
     if (showCamera) {
         ReceiptCameraScreen(
-            onPhotoConfirmed = { photo ->
+            onPagesConfirmed = { pages ->
                 showCamera = false
-                viewModel.onPhotoConfirmed(photo)
+                viewModel.onPagesConfirmed(pages)
             },
             onClose = { showCamera = false },
         )

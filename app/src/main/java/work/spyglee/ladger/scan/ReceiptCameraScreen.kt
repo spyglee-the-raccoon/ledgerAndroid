@@ -31,10 +31,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -42,6 +44,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -55,6 +58,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
@@ -69,13 +73,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.graphics.scale
 import androidx.lifecycle.Observer
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.math.max
+import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -90,13 +97,20 @@ private const val MAX_PHOTO_SIDE = 3_000
 /** How long the focus ring stays where the user tapped. */
 private const val FOCUS_RING_MILLIS = 1_500L
 
+/** JPEG quality of a kept page until it's read: close to the photo, at a tenth of the memory. */
+private const val PAGE_JPEG_QUALITY = 95
+
+/** Longest side of a page's thumbnail in the strip. */
+private const val THUMBNAIL_SIDE = 200
+
 /**
  * Our own camera screen for receipts (no Play services document scanner, so photos never leave the
- * app). After taking a photo the user reviews it, then [onPhotoConfirmed] receives it, like
- * confirming a scan in iOS's document camera.
+ * app). After taking a photo the user reviews it, then adds another page or finishes, and
+ * [onPagesConfirmed] receives the pages in order (JPEG), like confirming a scan in iOS's document
+ * camera (decision D9). Pages taken so far show as thumbnails and can be removed.
  */
 @Composable
-fun ReceiptCameraScreen(onPhotoConfirmed: (Bitmap) -> Unit, onClose: () -> Unit) {
+fun ReceiptCameraScreen(onPagesConfirmed: (List<ByteArray>) -> Unit, onClose: () -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val scope = rememberCoroutineScope()
@@ -123,6 +137,8 @@ fun ReceiptCameraScreen(onPhotoConfirmed: (Bitmap) -> Unit, onClose: () -> Unit)
     }
 
     var photo by remember { mutableStateOf<Bitmap?>(null) }
+    var pages by remember { mutableStateOf(listOf<CapturedPage>()) }
+    var confirmDiscard by remember { mutableStateOf(false) }
     var isCapturing by remember { mutableStateOf(false) }
     var torchOn by remember { mutableStateOf(false) }
     var focusPoint by remember { mutableStateOf<Offset?>(null) }
@@ -133,7 +149,20 @@ fun ReceiptCameraScreen(onPhotoConfirmed: (Bitmap) -> Unit, onClose: () -> Unit)
         }
     }
 
-    BackHandler { if (photo != null) photo = null else onClose() }
+    // Leaving with pages taken asks first, as iOS's document camera does.
+    val close = { if (pages.isEmpty()) onClose() else confirmDiscard = true }
+    BackHandler { if (photo != null) photo = null else close() }
+    val finish = { onPagesConfirmed(pages.map { it.jpeg }) }
+    // Keeps the photo under review as a page, then takes another or finishes.
+    val keep: (Bitmap, Boolean) -> Unit = { current, done ->
+        isCapturing = true
+        scope.launch {
+            pages = pages + current.toCapturedPage()
+            isCapturing = false
+            photo = null
+            if (done) finish()
+        }
+    }
 
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         val current = photo
@@ -159,14 +188,24 @@ fun ReceiptCameraScreen(onPhotoConfirmed: (Bitmap) -> Unit, onClose: () -> Unit)
             ) {
                 focusPoint?.let { FocusRing(it) }
             }
-            IconButton(onClick = onClose, modifier = Modifier.statusBarsPadding().padding(8.dp).align(Alignment.TopStart)) {
-                Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.close), tint = Color.White)
+            Row(
+                Modifier.fillMaxWidth().statusBarsPadding().padding(8.dp).align(Alignment.TopCenter),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(onClick = close) {
+                    Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.close), tint = Color.White)
+                }
+                if (pages.isNotEmpty()) {
+                    Button(onClick = finish, enabled = !isCapturing) { Text(stringResource(R.string.done)) }
+                }
             }
             Column(
                 Modifier.fillMaxWidth().align(Alignment.BottomCenter).navigationBarsPadding().padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
+                if (pages.isNotEmpty()) PageStrip(pages, onRemove = { index -> pages = pages.filterIndexed { i, _ -> i != index } })
                 zoom?.let { ZoomButtons(it, onZoom = { ratio -> controller.setZoomRatio(ratio) }) }
                 Row(
                     Modifier.fillMaxWidth(),
@@ -174,7 +213,7 @@ fun ReceiptCameraScreen(onPhotoConfirmed: (Bitmap) -> Unit, onClose: () -> Unit)
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(Modifier.size(48.dp))
-                    ShutterButton(enabled = !isCapturing) {
+                    ShutterButton(enabled = !isCapturing && pages.size < ReceiptTextRecognizer.MAX_PAGES) {
                         isCapturing = true
                         scope.launch {
                             photo = try {
@@ -200,12 +239,89 @@ fun ReceiptCameraScreen(onPhotoConfirmed: (Bitmap) -> Unit, onClose: () -> Unit)
             if (isCapturing) CircularProgressIndicator(Modifier.align(Alignment.Center), color = Color.White)
         } else {
             Image(current.asImageBitmap(), contentDescription = null, contentScale = ContentScale.Fit, modifier = Modifier.fillMaxSize())
+            // With pages taken already, says which page this is.
+            if (pages.isNotEmpty()) {
+                Text(
+                    stringResource(R.string.receipt_page, pages.size + 1),
+                    color = Color.White,
+                    modifier = Modifier.statusBarsPadding().padding(16.dp).align(Alignment.TopCenter),
+                )
+            }
             Row(
                 Modifier.fillMaxWidth().align(Alignment.BottomCenter).navigationBarsPadding().padding(24.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
-                OutlinedButton(onClick = { photo = null }) { Text(stringResource(R.string.retake_photo), color = Color.White) }
-                Button(onClick = { onPhotoConfirmed(current) }) { Text(stringResource(R.string.use_photo)) }
+                OutlinedButton(onClick = { photo = null }, enabled = !isCapturing) {
+                    Text(stringResource(R.string.retake_photo), color = Color.White)
+                }
+                // This page and one more must fit within the limit.
+                if (pages.size + 1 < ReceiptTextRecognizer.MAX_PAGES) {
+                    OutlinedButton(onClick = { keep(current, false) }, enabled = !isCapturing) {
+                        Text(stringResource(R.string.add_page), color = Color.White)
+                    }
+                }
+                Button(onClick = { keep(current, true) }, enabled = !isCapturing) { Text(stringResource(R.string.done)) }
+            }
+            if (isCapturing) CircularProgressIndicator(Modifier.align(Alignment.Center), color = Color.White)
+        }
+    }
+
+    if (confirmDiscard) {
+        AlertDialog(
+            onDismissRequest = { confirmDiscard = false },
+            text = { Text(stringResource(R.string.discard_pages)) },
+            confirmButton = { TextButton(onClick = onClose) { Text(stringResource(R.string.discard)) } },
+            dismissButton = { TextButton(onClick = { confirmDiscard = false }) { Text(stringResource(R.string.cancel)) } },
+        )
+    }
+}
+
+/** A page the user kept: the photo as JPEG until it's read, and a small copy for the strip. */
+private class CapturedPage(val jpeg: ByteArray, val thumbnail: ImageBitmap)
+
+private suspend fun Bitmap.toCapturedPage(): CapturedPage = withContext(Dispatchers.Default) {
+    val jpeg = ByteArrayOutputStream().use {
+        compress(Bitmap.CompressFormat.JPEG, PAGE_JPEG_QUALITY, it)
+        it.toByteArray()
+    }
+    val ratio = THUMBNAIL_SIDE.toFloat() / max(width, height)
+    val thumbnail = scale((width * ratio).roundToInt().coerceAtLeast(1), (height * ratio).roundToInt().coerceAtLeast(1))
+    CapturedPage(jpeg, thumbnail.asImageBitmap())
+}
+
+/** The pages taken so far, in order, each with a button to remove it. */
+@Composable
+private fun PageStrip(pages: List<CapturedPage>, onRemove: (Int) -> Unit) {
+    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        pages.forEachIndexed { index, page ->
+            Box {
+                Image(
+                    page.thumbnail,
+                    contentDescription = stringResource(R.string.receipt_page, index + 1),
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(top = 8.dp, end = 8.dp)
+                        .size(width = 44.dp, height = 60.dp)
+                        .clip(RoundedCornerShape(6.dp))
+                        .border(1.dp, Color.White, RoundedCornerShape(6.dp)),
+                )
+                Box(
+                    Modifier
+                        .align(Alignment.TopEnd)
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .background(Color.Black.copy(alpha = 0.7f))
+                        .clickable { onRemove(index) }
+                        .semantics { role = Role.Button },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        Icons.Filled.Close,
+                        contentDescription = stringResource(R.string.remove_page, index + 1),
+                        tint = Color.White,
+                        modifier = Modifier.size(14.dp),
+                    )
+                }
             }
         }
     }

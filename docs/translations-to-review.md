@@ -22,7 +22,6 @@ They live in `app/src/main/res/values*/strings_android.xml`. `%1$s` is replaced 
 | `open_settings` | Settings | Postavke | Налаштування | Ustawienia |
 | `take_photo` | Take photo | Snimi fotografiju | Зробити фото | Zrób zdjęcie |
 | `retake_photo` | Retake | Ponovi | Перезняти | Powtórz |
-| `use_photo` | Use photo | Koristi fotografiju | Використати фото | Użyj zdjęcia |
 | `flash` | Flash | Bljeskalica | Спалах | Lampa błyskowa |
 | `close` | Close | Zatvori | Закрити | Zamknij |
 | `camera_denied` | Camera access is off for this app. Turn it on in system settings to scan receipts. | Pristup kameri isključen je za ovu aplikaciju. Uključite ga u postavkama sustava da biste skenirali račune. | Доступ до камери для цього застосунку вимкнено. Увімкніть його в налаштуваннях системи, щоб сканувати чеки. | Dostęp do aparatu jest wyłączony dla tej aplikacji. Włącz go w ustawieniach systemu, aby skanować paragony. |
@@ -53,5 +52,12 @@ They live in `app/src/main/res/values*/strings_android.xml`. `%1$s` is replaced 
 | `pro_free_trial_days` | one: %d day free / other: %d days free | one: %d dan besplatno / few: %d dana besplatno / other: %d dana besplatno | one: %d день безкоштовно / few: %d дні безкоштовно / many: %d днів безкоштовно / other: %d дня безкоштовно | one: %d dzień za darmo / few: %d dni za darmo / many: %d dni za darmo / other: %d dnia za darmo |
 | `pro_free_trial_weeks` | one: %d week free / other: %d weeks free | one: %d tjedan besplatno / few: %d tjedna besplatno / other: %d tjedana besplatno | one: %d тиждень безкоштовно / few: %d тижні безкоштовно / many: %d тижнів безкоштовно / other: %d тижня безкоштовно | one: %d tydzień za darmo / few: %d tygodnie za darmo / many: %d tygodni za darmo / other: %d tygodnia za darmo |
 | `pro_free_trial_months` | one: %d month free / other: %d months free | one: %d mjesec besplatno / few: %d mjeseca besplatno / other: %d mjeseci besplatno | one: %d місяць безкоштовно / few: %d місяці безкоштовно / many: %d місяців безкоштовно / other: %d місяця безкоштовно | one: %d miesiąc za darmo / few: %d miesiące za darmo / many: %d miesięcy za darmo / other: %d miesiąca za darmo |
+| `add_page` | Add page | Dodaj stranicu | Додати сторінку | Dodaj stronę |
+| `done` | Done | Gotovo | Готово | Gotowe |
+| `remove_page` | Remove page %1$d | Ukloni stranicu %1$d | Вилучити сторінку %1$d | Usuń stronę %1$d |
+| `discard_pages` | Discard the pages you took? | Odbaciti snimljene stranice? | Відкинути зняті сторінки? | Odrzucić zrobione strony? |
+| `discard` | Discard | Odbaci | Відкинути | Odrzuć |
 
 The `pro_` strings are for Ledger Pro (decision D1): the paywall and "Manage subscription". `%1$s` in `pro_price_per_month` and `pro_price_per_year` is Google Play's price, such as "€2.99"; the trial strings are plurals, shown as quantity: text.
+
+The multi-page scan strings (decision D9) are for the receipt camera: `remove_page` reads out the button on a page's thumbnail, `%1$d` being the page number.

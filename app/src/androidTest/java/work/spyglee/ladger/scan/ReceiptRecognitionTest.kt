@@ -13,6 +13,7 @@ import android.net.Uri
 import androidx.exifinterface.media.ExifInterface
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -120,6 +121,32 @@ class ReceiptRecognitionTest {
         assertEquals("", receipt.text)
         // Stored at most 1,600 px on its longest side, as iOS stores pages.
         assertEquals(listOf(1_600 to 800), receipt.pages.map { dimensions(it) })
+    }
+
+    /** A long receipt photographed in two pages (D9): the merchant on the first, the total and date on the second. */
+    @Test
+    fun readsCameraPagesInOrderAsOneReceipt() = runTest {
+        val whole = Bitmap.createBitmap(900, 760, Bitmap.Config.ARGB_8888)
+        drawReceipt(Canvas(whole), whole.width)
+        // Cut between "Kruh bijeli" and "UKUPNO EUR".
+        val pages = listOf(
+            Bitmap.createBitmap(whole, 0, 0, 900, 400),
+            Bitmap.createBitmap(whole, 0, 400, 900, 360),
+        ).map { page -> ByteArrayOutputStream().use { page.compress(Bitmap.CompressFormat.JPEG, 95, it); it.toByteArray() } }
+
+        val receipt = ReceiptScanner(context).read(pages)
+
+        assertReadsReceipt(receipt.text)
+        assertTrue("OCR text was:\n${receipt.text}", receipt.text.indexOf("KONZUM") < receipt.text.indexOf("PDV"))
+        assertEquals(listOf(900 to 400, 900 to 360), receipt.pages.map { dimensions(it) })
+    }
+
+    @Test
+    fun readsAtMostFivePages() = runTest {
+        val blank = Bitmap.createBitmap(300, 400, Bitmap.Config.ARGB_8888).apply { eraseColor(Color.WHITE) }
+        val jpeg = ByteArrayOutputStream().use { blank.compress(Bitmap.CompressFormat.JPEG, 95, it); it.toByteArray() }
+
+        assertEquals(ReceiptTextRecognizer.MAX_PAGES, ReceiptScanner(context).read(List(6) { jpeg }).pages.size)
     }
 
     private fun dimensions(jpeg: ByteArray): Pair<Int, Int> {

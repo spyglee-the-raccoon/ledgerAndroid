@@ -8,7 +8,7 @@ Play Console to be tested with real Google Play purchases. Kotlin, Jetpack Compo
 
 The app has no INTERNET permission, also with Ledger Pro (purchases go through the Play Store app), and reads receipts on the device. Android's own backup is on (decision
 D2): the database, receipt photos and settings go into the user's Google backup when the phone can encrypt it
-end to end, and move to a new phone with Android's phone-to-phone transfer. CSV files are compatible with the iOS app in both directions: as on iOS, the export
+end to end, and move to a new phone with Android's phone-to-phone transfer. CSV files are compatible with the iOS app in both directions ([docs/csv-format.md](docs/csv-format.md)): as on iOS, the export
 writes transactions, accounts, planned transactions, categories, budgets, collections and receipt items, and
 the import recognizes each file by its header. Receipt photos aren't exported, as on iOS. Scanned receipt pages,
 and since iOS `1748a53` the pages of a photo or PDF shared into the app, are kept as JPEGs in the app's

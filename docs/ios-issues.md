@@ -10,6 +10,7 @@ Checked again at iOS `46702e5`: 13 is fixed and the app icon no longer says "Lad
 typo in 9 are still open; 14 and 15 are new, from budgets and receipt items.
 Checked again at iOS `fa64623`: 11 is fixed and 15 mostly (receipt photos still aren't exported); 1, 7, 8, 10, 12, 14
 and the typo in 9 are still open; 16–19 are new, from widgets, Siri, budget alerts and the new CSV files.
+Found at `1748a53` while writing the CSV spec: 20, a small one in the CSV importer.
 
 ## 1. Dark mode: the lock screen probably lets balances show through
 `views/LockView.swift`, `components/BackgroundView.swift`, `ContentView.swift`
@@ -166,6 +167,17 @@ budget that already exists, so importing a `budgets.csv` with a general limit (`
 budgets screen was ever opened keeps the empty one. Category budgets only have the same problem when one
 for that category exists already. Android does the same, to match.
 **Fix:** let an imported budget update an existing one that has no limit, or always take the imported values.
+
+## 20. Skipped CSV lines get the wrong numbers in Windows files
+`models/CSVImporter.swift` (`parse`)
+
+Found at `1748a53` while writing [csv-format.md](csv-format.md). `components(separatedBy: .newlines)` splits on
+each character of a line break, so `\r\n`, which Excel and most Windows apps write, gives an extra empty line. Empty
+lines are dropped but still counted, so "skipped lines" reports line 3 for a bad row on line 2, and line 5 for one
+on line 3. The rows themselves are read correctly. Android counts `\r\n` as one line break.
+**Fix:** split with `text.split(omittingEmptySubsequences: false, whereSeparator: \.isNewline)`, which treats
+`\r\n` as one character, or replace `\r\n` with `\n` first. The exporter's `escaped` has the same split, so a note
+containing `\r\n` becomes two spaces; that's harmless.
 
 ## Optional: receipt OCR that reads O as zero
 On a monospace receipt font, Android's OCR read "UKUPNO" as "UKUPN0". The Android parser now treats

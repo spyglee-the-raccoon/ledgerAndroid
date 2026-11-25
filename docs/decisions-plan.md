@@ -396,6 +396,17 @@ Android is now synced to iOS `1748a53`, apart from Siri (D3).
 - Docs: the "Text recognition" row in part 2, and the README's privacy note (Tesseract runs on the phone too).
 
 ## CSV spec (D12)
+**Done**, branch `csv-spec`.
+- [csv-format.md](csv-format.md): the ten files and their headers, text, number, date and other value formats,
+  what each file requires and defaults to, how rows are matched (names, duplicates, transaction references), the
+  import order, how a file's type is found, and the limits both apps share. Written from both apps' code, which
+  read and write the files the same way.
+- One difference found: iOS numbers skipped lines wrongly in files with `\r\n` line breaks. It's iOS issue #20;
+  Android counts them correctly.
+- `ui/theme/DemoDataIconsTest`: every icon in the demo data has an Android icon, except `desktopcomputer`. The
+  test fails once that icon is gone from the demo data, as a reminder to drop the exception.
+- `platform-decisions.md` said "11 files"; there are ten.
+
 - Android drafts `docs/csv-format.md` from `domain/csv/CsvFormat.kt` and the importer tests. It covers the 11
   files, headers, number and date formats, and how rows are matched on import. The iOS developer reviews it and
   copies it to the iOS repo.
@@ -427,7 +438,7 @@ From the decisions; Android doesn't change the iOS repo.
 - **D11:** fix #8 (names ignore case), #12 (no double recording after a schedule change), #18 (the list switch
   re-arms the alert) and #19 (restore takes the backup's limits). Android follows in the same sync.
 - **D12:** review `docs/csv-format.md` and copy it. Keep `DemoData` up to date. `generate.py` should only use icon
-  names from `Icons.swift`.
+  names from `Icons.swift`. Optionally fix #20 (line numbers in Windows files).
 - **D14:**
   - Smaller commits, each with a few lines on behaviour changes.
   - Flag changes to CSV, string keys or phrases.

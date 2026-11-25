@@ -1,6 +1,6 @@
 # Ledger for Android: status and next steps
 
-For the iOS developer. Updated 23 November 2026, and kept up to date with each Android pull request.
+For the iOS developer. Updated 25 November 2026, and kept up to date with each Android pull request.
 
 ## Summary
 
@@ -20,6 +20,7 @@ Everything below is merged into Android `main`, newest first. The D numbers are 
 
 | Merged | What | From | Pull request |
 | --- | --- | --- | --- |
+| 25 Nov | The CSV format written down for both apps, in [csv-format.md](csv-format.md) | D12 | #15 |
 | 23 Nov | Version 1.0, the same as iOS | D7, iOS `fa64623` | #13 |
 | 23 Nov | Ledger Pro: the paywall and the locked statistics; real purchases wait for the Play Console | D1 | #12 |
 | 22 Nov | A photo or PDF shared into the app is saved with the transaction, like scanned pages | iOS `1748a53` | #11 |
@@ -33,7 +34,7 @@ Everything below is merged into Android `main`, newest first. The D numbers are 
 | 10 Nov | Budgets, receipt items and photos, price comparison, Sources renamed to Accounts | iOS `46702e5` | #2 |
 | until 21 Oct | Everything up to planned transactions and list search | iOS up to `f909b82` | earlier |
 
-All 197 unit tests and 43 instrumented tests pass on an emulator. Earlier builds also ran on a real phone with
+All 198 unit tests and 43 instrumented tests pass on an emulator. Earlier builds also ran on a real phone with
 Android 17.
 
 ## Pro subscription
@@ -166,7 +167,9 @@ ahead while it's being set up.
 3. **Cyrillic text recognition (D9).** Android's on-device OCR reads Latin letters only, so Ukrainian words on
    receipts are lost, though amounts and dates are read. We'll build a prototype with Tesseract first, which needs
    real Ukrainian receipts to test with.
-4. **CSV spec (D12).** Android drafts `docs/csv-format.md` for you to review and copy to the iOS repo.
+4. **CSV spec (D12).** Drafted in [csv-format.md](csv-format.md); please review it and copy it to the iOS repo.
+   Writing it turned up one small iOS issue, [#20](ios-issues.md#20-skipped-csv-lines-get-the-wrong-numbers-in-windows-files):
+   wrong line numbers for skipped rows in Windows files.
 5. **First release on Google Play.** Internal testing, then closed testing, then production, in the order
    [Play Console setup](#play-console-setup) describes.
 

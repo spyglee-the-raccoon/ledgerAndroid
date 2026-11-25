@@ -147,8 +147,9 @@ budgets) on and off separately in system settings.
 | Network | None (purchases go through the App Store) | **No INTERNET permission at all**, so the app itself sends nothing; Ledger Pro's purchases go through the Play Store app. Android's backup and transfer (D2) are the only way data leaves the phone. |
 
 ### CSV
-- The format is identical, and files go both ways. Since part 1, Android reads and writes all 11 files like iOS
-  `8a76b5d`. A test imports a copy of iOS's `DemoData` (about 1,200 rows) and exports the same lines back.
+- The format is identical, and files go both ways. Since part 1, Android reads and writes all ten files like iOS
+  `8a76b5d`. A test imports a copy of iOS's `DemoData` (about 1,200 rows) and exports the same lines back. The
+  format is written down in [csv-format.md](csv-format.md) (D12).
 - **Exporting:** iOS shows a save dialog. On Android you pick a folder, and files with the same name are
   overwritten.
 - **Dates:** Android reads them strictly (`d.M.yyyy`); iOS is more lenient.
@@ -508,7 +509,7 @@ behaviour alone. The correct behaviour:
   line is read, and check that exporting gives the same lines back.
 
 **To agree on:**
-- **A short written spec**, e.g. `docs/csv-format.md` in both repos. It would cover the 11 files, their headers,
+- **A short written spec**, e.g. `docs/csv-format.md` in both repos. It would cover the ten files, their headers,
   number and date formats, and how rows are matched to transactions on import.
 - Keep `DemoData/` as the **shared test files** both apps must import identically. When iOS changes the format,
   it updates `DemoData`, and Android copies it again.
@@ -526,6 +527,10 @@ behaviour alone. The correct behaviour:
 - `DemoData/` stays the shared test files: iOS updates it when the format changes, Android copies it.
 - CSV files only use icon names from `Icons.swift`.
 - The full backup (photos and merchant learning) waits.
+
+**Done on Android** (25 November): [csv-format.md](csv-format.md) is drafted for the iOS developer to review and
+copy. `DemoDataIconsTest` checks that every icon in the demo data has an Android icon, with `desktopcomputer` as the
+one exception until iOS changes `generate.py`.
 
 ### D13. Android-native look, or an iOS look-alike
 **Context.** Android follows Material 3 conventions:
